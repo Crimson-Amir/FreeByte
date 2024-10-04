@@ -97,7 +97,6 @@ async def service_info(update, context):
 @handle_error.handle_functions_error
 @message_token.check_token
 async def ask_remove_service_for_user(update, context):
-    user_detail = update.effective_chat
     query = update.callback_query
     ft_instance = FindText(update, context)
     purchase_id = int(query.data.replace('vpn_remove_service_ask__', ''))
@@ -115,7 +114,7 @@ async def ask_remove_service_for_user(update, context):
                 [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=f'vpn_my_service_detail__{purchase_id}')]
             ]
 
-            await context.bot.send_message(text=text, chat_id=user_detail.id, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+            await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
 
 @handle_error.handle_functions_error
