@@ -7,9 +7,8 @@ from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from utilities_reFactore import FindText, message_token, handle_error, report_to_admin
 from crud import vpn_crud
-from vpn_service.panel_api import marzban_api
+from vpn_service import panel_api, vpn_utilities
 from database_sqlalchemy import SessionLocal
-import setting
 
 
 @handle_error.handle_functions_error
@@ -22,7 +21,7 @@ async def buy_custom_service(update, context):
     traffic = max(min(int(traffic_callback), 150), 5) or 40
     period = max(min(int(period_callback), 60), 5) or 30
 
-    price = (traffic * setting.PRICE_PER_GB) + (period * setting.PRICE_PER_DAY)
+    price = await vpn_utilities.calculate_price(traffic, period)
     text = (f"{await ft_instance.find_text('vpn_buy_service_title')}"
             f"\n\n{await ft_instance.find_text('price')} {price:,} {await ft_instance.find_text('irt')}")
 
@@ -55,7 +54,7 @@ async def upgrade_service(update, context):
             traffic = max(min(int(traffic_callback), 150), 5) or 40
             period = max(min(int(period_callback), 60), 5) or 30
 
-            price = (traffic * setting.PRICE_PER_GB) + (period * setting.PRICE_PER_DAY)
+            price = await vpn_utilities.calculate_price(traffic, period)
 
             text = (f"{await ft_instance.find_text('vpn_upgrade_service_title')}"
                     f"\n\n{await ft_instance.find_text('price')} {price:,} {await ft_instance.find_text('irt')}")
@@ -113,7 +112,7 @@ async def create_service_in_servers(session, purchase_id: int):
 
 
     json_config = await create_json_config(username, date_in_timestamp, traffic_to_byte)
-    create_user = await marzban_api.add_user(get_purchase.product.main_server.server_ip, json_config)
+    create_user = await panel_api.marzban_api.add_user(get_purchase.product.main_server.server_ip, json_config)
 
     vpn_crud.update_purchase(session, purchase_id, username=username, subscription_url=create_user['subscription_url'])
     session.refresh(get_purchase)
@@ -153,18 +152,18 @@ async def upgrade_service_for_user(update, context, session, purchase_id: int):
     try:
 
         if purchase.active:
-            user = await marzban_api.get_user(main_server_ip, purchase.username)
+            user = await panel_api.marzban_api.get_user(main_server_ip, purchase.username)
             traffic_to_byte = int((purchase.upgrade_traffic * (1024 ** 3)) + user['data_limit'])
             expire_date = datetime.fromtimestamp(user['expire'])
         else:
-            await marzban_api.reset_user_data_usage(main_server_ip, purchase.username)
+            await panel_api.marzban_api.reset_user_data_usage(main_server_ip, purchase.username)
             traffic_to_byte = int(purchase.upgrade_traffic * (1024 ** 3))
             expire_date = datetime.now(pytz.timezone('Asia/Tehran'))
 
         date_in_timestamp = (expire_date + timedelta(days=purchase.upgrade_period)).timestamp()
 
         json_config = await create_json_config(purchase.username, date_in_timestamp, traffic_to_byte)
-        await marzban_api.modify_user(main_server_ip, purchase.username, json_config)
+        await panel_api.marzban_api.modify_user(main_server_ip, purchase.username, json_config)
 
         vpn_crud.update_purchase(session, purchase_id, traffic=purchase.upgrade_traffic, period=purchase.upgrade_period)
         session.refresh(purchase)
@@ -188,7 +187,7 @@ async def handle_http_error(purchase, main_server_ip, purchase_id, original_erro
         expire_date = purchase.register_date
         date_in_timestamp = (expire_date + timedelta(days=purchase.period)).timestamp()
         json_config = await create_json_config(purchase.username, date_in_timestamp, traffic_to_byte)
-        await marzban_api.modify_user(main_server_ip, purchase.username, json_config)
+        await panel_api.marzban_api.modify_user(main_server_ip, purchase.username, json_config)
     except requests.exceptions.HTTPError as e:
         logging.error(f'failed to rollback user service!\n{str(e)}\nid: {purchase_id}')
         error_message = (

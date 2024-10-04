@@ -256,6 +256,14 @@ keyboard_transaction = {
         'en': 'Failed to create payment getway!',
         'fa': 'ساخت درگاه پرداخت موفقیت آمیز نبود!'
     },
+    'yes_im_suer': {
+        'en': 'Yes, Im Sure',
+        'fa': 'بله، مطمئنم'
+    },
+    'no': {
+        'en': 'No',
+        'fa': 'خیر'
+    },
 
 }
 

@@ -1,6 +1,6 @@
 import sys, os, pytz
 from datetime import datetime
-from sqlalchemy import update
+from sqlalchemy import update, delete
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import models_sqlalchemy as model
 
@@ -37,6 +37,15 @@ def update_purchase(session, purchase_id:int, **kwargs):
     )
     session.execute(stmt)
 
+
+def remove_purchase(session, purchase_id:int):
+    stmt = (
+        delete(model.Purchase)
+        .where(model.Purchase.purchase_id == purchase_id)
+        .returning(model.Purchase)
+    )
+    execute = session.execute(stmt)
+    return execute
 
 def get_all_main_servers(session):
     with session.begin():

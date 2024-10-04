@@ -68,6 +68,14 @@ text_transaction = {
         'en': 'Service does not exit in Server!',
         'fa': 'سرویس مورد نظر در سرور وجود ندارد!'
     },
+    'vpn_ask_user_for_removing_service': {
+        'en': 'are you sure you wanna remove this service?\n\nReturnable amount: {0}',
+        'fa': 'آیا اطمینان دارید که میخواهید این سرویس را حذف کنید؟\nمبلغ قابل بازگشت: {0}'
+    },
+    'vpn_service_deleted_successfully': {
+        'en': 'Service deleted successfully ✅',
+        'fa': 'سرویس با موفقیت حذف شد✅'
+    },
 
 }
 

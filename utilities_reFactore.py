@@ -217,7 +217,8 @@ class MessageToken:
 
             if timer_exist_in_message_timer:
                 if cls.message_expierd(message_id):
-                    new_message = await start(update, context, sed_in_new_message=True)
+                    await context.bot.delete_message(update.effective_chat.id, message_id)
+                    new_message = await start(update, context, in_new_message=True)
                     del cls.message_timer[message_id]
                     cls.set_message_time(new_message.message_id)
                 else:

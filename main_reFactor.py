@@ -25,7 +25,6 @@ sys.excepthook = log_uncaught_exceptions
 @message_token.check_token
 async def services(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ft_instance = FindText(update, context)
-
     text = await ft_instance.find_text('select_section')
     main_keyboard = [
         [InlineKeyboardButton(await ft_instance.find_keyboard('buy_vpn_service_lable'), callback_data='vpn_set_period_traffic__30_40')],
@@ -64,6 +63,8 @@ if __name__ == '__main__':
     application.add_handler(CallbackQueryHandler(buy_and_upgrade_service.upgrade_service, pattern='vpn_upgrade_service__(.*)'))
     application.add_handler(CallbackQueryHandler(my_service_detail.service_info, pattern='vpn_my_service_detail__(.*)'))
     application.add_handler(CallbackQueryHandler(my_service_detail.my_services, pattern='vpn_my_services(.*)'))
+    application.add_handler(CallbackQueryHandler(my_service_detail.ask_remove_service_for_user, pattern='vpn_remove_service_ask__(.*)'))
+    application.add_handler(CallbackQueryHandler(my_service_detail.remove_service_for_user, pattern='vpn_remove_service__(.*)'))
 
     # Admin
     application.add_handler(CallbackQueryHandler(admin_page.admin_page, pattern='admin_page'))
