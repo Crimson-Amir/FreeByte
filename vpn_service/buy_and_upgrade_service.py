@@ -134,7 +134,7 @@ async def create_service_for_user(update, context, session, purchase_id: int):
     qr_image.save(buffer)
     binary_data = buffer.getvalue()
 
-    keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('my_service'), callback_data=f"vpn_my_services_new")],
+    keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('my_services'), callback_data=f"vpn_my_services_new")],
                 [InlineKeyboardButton(await ft_instance.find_keyboard('bot_main_menu'), callback_data=f"start_in_new_message")]]
 
     await context.bot.send_photo(photo=binary_data,
