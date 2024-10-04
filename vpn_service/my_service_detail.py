@@ -57,7 +57,9 @@ async def service_info(update, context):
                 expire_date = human_readable(datetime.fromtimestamp(get_from_server.get('expire')), await ft_instance.find_user_language())
                 used_traffic = round(get_from_server.get('used_traffic') / (1024 ** 3), 2)
                 data_limit = int(get_from_server.get('data_limit') / (1024 ** 3))
-                subscribe_link = f"{main_server.server_protocol}{main_server.server_ip}:{main_server.server_port}{get_from_server.get('subscription_url')}"
+
+                server_port = f":{main_server.server_port}" if main_server.server_port != 443 else ""
+                subscribe_link = f"{main_server.server_protocol}{main_server.server_ip}{server_port}{get_from_server.get('subscription_url')}"
 
                 service_status = {
                     'active': await ft_instance.find_text('vpn_service_active'),
