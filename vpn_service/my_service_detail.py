@@ -106,7 +106,7 @@ async def ask_remove_service_for_user(update, context):
             purchase = vpn_crud.get_purchase(session, purchase_id)
             returnable_amount = await vpn_utilities.calculate_price(purchase.traffic, purchase.period)
             text = f"<b>{await ft_instance.find_text('vpn_ask_user_for_removing_service')}</b>"
-            text = text.format(returnable_amount)
+            text = text.format(f"{returnable_amount:,}")
 
             keyboard = [
                 [InlineKeyboardButton(await ft_instance.find_keyboard('yes_im_sure'), callback_data=f'vpn_remove_service__{purchase_id}'),

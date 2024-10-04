@@ -44,8 +44,9 @@ def remove_purchase(session, purchase_id:int):
         .where(model.Purchase.purchase_id == purchase_id)
         .returning(model.Purchase)
     )
-    execute = session.execute(stmt)
-    return execute
+    result = session.execute(stmt)
+    purchase = result.scalar()
+    return purchase
 
 def get_all_main_servers(session):
     with session.begin():
