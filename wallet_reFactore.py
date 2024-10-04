@@ -25,8 +25,7 @@ async def wallet_page(update, context):
                 last_transaction = human_readable(f'{get_financial_reports[0].register_date}', await ft_instance.find_user_language())
                 lasts_report = await ft_instance.find_text('recent_transactions')
                 for report in get_financial_reports:
-                    lasts_report += f"\n{await ft_instance.find_text('recive_money') if report.operation == 'recive' else
-                    await ft_instance.find_text('spend_money')} {report.amount:,} {await ft_instance.find_text('irt')} - {human_readable(report.register_date, await ft_instance.find_user_language())}"
+                    lasts_report += f"\n{await ft_instance.find_text('recive_money') if report.operation == 'recive' else await ft_instance.find_text('spend_money')} {report.amount:,} {await ft_instance.find_text('irt')} - {human_readable(report.register_date, await ft_instance.find_user_language())}"
 
             keyboard = [
                 [InlineKeyboardButton(await ft_instance.find_keyboard('refresh'), callback_data='wallet_page'),
