@@ -4,8 +4,8 @@ import setting, logging, traceback
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from dialogue_texts import text_transaction, keyboard_transaction
 from setting import default_language, ADMIN_CHAT_IDs, telegram_bot_token
-import crud, functools, requests
-
+import functools, requests
+from crud import crud
 class UserNotFound(Exception):
     def __init__(self): super().__init__("user was't register in bot!")
 
