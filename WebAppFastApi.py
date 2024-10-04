@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
 import utilities_reFactore
-import crud
+from crud import crud
 from WebApp import WebAppUtilities
 from database_sqlalchemy import SessionLocal
 from WebApp.WebAppDialogue import transaction

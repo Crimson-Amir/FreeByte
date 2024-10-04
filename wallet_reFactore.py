@@ -1,6 +1,7 @@
 import json, uuid, setting
 from WebApp import WebAppUtilities
-import crud, logging
+import logging
+from crud import crud
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from database_sqlalchemy import SessionLocal
 from utilities_reFactore import FindText, message_token, handle_error, human_readable
