@@ -126,7 +126,7 @@ async def create_service_for_user(update, context, session, purchase_id: int):
     main_server = get_purchase.product.main_server
 
     server_port = f":{main_server.server_port}" if main_server.server_port != 443 else ""
-    sub_link = f"{main_server.server_protocol}{main_server.server_ip}{server_port}{get_purchase.subscription_url}"
+    sub_link = f"<code>{main_server.server_protocol}{main_server.server_ip}{server_port}{get_purchase.subscription_url}</code>"
 
     qr_code = qrcode.QRCode(version=1,error_correction=qrcode.constants.ERROR_CORRECT_L,box_size=10,border=4)
     qr_code.add_data(sub_link)
