@@ -83,7 +83,7 @@ async def create_json_config(username, expiration_in_day, traffic_in_byte, statu
         },
         "inbounds": {
             "vless": [
-                "VLESS TCP REALITY"
+                "VLESS TCP"
             ]
         },
         "expire": expiration_in_day,
