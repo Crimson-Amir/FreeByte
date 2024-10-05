@@ -198,6 +198,10 @@ text_transaction = {
         'en': 'Increase Wallet Balance With ID',
         'fa': 'افزایش اعتبار کیف پول با شماره'
     },
+    'payment_authority': {
+        'en': 'Payment Authority:',
+        'fa': 'شناسه پرداخت:'
+    },
 }
 
 keyboard_transaction = {
