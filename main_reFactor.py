@@ -3,8 +3,8 @@ from utilities_reFactore import FindText, message_token, handle_error
 import start_reFactore
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, CallbackQueryHandler
-import setting, wallet_reFactore, my_service, setting_menu
-from vpn_service import buy_and_upgrade_service, my_service_detail, vpn_setting_menu
+import setting, wallet_reFactore, my_service, setting_menu, quidnes_and_support
+from vpn_service import buy_and_upgrade_service, my_service_detail, vpn_setting_menu, vpn_quid
 from admin import admin_page, vpn_admin
 
 logging.basicConfig(
@@ -79,6 +79,11 @@ if __name__ == '__main__':
     application.add_handler(CallbackQueryHandler(vpn_setting_menu.apply_notification_setting, pattern='vpn_apply_notification_period_traffic__(.*)'))
     application.add_handler(CallbackQueryHandler(setting_menu.user_language_setting, pattern='user_language_setting'))
     application.add_handler(CallbackQueryHandler(setting_menu.change_user_language, pattern='set_user_language_on__(.*)'))
+
+    # Quide And Support
+    application.add_handler(CallbackQueryHandler(quidnes_and_support.quide_menu, pattern='quide_menu'))
+    application.add_handler(CallbackQueryHandler(vpn_quid.quide_menu, pattern='vpn_quide_menu'))
+    application.add_handler(CallbackQueryHandler(vpn_quid.vpn_quide, pattern='vpn_quid__(.*)'))
 
     application.run_polling()
 

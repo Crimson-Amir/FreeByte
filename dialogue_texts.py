@@ -3,31 +3,31 @@ import vpn_service.dialogue_texts as vpn_service_dialogues
 
 text_transaction = {
     'error_message': {
-        'en': 'sorry, somthing went wrong!',
-        'fa': 'ببخشید، مشکلی وجود داشت!'
+        'en': '⚠️ Oops, something went wrong!',
+        'fa': '⚠️ ببخشید، مشکلی وجود داشت!'
     },
     'start_menu': {
-        'en': 'Hi, welcome to FreeByte Bot.',
-        'fa': 'درود، به ربات فری بایت خوش آمدید!'
+        'en': '👋 Welcome to FreeByte Bot!',
+        'fa': '👋 درود، به ربات فری بایت خوش آمدید!'
     },
     'select_section': {
-        'en': 'Select the section you want to continue:',
+        'en': 'Please choose the section you’d like to continue:',
         'fa': 'برای ادامه بخش مورد نظر خودتان را انتخاب کنید:'
     },
-    'message_expierd_send_new_message': {
-        'en': 'The message has expired! The new menu has been sent to you.',
-        'fa': 'پیام منقضی شده است! منو جدید برای شما ارسال شد'
+    'message_expired_send_new_message': {
+        'en': '⏳ This message has expired! We’ve sent you a new menu.',
+        'fa': '⏳ پیام منقضی شده است! منو جدید برای شما ارسال شد.'
     },
     'recent_transactions': {
-        'en': '• Recent transactions:',
-        'fa': '• تراکنش های اخیر:'
+        'en': '• Recent Transactions:',
+        'fa': '• تراکنش‌های اخیر:'
     },
-    'recive_money': {
-        'en': '💰 Recive',
+    'receive_money': {
+        'en': '💰 Received',
         'fa': '💰 دریافت'
     },
     'spend_money': {
-        'en': '💸 Spend',
+        'en': '💸 Spent',
         'fa': '💸 برداشت'
     },
     'irt': {
@@ -39,11 +39,11 @@ text_transaction = {
         'fa': 'دلار'
     },
     'no_transaction_yet': {
-        'en': 'you have no transactions yet!',
+        'en': 'You haven’t made any transactions yet!',
         'fa': 'شما تا به حال تراکنشی نداشتید!'
     },
     'wallet_page_title': {
-        'en': 'Your wallet view:',
+        'en': 'Your Wallet Overview:',
         'fa': 'اطلاعات کیف پول شما:'
     },
     'wallet_balance_key': {
@@ -51,153 +51,158 @@ text_transaction = {
         'fa': '• موجودی حساب:'
     },
     'last_transaction': {
-        'en': '• Last transaction:',
+        'en': '• Last Transaction:',
         'fa': '• آخرین تراکنش:'
     },
-    'add_crredit_to_wallet_title': {
-        'en': '• Charge your wallet with one of this options:',
-        'fa': '• مشخص کنید چه مقدار اعتبار به کیف پولتون اضافه بشه:'
+    'add_credit_to_wallet_title': {
+        'en': '• Choose an amount to add to your wallet:',
+        'fa': '• مشخص کنید چه مقدار اعتبار به کیف پولتان اضافه شود:'
     },
     'invoice_title': {
-        'en': '• Check the information below and if approved, finalize the payment:',
+        'en': '• Please review the details below and finalize your payment if everything looks good:',
         'fa': '• اطلاعات زیر را بررسی کنید و درصورت تایید، پرداخت را نهایی کنید:'
     },
     'price': {
-        'en': 'Price:',
+        'en': 'Amount:',
         'fa': 'مبلغ:'
     },
     'payment_option_title': {
-        'en': '⤷ You can choose one of this methods for payment:',
-        'fa': '⤶ برای پرداخت میتوانید یکی از روش های زیر را انتخاب کنید:'
+        'en': '⤷ Select one of the following payment methods:',
+        'fa': '⤶ برای پرداخت می‌توانید یکی از روش‌های زیر را انتخاب کنید:'
     },
     'invoice_extra_data': {
-        'en': '• Invoice information:',
+        'en': '• Invoice Details:',
         'fa': '• اطلاعات فاکتور:'
     },
     'charge_wallet': {
-        'en': 'Charge wallet balance',
+        'en': 'Add Credit to Wallet',
         'fa': 'افزایش اعتبار کیف پول'
     },
     'buy_vpn_service': {
-        'en': 'Buy VPN service',
+        'en': 'Purchase VPN Service',
         'fa': 'خرید سرویس VPN'
     },
-
     'upgrade_vpn_service': {
-        'en': 'Upgrade VPN service number {0}',
+        'en': 'Upgrade VPN Service #{0}',
         'fa': 'ارتقاء سرویس VPN شماره {0}'
     },
     'traffic': {
-        'en': 'Traffic:',
+        'en': 'Data Traffic:',
         'fa': '• ترافیک (حجم):'
     },
     'period': {
-        'en': 'Period:',
+        'en': 'Duration:',
         'fa': '• دوره زمانی:'
     },
-    'payment_getway_title': {
-        'en': '• Redirect to payment page',
-        'fa': '• هدایت به صفحه پرداخت'
+    'payment_gateway_title': {
+        'en': '• Redirecting to Payment Page...',
+        'fa': '• هدایت به صفحه پرداخت...'
     },
-    'zarinpal_payment_getway_body': {
-        'en': 'By clicking the button below, you will be transferred to the payment page. Please be patient until the end of the payment process and the server response and do not close the page.',
-        'fa': 'با کلیک روی دکمه پایین به صفحه پرداخت منتقل میشوید. لطفاً تا پایان فرآیند پرداخت صبور باشید و از بستن صفحه خودداری کنید.'
+    'zarinpal_payment_gateway_body': {
+        'en': 'By clicking below, you’ll be transferred to the payment page. Please don’t close the page until the process completes.',
+        'fa': 'با کلیک روی دکمه پایین به صفحه پرداخت منتقل می‌شوید. لطفاً تا پایان فرآیند پرداخت صبور باشید و از بستن صفحه خودداری کنید.'
     },
-    'payment_getway_tail': {
-        'en': '• After completing the payment, the operation will be done automatically.',
-        'fa': '• پس از تکمیل پرداخت، عملیات به صورت اتوماتیک انجام خواهد شد.'
+    'payment_gateway_tail': {
+        'en': '• Your transaction will be processed automatically after payment.',
+        'fa': '• پس از تکمیل پرداخت، عملیات به‌صورت خودکار انجام خواهد شد.'
     },
-    'cryptomus_payment_getway_body': {
-        'en': 'By clicking the button below, you will be transferred to the payment page. Please be careful about currency and network.',
-        'fa': 'با کلیک روی دکمه پایین به صفحه پرداخت منتقل میشوید. لطفا به ارز و شبکه پراخت دقت کنید.'
+    'cryptomus_payment_gateway_body': {
+        'en': 'By clicking below, you’ll be redirected to the payment page. Ensure the correct currency and network are selected.',
+        'fa': 'با کلیک روی دکمه پایین به صفحه پرداخت منتقل می‌شوید. لطفاً به ارز و شبکه پرداخت دقت کنید.'
     },
     'amount_added_to_wallet_successfully': {
-        'en': 'The amount of {0} IRT has been successfully added to your wallet✅',
-        'fa': 'مبلغ {0} تومان به کیف پول شما اضافه شد✅'
+        'en': 'An amount of {0} IRT has been added to your wallet successfully ✅',
+        'fa': 'مبلغ {0} تومان به کیف پول شما اضافه شد ✅'
     },
-    'payment_getway_lable': {
-        'en': 'Payment Getway:',
+    'payment_gateway_label': {
+        'en': 'Payment Gateway:',
         'fa': 'درگاه پرداخت:'
     },
-    'zarinpal_lable': {
+    'zarinpal_label': {
         'en': 'ZarinPal',
         'fa': 'زرین پال'
     },
-    'cryptomus_lable': {
+    'cryptomus_label': {
         'en': 'Cryptomus',
-        'fa': 'cryptomus'
+        'fa': 'کریپتوموس'
     },
     'just_for_show': {
-        'en': 'this button jusr showing info.',
-        'fa': 'این دکمه جهت نمایش دادن اطلاعات است.'
+        'en': 'This button is just for showing info.',
+        'fa': 'این دکمه جهت نمایش اطلاعات است.'
     },
     'invoice_already_paid': {
-        'en': 'This invoice already paid.',
-        'fa': 'این فاکتور قبلا پرداخت شده است.'
+        'en': 'This invoice has already been paid.',
+        'fa': 'این فاکتور قبلاً پرداخت شده است.'
     },
-    'not_enogh_credit': {
-        'en': 'you dont have enoght credit to pay this invoice!',
-        'fa': 'اعتبار شما برای پرداخت این فاکتور کافی نمیباشد!'
+    'not_enough_credit': {
+        'en': 'You don’t have enough credit to pay this invoice!',
+        'fa': 'اعتبار شما برای پرداخت این فاکتور کافی نیست!'
     },
     'invoice_paid_by_wallet_message': {
-        'en': 'invoice paid successfully✅',
-        'fa': 'فاکتور با موفقیت پرداخت شد✅'
+        'en': 'The invoice has been paid successfully ✅',
+        'fa': 'فاکتور با موفقیت پرداخت شد ✅'
     },
-    'upgrade_service_successfuly': {
-        'en': '🟢 Your service named {0} has been upgraded successfully!'
-              '\n• The specifications added to the service are as follows:'
+    'upgrade_service_successfully': {
+        'en': '🟢 Your service {0} has been upgraded successfully!'
+              '\n• New specifications added:'
               '\n• Traffic: {1} GB'
-              '\n• Time period: {2} days',
+              '\n• Duration: {2} days',
         'fa': '🟢 سرویس شما با نام {0} با موفقیت ارتقا یافت!'
-              '\n• مشخصات اضافه شده به سرویس به شرح زیر میباشد:'
+              '\n• مشخصات جدید اضافه شده:'
               '\n• ترافیک: {1} گیگابایت'
               '\n• دوره زمانی: {2} روز'
     },
     'no_service_available': {
-        'en': 'You font have service!',
-        'fa': 'شما صاحب سرویس نیستید!'
+        'en': 'You don’t have any active services!',
+        'fa': 'شما هیچ سرویس فعالی ندارید!'
     },
     'select_service_category': {
-        'en': 'Select the category fot view info:',
-        'fa': 'برای مشاهده جزئیات، دسته بندی مورد نظر را انتخاب کنید:'
+        'en': 'Select a category to view details:',
+        'fa': 'برای مشاهده جزئیات، دسته‌بندی مورد نظر را انتخاب کنید:'
     },
     'config_applied_successfully': {
-        'en': 'config applied successfully✅',
-        'fa': 'تنظیمات با موفقیت اعمال شد✅'
+        'en': 'Configuration applied successfully ✅',
+        'fa': 'تنظیمات با موفقیت اعمال شد ✅'
     },
     'please_select_your_language': {
         'en': '🌎 Please select your language:',
-        'fa': '🌎 لطفا زبان خود را انتخاب کنید:'
+        'fa': '🌎 لطفاً زبان خود را انتخاب کنید:'
+    },
+    'quid_and_help_text': {
+        'en': '📚 Welcome to the Bot Help Section!'
+              '\n\n• Your ID: {0}',
+        'fa': '📚 به بخش راهنمای ربات خوش آمدید!'
+              '\n\n• آیدی شما: {0}'
     },
 }
 
 keyboard_transaction = {
     'error_message': {
-        'en': 'sorry, somthing went wrong!',
+        'en': 'Oops, something went wrong!',
         'fa': 'ببخشید، مشکلی وجود داشت!'
     },
     'menu_services': {
-        'en': 'services',
+        'en': 'Services',
         'fa': 'خدمات'
     },
     'wallet': {
-        'en': 'wallet 👝',
+        'en': 'Wallet 👝',
         'fa': 'کیف پول 👝'
     },
     'ranking': {
-        'en': 'ranking 👥️',
-        'fa': 'رتبه بندی 👥️'
+        'en': 'Ranking 👥️',
+        'fa': 'رتبه‌بندی 👥️'
     },
     'setting': {
-        'en': 'Setting ⚙️',
+        'en': 'Settings ⚙️',
         'fa': 'تنظیمات ⚙️'
     },
     'my_services': {
         'en': 'My Services 🎛',
-        'fa': 'سرویس‌های ‌من 🎛'
+        'fa': 'سرویس‌های من 🎛'
     },
     'invite': {
-        'en': 'invite',
+        'en': 'Invite',
         'fa': 'دعوت'
     },
     'back_button': {
@@ -205,7 +210,7 @@ keyboard_transaction = {
         'fa': 'برگشت ↰'
     },
     'bot_main_menu': {
-        'en': 'Bot main menu ↵',
+        'en': 'Main Menu ↵',
         'fa': 'صفحه اصلی ربات ↵'
     },
     'confirm': {
@@ -213,7 +218,7 @@ keyboard_transaction = {
         'fa': '✓ تایید'
     },
     'help_button': {
-        'en': 'Help and support 📚',
+        'en': 'Help & Support 📚',
         'fa': 'راهنما و پشتیبانی 📚'
     },
     'cancel_button': {
@@ -221,55 +226,55 @@ keyboard_transaction = {
         'fa': 'انصراف ✘'
     },
     'financial_transactions': {
-        'en': '• Financial transactions',
-        'fa': '• تراکنش های مالی'
+        'en': '• Financial Transactions',
+        'fa': '• تراکنش‌های مالی'
     },
     'increase_balance': {
-        'en': 'Increase balance ↟',
+        'en': 'Increase Balance ↟',
         'fa': 'افزایش موجودی ↟'
     },
     'refresh': {
-        'en': 'refresh ⟳',
-        'fa': 'تازه سازی ⟳'
+        'en': 'Refresh ⟳',
+        'fa': 'تازه‌سازی ⟳'
     },
-    'buy_vpn_service_lable': {
-        'en': 'Buy vpn service',
-        'fa': 'خرید سرویس vpn'
+    'buy_vpn_service_label': {
+        'en': 'Buy VPN Service',
+        'fa': 'خرید سرویس VPN'
     },
-    'vpn_services_lable': {
-        'en': 'VPN service',
-        'fa': 'سرویس VPN'
+    'vpn_services_label': {
+        'en': 'VPN Services',
+        'fa': 'سرویس‌های VPN'
     },
-    'vpn_setting_lable': {
-        'en': 'VPN Setting',
+    'vpn_setting_label': {
+        'en': 'VPN Settings',
         'fa': 'تنظیمات VPN'
     },
-    'iran_payment_getway': {
-        'en': 'Iran Payment Getway',
+    'iran_payment_gateway': {
+        'en': 'Iran Payment Gateway',
         'fa': 'درگاه پرداخت بانکی'
     },
-    'cryptomus_payment_getway': {
-        'en': 'Pay whth Crypto',
+    'cryptomus_payment_gateway': {
+        'en': 'Pay with Crypto',
         'fa': 'پرداخت با کریپتو'
     },
     'pay_with_wallet_balance': {
-        'en': 'Pay whth Wallet',
+        'en': 'Pay with Wallet',
         'fa': 'پرداخت با کیف پول'
     },
-    'not_enogh_rank': {
-        'en': 'Not enoght rank to view this!',
+    'not_enough_rank': {
+        'en': 'Your rank isn’t high enough to view this!',
         'fa': 'رتبه شما برای دیدن این قسمت کافی نیست!'
     },
-    'login_to_payment_getway': {
-        'en': 'Go to pay ↷',
-        'fa': 'ورود به درگاه ↶'
+    'login_to_payment_gateway': {
+        'en': 'Proceed to Payment ↷',
+        'fa': 'ورود به درگاه پرداخت ↶'
     },
-    'fail_to_create_payment_getway': {
-        'en': 'Failed to create payment getway!',
-        'fa': 'ساخت درگاه پرداخت موفقیت آمیز نبود!'
+    'fail_to_create_payment_gateway': {
+        'en': 'Failed to create the payment gateway!',
+        'fa': 'ساخت درگاه پرداخت موفقیت‌آمیز نبود!'
     },
     'yes_im_sure': {
-        'en': 'Yes, Im Sure',
+        'en': 'Yes, I’m Sure',
         'fa': 'بله، مطمئنم'
     },
     'no': {
@@ -279,6 +284,10 @@ keyboard_transaction = {
     'change_language_setting': {
         'en': 'Change Language 🌎',
         'fa': 'تغییر زبان 🌎'
+    },
+    'vpn_guide_label': {
+        'en': 'VPN Guide',
+        'fa': 'راهنمای VPN'
     }
 }
 
