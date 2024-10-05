@@ -72,13 +72,16 @@ async def financial_transactions_wallet(update, context):
                         'upgrade_vpn_service': await ft_instance.find_text('upgrade_vpn_service_action'),
                         'buy_vpn_service': await ft_instance.find_text('buy_vpn_service_action'),
                         'increase_wallet_balance': await ft_instance.find_text('increase_wallet_balance_action')
-
+                    }
+                    payment_gateway = {
+                        'zarinpal': await ft_instance.find_text('zarinpal_label'),
+                        'cryptomus': await ft_instance.find_text('cryptomus_label'),
+                        'wallet': await ft_instance.find_text('pay_with_wallet_balance'),
                     }
                     lasts_report += f"\n\n{await ft_instance.find_text('receive_money') if report.operation in ['recive', 'refund'] else await ft_instance.find_text('spend_money')} {report.amount:,} {await ft_instance.find_text('irt')} | "
                     lasts_report += f"{report.register_date.date()}"
-                    lasts_report += f"\n{payment_action.get(report.action, '')} {report.id_holder} | "
-                    lasts_report += f"\n{await ft_instance.find_text('payment_authority')} {report.authority[-8:] if report.authority else '-'}"
-                    lasts_report += f"\n{payment_status.get(report.payment_status, '')}"
+                    lasts_report += f"\n{payment_status.get(report.payment_status, '')} | {payment_action.get(report.action, '')} {report.id_holder}"
+                    lasts_report += f"\n{await ft_instance.find_text('payment_authority')} {report.authority[-8:] if report.authority else '-'} | {payment_gateway.get(report.payment_getway, '')}"
             else:
                 lasts_report = await ft_instance.find_text('no_transaction_yet')
 
