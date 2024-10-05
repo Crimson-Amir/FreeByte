@@ -74,8 +74,10 @@ async def financial_transactions_wallet(update, context):
                         'increase_wallet_balance': await ft_instance.find_text('increase_wallet_balance_action')
 
                     }
-                    lasts_report += f"\n\n{await ft_instance.find_text('receive_money') if report.operation in ['recive', 'refund'] else await ft_instance.find_text('spend_money')} "
-                    lasts_report += f"{report.amount:,} {await ft_instance.find_text('irt')} | {payment_status.get(report.payment_status, '')}"
+                    lasts_report += f"\n\n{await ft_instance.find_text('receive_money') if report.operation in ['recive', 'refund'] else await ft_instance.find_text('spend_money')} {report.amount:,} {await ft_instance.find_text('irt')} | "
+                    lasts_report += f"\n{payment_status.get(report.register_date.eplace(microsecend=0), '')}"
+                    lasts_report += f"\n{payment_status.get(report.payment_status, '')}"
+                    lasts_report += f"\n{payment_action.get(report.action, '')} {report.id_holder}"
                     lasts_report += f"\n{payment_action.get(report.action, '')} {report.id_holder}"
             else:
                 lasts_report = await ft_instance.find_text('no_transaction_yet')
