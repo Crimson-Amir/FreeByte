@@ -27,7 +27,7 @@ text_transaction = {
         'fa': '💰 دریافت'
     },
     'spend_money': {
-        'en': '💸 Spent',
+        'en': '💸 Spend',
         'fa': '💸 برداشت'
     },
     'irt': {

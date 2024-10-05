@@ -26,7 +26,7 @@ async def wallet_page(update, context):
                 last_transaction = human_readable(f'{get_financial_reports[0].register_date}', await ft_instance.find_user_language())
                 lasts_report = await ft_instance.find_text('recent_transactions')
                 for report in get_financial_reports:
-                    lasts_report += f"\n{await ft_instance.find_text('recive_money') if report.operation in ['recive', 'refund'] else await ft_instance.find_text('spend_money')} {report.amount:,} {await ft_instance.find_text('irt')} - {human_readable(report.register_date, await ft_instance.find_user_language())}"
+                    lasts_report += f"\n{await ft_instance.find_text('receive_money') if report.operation in ['recive', 'refund'] else await ft_instance.find_text('spend_money')} {report.amount:,} {await ft_instance.find_text('irt')} - {human_readable(report.register_date, await ft_instance.find_user_language())}"
 
             keyboard = [
                 [InlineKeyboardButton(await ft_instance.find_keyboard('refresh'), callback_data='wallet_page'),
@@ -62,8 +62,8 @@ async def financial_transactions_wallet(update, context):
             if get_financial_reports:
                 lasts_report = await ft_instance.find_text('recent_transactions') + '\n'
                 for report in get_financial_reports:
-                    lasts_report += f"\n\n{await ft_instance.find_text('recive_money') if report.operation in ['recive', 'refund'] else await ft_instance.find_text('spend_money')}"
-                    lasts_report +=  f" {report.amount:,} {await ft_instance.find_text('irt')} - {report.register_date.replace(tzinfo=None)}"
+                    lasts_report += f"\n\n{await ft_instance.find_text('receive_money') if report.operation in ['recive', 'refund'] else await ft_instance.find_text('spend_money')}"
+                    lasts_report +=  f" {report.amount:,} {await ft_instance.find_text('irt')} - {report.register_date.replace(microsecond=None)}"
             else:
                 lasts_report = await ft_instance.find_text('no_transaction_yet')
 
