@@ -12,8 +12,8 @@ async def setting_menu(update, context):
     text = f"⚙️ {await ft_instance.find_text('select_section')}"
 
     keyboard = [
+        [InlineKeyboardButton(await ft_instance.find_keyboard('change_language_setting'),callback_data='user_language_setting')],
         [InlineKeyboardButton(await ft_instance.find_keyboard('vpn_setting_lable'), callback_data='vpn_setting_menu')],
-        [InlineKeyboardButton(await ft_instance.find_keyboard('change_language_setting'), callback_data='user_language_setting')],
         [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='start')]
     ]
 
@@ -44,7 +44,7 @@ async def user_language_setting(update, context):
                 if user.language == language:
                     keyboard.append([InlineKeyboardButton(f"{name} ✅", callback_data=f"already_on_this")])
                     continue
-                keyboard.append([InlineKeyboardButton(f"{name}", callback_data=f"set_user_language_on__{languages}")])
+                keyboard.append([InlineKeyboardButton(f"{name}", callback_data=f"set_user_language_on__{language}")])
 
             await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
