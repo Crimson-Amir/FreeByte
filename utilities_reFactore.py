@@ -38,7 +38,7 @@ async def start(update, context, in_new_message=False, raise_error=False):
              InlineKeyboardButton(await ft_instance.find_keyboard('my_services'), callback_data='my_services')],
             [InlineKeyboardButton(await ft_instance.find_keyboard('setting'), callback_data='setting_menu'),
              InlineKeyboardButton(await ft_instance.find_keyboard('invite'), callback_data='invite')],
-            [InlineKeyboardButton(await ft_instance.find_keyboard('help_button'), callback_data='quide_menu')],
+            [InlineKeyboardButton(await ft_instance.find_keyboard('help_button'), callback_data='guide_menu')],
         ]
 
         if update.callback_query and "start_in_new_message" not in update.callback_query.data and not in_new_message:
