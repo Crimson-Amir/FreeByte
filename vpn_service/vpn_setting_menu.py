@@ -47,10 +47,10 @@ async def handle_vpn_notification(update, context):
     keyboard = [
         [InlineKeyboardButton("➖", callback_data=f"vpn_set_notification_period_traffic__{period_percent}__{traffic_percent - 5}"),
          InlineKeyboardButton(f"{traffic_percent}%", callback_data="just_for_show"),
-         InlineKeyboardButton("➕", callback_data=f"vpn_set_notification_period_traffic__{period_percent}_{traffic_percent + 10}")],
-        [InlineKeyboardButton("➖", callback_data=f"vpn_set_notification_period_traffic__{period_percent - 5}_{traffic_percent}"),
+         InlineKeyboardButton("➕", callback_data=f"vpn_set_notification_period_traffic__{period_percent}__{traffic_percent + 5}")],
+        [InlineKeyboardButton("➖", callback_data=f"vpn_set_notification_period_traffic__{period_percent - 1}__{traffic_percent}"),
          InlineKeyboardButton(f"{period_percent} {await ft_instance.find_keyboard('day_lable')}", callback_data="just_for_show"),
-         InlineKeyboardButton("➕", callback_data=f"vpn_set_notification_period_traffic__{period_percent + 10}_{traffic_percent}")],
+         InlineKeyboardButton("➕", callback_data=f"vpn_set_notification_period_traffic__{period_percent + 1}__{traffic_percent}")],
         [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='vpn_setting_menu'),
          InlineKeyboardButton(await ft_instance.find_keyboard('confirm'), callback_data=f"vpn_apply_notification_period_traffic__{period_percent}__{traffic_percent}")]
     ]

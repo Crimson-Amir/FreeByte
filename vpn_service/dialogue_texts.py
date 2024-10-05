@@ -80,6 +80,16 @@ text_transaction = {
         'en': '⚙️ VPN settings',
         'fa': '⚙️ تنظیمات VPN'
     },
+    'vpn_set_notification_status': {
+        'en': 'Select Notification Status:'
+              '\n\nGet notification after:'
+              '\nusing {0}% of traffic'
+              '\n{1} days before service expiration',
+        'fa': 'وضعیت نوتیفیکیشن را مشخص کنید:'
+              '\n\nدریافت نوتیفیکین در:'
+              '\nبعد مصرف {0}% حجم سرویس'
+              '\n{1} روز قبل از تاریخ اتمام سرویس'
+    },
 
 }
 

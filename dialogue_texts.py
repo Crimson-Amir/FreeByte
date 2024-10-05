@@ -161,16 +161,6 @@ text_transaction = {
         'en': 'Select the category fot view info:',
         'fa': 'برای مشاهده جزئیات، دسته بندی مورد نظر را انتخاب کنید:'
     },
-    'vpn_set_notification_status': {
-        'en': 'Select Notification Status:'
-              '\n\nGet notification after:'
-              '\nusing {0}% of traffic'
-              '\n{1} days before service expiration',
-        'fa': 'وضعیت نوتیفیکیشن را مشخص کنید:'
-              '\n\nدریافت نوتیفیکین در:'
-              '\nمصرف {0}% حجم سرویس'
-              '\n{1} روز قبل از تاریخ اتمام سرویس'
-    },
     'config_applied_successfully': {
         'en': 'config applied successfully✅',
         'fa': 'تنظیمات با موفقیت اعمال شد✅'
