@@ -33,7 +33,7 @@ class UserConfig(Base):
     traffic_notification_percent = Column(Integer, default=85)
     period_notification_day = Column(Integer, default=3)
 
-    chat_id = Column(BigInteger, ForeignKey('UserDetail.chat_id'))
+    chat_id = Column(BigInteger, ForeignKey('UserDetail.chat_id'), unique=True)
     owner = relationship("UserDetail", back_populates="config")
 
 

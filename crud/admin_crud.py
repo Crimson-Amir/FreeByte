@@ -2,7 +2,7 @@ import models_sqlalchemy as model
 from sqlalchemy import update, func, desc
 
 def get_admins(session):
-    return session.query(model.UserDetail).where(model.UserDetail.config.user_level >= 10).all()
+    return session.query(model.UserDetail).join(model.UserConfig).filter(model.UserConfig.user_level >= 10).all()
 
 def add_product(session, active, product_name, main_server_id):
     user = model.Product(
