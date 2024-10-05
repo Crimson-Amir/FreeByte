@@ -36,7 +36,7 @@ async def user_language_setting(update, context):
 
             languages = {
                 'fa':  '🇮🇷 فارسی',
-                'en': '🇺🇸 english',
+                'en': '🇬🇧 english',
             }
 
             keyboard = []
@@ -46,6 +46,7 @@ async def user_language_setting(update, context):
                     continue
                 keyboard.append([InlineKeyboardButton(f"{name}", callback_data=f"set_user_language_on__{language}")])
 
+            keyboard.append([InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='setting_menu')])
             await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
 @handle_error.handle_functions_error
