@@ -48,6 +48,7 @@ if __name__ == '__main__':
     application.add_handler(CallbackQueryHandler(start_reFactore.register_user, pattern='register_user_(.*)'))
     application.add_handler(CallbackQueryHandler(services, pattern='menu_services'))
     application.add_handler(CallbackQueryHandler(start_reFactore.just_for_show, pattern='just_for_show'))
+    application.add_handler(CallbackQueryHandler(start_reFactore.already_on_this, pattern='already_on_this'))
     application.add_handler(CallbackQueryHandler(my_service.my_services, pattern='my_services'))
 
     # Wallet

@@ -54,3 +54,9 @@ async def just_for_show(update, context):
     query = update.callback_query
     ft_instance = FindText(update, context, notify_user=False)
     await query.answer(text=await ft_instance.find_text('just_for_show'))
+
+
+async def already_on_this(update, context):
+    query = update.callback_query
+    ft_instance = FindText(update, context, notify_user=False)
+    await query.answer(text=await ft_instance.find_text('already_on_this'))

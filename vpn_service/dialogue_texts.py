@@ -89,7 +89,7 @@ text_transaction = {
               '\n📊 مصرف {0}% حجم سرویس'
               '\n📅 {1} روز مانده به انقضای سرویس'
     },
-    'android_guide': {
+    'vpn_android_guide': {
         'en': '💡 How to Connect on Android:'
               '\n\nCopy the link provided by the bot, open v2rayNG, tap the + icon, and choose "Import config from clipboard".'
               '\n\n🔄 Use the "Update Subscription" option anytime to get the latest server list.'
@@ -99,7 +99,7 @@ text_transaction = {
               '\n\n🔄 با گزینه "Update Subscription" می‌توانید هر زمان لیست جدید سرورها را دریافت کنید.'
               '\n\n📱 لینک دانلود v2rayNG:'
     },
-    'ios_guide': {
+    'vpn_ios_guide': {
         'en': '💡 How to Connect on iOS:'
               '\n\nStreisand:'
               '\n\nIn the app, tap the + icon, select "Configure Manually", and in the Type section, choose "Subscription".'
@@ -118,7 +118,7 @@ text_transaction = {
               "\n\n🔄 برای آپدیت لینک اشتراکتون به قسمت Configs بروید روی + بالا سمت راست بزنید، سپس گزینه Update all subscriptions را انتخاب کنید."
               '\n\n📱 لینک دانلود:'
     },
-    'windows_guide': {
+    'vpn_windows_guide': {
         'en': '💡 How to Connect on Windows:'
               '\n\nOpen v2rayN, go to "Subscription Group", then "Subscription Group Setting".'
               '\n\nClick "Add", name it as you wish, and paste the subscription link from the bot. Confirm and click "Update Subscription".'
@@ -129,6 +129,10 @@ text_transaction = {
               '\n\nروی "Add" کلیک کرده، نام دلخواه را وارد و لینک اشتراک را از ربات کپی کرده و تایید کنید. سپس "Update Subscription" را بزنید.'
               '\n\n🔄 برای آپدیت لینک، از بخش Subscription Group گزینه "Update Subscription" را انتخاب کنید.'
               '\n\n💻 لینک دانلود v2rayN:'
+    },
+    'online_at': {
+        'en': '🟢 Online At:',
+        'fa': '🟢 آنلاین در:'
     },
 }
 

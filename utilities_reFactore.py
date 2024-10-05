@@ -32,12 +32,15 @@ async def start(update, context, in_new_message=False, raise_error=False):
     ft_instance = FindText(update, context, notify_user=False)
     text = await ft_instance.find_text('start_menu')
     try:
+        link = f'https://t.me/Fensor_bot/?start=ref_{user_detail.id}'
+        invite_text = f'{await ft_instance.find_text("invite_firend")}\n{link}'
+
         main_keyboard = [
             [InlineKeyboardButton(await ft_instance.find_keyboard('menu_services'), callback_data='menu_services')],
             [InlineKeyboardButton(await ft_instance.find_keyboard('wallet'), callback_data='wallet_page'),
              InlineKeyboardButton(await ft_instance.find_keyboard('my_services'), callback_data='my_services')],
             [InlineKeyboardButton(await ft_instance.find_keyboard('setting'), callback_data='setting_menu'),
-             InlineKeyboardButton(await ft_instance.find_keyboard('invite'), callback_data='invite')],
+             InlineKeyboardButton(await ft_instance.find_keyboard('invite'), url=f'https://t.me/share/url?text={invite_text}')],
             [InlineKeyboardButton(await ft_instance.find_keyboard('help_button'), callback_data='guide_menu')],
         ]
 

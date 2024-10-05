@@ -28,17 +28,17 @@ async def vpn_guide(update, context):
     platform = query.data.replace('vpn_guide__', '')
 
     if platform == 'android':
-        text = f"{await ft_instance.find_text('android_guide')}"
+        text = f"{await ft_instance.find_text('vpn_android_guide')}"
         text += '\n\n<a href="https://play.google.com/store/apps/details?id=com.v2ray.ang&hl=en&pli=1">Google Play</a>'
         text += '\n<a href="https://github.com/2dust/v2rayng/releases">GitHub</a>'
 
     elif platform == 'ios':
-        text = f"{await ft_instance.find_text('ios_guide')}"
+        text = f"{await ft_instance.find_text('vpn_ios_guide')}"
         text += '\n\n<a href="https://apps.apple.com/us/app/streisand/id6450534064">Streisand</a>'
         text += '\n<a href="https://apps.apple.com/us/app/v2box-v2ray-client/id6446814690">V2Box</a>'
 
     elif platform == 'windows':
-        text = f"{await ft_instance.find_text('windows_guide')}"
+        text = f"{await ft_instance.find_text('vpn_windows_guide')}"
         text += '\n\n<a href="https://github.com/2dust/v2rayN/releases/download/6.23/v2rayN-With-Core.zip">v2rayN</a>'
 
     else:

@@ -202,6 +202,14 @@ text_transaction = {
         'en': 'Payment Authority:',
         'fa': 'شناسه پرداخت:'
     },
+    'invite_firend': {
+        'en': '🎁 Get 50 ranks as a gift by starting this bot!',
+        'fa': '🎁 با استارت کردن این ربات +50 رتبه هدیه بگیرید!'
+    },
+    'already_on_this': {
+        'en': 'You already on this option!',
+        'fa': 'همین الان روی این گزینه هستید!'
+    },
 }
 
 keyboard_transaction = {
@@ -230,8 +238,8 @@ keyboard_transaction = {
         'fa': 'سرویس‌های من 🎛'
     },
     'invite': {
-        'en': 'Invite',
-        'fa': 'دعوت'
+        'en': 'Invite Firends',
+        'fa': 'دعوت از دوستان'
     },
     'back_button': {
         'en': 'Back ↰',

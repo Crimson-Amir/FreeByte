@@ -58,6 +58,7 @@ async def service_info(update, context):
                 main_server = purchase.product.main_server
                 get_from_server = await panel_api.marzban_api.get_user(main_server.server_ip, purchase.username)
                 expire_date = human_readable(datetime.fromtimestamp(get_from_server.get('expire')), await ft_instance.find_user_language())
+                onlien_at = human_readable(get_from_server.get('online_at'), await ft_instance.find_user_language())
                 used_traffic = round(get_from_server.get('used_traffic') / (1024 ** 3), 2)
                 data_limit = int(get_from_server.get('data_limit') / (1024 ** 3))
 
@@ -72,6 +73,7 @@ async def service_info(update, context):
                 text = (
                     f"<b>{await ft_instance.find_text('vpn_selected_service_info')}</b>"
                     f"\n\n{await ft_instance.find_text('vpn_service_name')} {purchase.username}"
+                    f"\n\n{await ft_instance.find_text('online_at')} {onlien_at}"
                     f"\n{await ft_instance.find_text('vpn_service_status')} {service_status.get(get_from_server.get('status'))}"
                     f"\n{await ft_instance.find_text('vpn_expire_date')} {expire_date}"
                     f"\n{await ft_instance.find_text('vpn_traffic_use')} {used_traffic}/{data_limit}GB"
