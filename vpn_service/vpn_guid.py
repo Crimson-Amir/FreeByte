@@ -11,8 +11,8 @@ async def guide_menu(update, context):
 
     keyboard = [
         [InlineKeyboardButton(await ft_instance.find_keyboard('android_lable'), callback_data='vpn_guid__android'),
-         InlineKeyboardButton(await ft_instance.find_keyboard('ios_lable'), callback_data='vpn_guid__iphone')],
-        [InlineKeyboardButton(await ft_instance.find_keyboard('windows_lable'), callback_data='vpn_guid__android'),
+         InlineKeyboardButton(await ft_instance.find_keyboard('ios_lable'), callback_data='vpn_guid__ios')],
+        [InlineKeyboardButton(await ft_instance.find_keyboard('windows_lable'), callback_data='vpn_guid__windows'),
          InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='guide_menu')]
     ]
 
