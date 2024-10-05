@@ -49,7 +49,7 @@ async def service_info(update, context):
     purchase_id = query.data.replace('vpn_my_service_detail__', '')
 
     try:
-        with SessionLocal() as session:
+        with (SessionLocal() as session):
             with session.begin():
                 purchase = vpn_crud.get_purchase(session, purchase_id)
                 if not purchase:
@@ -58,7 +58,10 @@ async def service_info(update, context):
                 main_server = purchase.product.main_server
                 get_from_server = await panel_api.marzban_api.get_user(main_server.server_ip, purchase.username)
                 expire_date = human_readable(datetime.fromtimestamp(get_from_server.get('expire')), await ft_instance.find_user_language())
-                onlien_at = human_readable(get_from_server.get('online_at'), await ft_instance.find_user_language())
+
+                onlien_at = human_readable(get_from_server.get('online_at'), await ft_instance.find_user_language()) \
+                if get_from_server.get('online_at') else await ft_instance.find_text('not_connected_yet')
+
                 used_traffic = round(get_from_server.get('used_traffic') / (1024 ** 3), 2)
                 data_limit = int(get_from_server.get('data_limit') / (1024 ** 3))
 

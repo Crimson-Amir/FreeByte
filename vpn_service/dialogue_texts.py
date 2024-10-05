@@ -134,6 +134,10 @@ text_transaction = {
         'en': '🟢 Online At:',
         'fa': '🟢 آنلاین در:'
     },
+    'not_connected_yet': {
+        'en': 'Not Connected Yet',
+        'fa': 'هنوز متصل نشده است'
+    },
 }
 
 keyboard_transaction = {
