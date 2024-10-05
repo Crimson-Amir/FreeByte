@@ -1,7 +1,7 @@
 import logging
 from database_sqlalchemy import SessionLocal
 import models_sqlalchemy as model
-from sqlalchemy import update, func, desc
+from sqlalchemy import update, func, desc, or_
 
 def get_user(session, chat_id):
     return session.query(model.UserDetail).filter_by(chat_id=chat_id).first()
@@ -35,15 +35,26 @@ def get_financial_report_by_id(session, financial_id):
 def get_financial_report_by_authority(session, authority):
     return session.query(model.FinancialReport).where(model.FinancialReport.authority == authority).first()
 
-def get_financial_reports(session, chat_id, limit=5, only_paid_financial=False):
+
+
+def get_financial_reports(session, chat_id, offset, limit=5, only_paid_financial=False):
     financial_reports = session.query(model.FinancialReport)
+
     if only_paid_financial:
-        financial_reports = financial_reports.where(
-            model.FinancialReport.payment_status == 'paid',
-            model.FinancialReport.payment_status == 'refund'
+        financial_reports = financial_reports.filter(
+            or_(
+                model.FinancialReport.payment_status == 'paid',
+                model.FinancialReport.payment_status == 'refund'
+            )
         )
-    financial_reports = financial_reports.filter_by(chat_id=chat_id).order_by(desc(model.FinancialReport.financial_id)).limit(limit).all()
+
+    financial_reports = financial_reports.filter_by(chat_id=chat_id).order_by(desc(model.FinancialReport.financial_id)).limit(limit).offset(offset).all()
     return financial_reports
+
+def get_total_financial_reports(session, chat_id):
+    financial_reports_count = session.query(model.FinancialReport).filter_by(chat_id=chat_id).count()
+    return financial_reports_count
+
 
 def create_user(user_detail, inviter_user_id, selected_language):
     with SessionLocal() as session:

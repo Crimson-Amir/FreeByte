@@ -59,11 +59,11 @@ async def financial_transactions_wallet(update, context):
 
     try:
         with SessionLocal() as session:
-            total_reports = crud.get_financial_reports(session, chat_id)
+            total_reports = crud.get_total_financial_reports(session, chat_id)
             total_pages = (total_reports + items_per_page - 1) // items_per_page
 
             offset = (page - 1) * items_per_page
-            get_financial_reports = crud.get_financial_reports(session, chat_id, items_per_page, offset)
+            get_financial_reports = crud.get_financial_reports(session, chat_id, offset, items_per_page)
 
             if get_financial_reports:
                 lasts_report = await ft_instance.find_text('recent_transactions') + '\n'
