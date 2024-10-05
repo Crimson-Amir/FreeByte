@@ -76,6 +76,10 @@ text_transaction = {
         'en': 'Service deleted successfully ✅',
         'fa': 'سرویس با موفقیت حذف شد✅'
     },
+    'vpn_setting_section_lable': {
+        'en': '⚙️ VPN settings',
+        'fa': '⚙️ تنظیمات VPN'
+    },
 
 }
 

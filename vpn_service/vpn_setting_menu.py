@@ -41,8 +41,9 @@ async def handle_vpn_notification(update, context):
         traffic_percent = max(min(int(traffic_percent_callback), 5), 95)
         period_percent = max(min(int(period_percent_callback), 1), 10)
 
-    text = await ft_instance.find_text('vpn_set_notification_status')
-    text = text.format(traffic_percent, period_percent)
+    show_status_text = await ft_instance.find_text('vpn_set_notification_status')
+    show_status_text = show_status_text.format(traffic_percent, period_percent)
+    text = f"<b>{await ft_instance.find_text('vpn_setting_section_lable')}</b>\n\n{show_status_text}"
 
     keyboard = [
         [InlineKeyboardButton("➖", callback_data=f"vpn_set_notification_period_traffic__{period_percent}__{traffic_percent - 5}"),
