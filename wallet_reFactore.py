@@ -93,13 +93,14 @@ async def financial_transactions_wallet(update, context):
 
             keyboard = [
                 [InlineKeyboardButton(await ft_instance.find_keyboard('refresh'), callback_data='financial_transactions_wallet')],
-                [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='wallet_page')]
             ]
 
             if page > 1:
                 keyboard.append([InlineKeyboardButton('⬅️ Previous', callback_data=f'financial_transactions_wallet_{page - 1}')])
             if page < total_pages:
                 keyboard.append([InlineKeyboardButton('Next ➡️', callback_data=f'financial_transactions_wallet_{page + 1}')])
+
+            keyboard.append([InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='wallet_page')])
 
             text_ = f"\n\n{lasts_report}"
             await query.edit_message_text(text=text_, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
