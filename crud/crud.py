@@ -37,7 +37,7 @@ def get_financial_report_by_authority(session, authority):
 
 
 
-def get_financial_reports(session, chat_id, offset, limit=5, only_paid_financial=False):
+def get_financial_reports(session, chat_id, offset, limit=5, only_paid_financial=True):
     financial_reports = session.query(model.FinancialReport)
 
     if only_paid_financial:
