@@ -44,8 +44,12 @@ text_transaction = {
         'fa': '🌐 آدرس سرویس:'
     },
     'vpn_selected_service_info': {
-        'en': 'ℹ️ Selected Service for more Info:',
-        'fa': 'ℹ️ سرویس مورد نظر را انتخاب کنید تا جزئیات آن را مشاهده کنید:'
+        'en': 'ℹ️ Selected Service Info:',
+        'fa': 'ℹ️ جزئیات سرویس مورد نظر:'
+    },
+    'vpn_selected_service_advanced_info': {
+        'en': '⚙️ Selected Service Advanced Info:',
+        'fa': '⚙️ جزئیات پیشرفته سرویس مورد نظر:'
     },
     'vpn_service_active': {
         'en': '✅ Active',
@@ -138,6 +142,22 @@ text_transaction = {
         'en': 'Not Connected Yet',
         'fa': 'هنوز متصل نشده است'
     },
+    'vpn_used_traffic': {
+        'en': 'Used Traffic:',
+        'fa': 'ترافیک مصرف شده:'
+    },
+    'vpn_total_traffic': {
+        'en': 'Total Traffic:',
+        'fa': 'ترافیک کل:'
+    },
+    'vpn_lifetime_used_traffic': {
+        'en': 'Lifetime Used Traffic:',
+        'fa': 'ترافیک مصرف شده از ابتدا:'
+    },
+    'created_at': {
+        'en': 'Created At:',
+        'fa': 'ساخته شده در:'
+    },
 }
 
 keyboard_transaction = {
@@ -196,5 +216,9 @@ keyboard_transaction = {
     'windows_lable': {
         'en': '💻 Windows',
         'fa': '💻 ویندوز'
+    },
+    'vpn_advanced_options': {
+        'en': 'Advanced options ⥣',
+        'fa': 'گزینه های پیشرفته ⥣'
     },
 }
