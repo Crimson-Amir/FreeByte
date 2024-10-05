@@ -78,7 +78,6 @@ async def financial_transactions_wallet(update, context):
                     lasts_report += f"\n{payment_status.get(report.register_date.replace(microsecond=0), '')}"
                     lasts_report += f"\n{payment_status.get(report.payment_status, '')}"
                     lasts_report += f"\n{payment_action.get(report.action, '')} {report.id_holder}"
-                    lasts_report += f"\n{payment_action.get(report.action, '')} {report.id_holder}"
             else:
                 lasts_report = await ft_instance.find_text('no_transaction_yet')
 
