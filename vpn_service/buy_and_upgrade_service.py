@@ -6,7 +6,7 @@ import requests.exceptions
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from utilities_reFactore import FindText, message_token, handle_error, report_to_admin
-from crud import vpn_crud
+from crud import vpn_crud, crud
 from vpn_service import panel_api, vpn_utilities
 from database_sqlalchemy import SessionLocal
 
@@ -199,3 +199,49 @@ async def handle_http_error(purchase, main_server_ip, purchase_id, original_erro
         raise e from original_error
 
     raise original_error
+
+
+@handle_error.handle_functions_error
+@message_token.check_token
+async def recive_test_service_info(update, context):
+    query = update.callback_query
+    ft_instance = FindText(update, context)
+    traffic, period, inbound_id = 1, 7, 1
+    user = update.effective_chat
+
+    with SessionLocal() as session:
+        with session.begin():
+            config = crud.get_user_config(session, user.id)
+
+            if config.get_vpn_free_service:
+                text = f"{await ft_instance.find_text('vpn_you_already_recive_this_service')}"
+                return await query.answer(text=text)
+
+            text = f"{await ft_instance.find_text('vpn_test_sevice_test')}"
+            text.format(traffic, period)
+
+            keyboard = [
+                [InlineKeyboardButton(await ft_instance.find_keyboard('recive_service'), callback_data=f'vpn_recive_test__{traffic}__{period}__{inbound_id}')],
+                [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='start')]
+            ]
+
+            await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+
+
+@handle_error.handle_functions_error
+@message_token.check_token
+async def recive_test_service(update, context):
+    query = update.callback_query
+    ft_instance = FindText(update, context)
+    user = update.effective_chat
+    product_id, traffic, period = query.data.replace('vpn_recive_test__', '')
+
+    text = f"{await ft_instance.find_text('vpn_test_sevice_test')}"
+    with SessionLocal() as session:
+        with session.begin():
+            purchase = crud.create_purchase(session, product_id, user.id, traffic, period)
+            service_id = purchase.purchase_id
+            await create_service_for_user(update, context, session, service_id)
+            crud.update_user_config(session, user.id, get_vpn_free_service=True)
+
+    await query.answer(text=text)

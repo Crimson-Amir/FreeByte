@@ -274,8 +274,8 @@ keyboard_transaction = {
         'fa': 'تازه‌سازی ⟳'
     },
     'buy_vpn_service_label': {
-        'en': 'Buy VPN Service',
-        'fa': 'خرید سرویس VPN'
+        'en': '🛍️ Buy VPN Service',
+        'fa': '🛍️ خرید سرویس VPN'
     },
     'vpn_services_label': {
         'en': 'VPN Services',
@@ -332,7 +332,16 @@ keyboard_transaction = {
     'next': {
         'en': 'Next ➡️',
         'fa': 'بعدی ➡️'
-    }
+    },
+    'recive_service': {
+        'en': 'Recive Service ↧',
+        'fa': 'دریافت سرویس ↧'
+    },
+    'get_vpn_test_label': {
+        'en': '🎁 Get VPN Test Service',
+        'fa': '🎁 دریافت سرویس تست VPN'
+    },
+
 }
 
 text_transaction.update(vpn_service_dialogues.text_transaction)

@@ -172,6 +172,8 @@ async def service_advanced_options(update, context):
                 main_server = purchase.product.main_server
                 get_from_server = await panel_api.marzban_api.get_user(main_server.server_ip, purchase.username)
 
+                context.bot.user_data[f'{purchase_id}_configs'] = get_from_server.get('links')
+
                 used_traffic = round(get_from_server.get('used_traffic') / (1024 ** 3), 3)
                 data_limit = round(get_from_server.get('data_limit') / (1024 ** 3), 3)
                 lifetime_used_traffic = round(get_from_server.get('lifetime_used_traffic') / (1024 ** 3), 3)
@@ -201,6 +203,7 @@ async def service_advanced_options(update, context):
                 )
 
                 keyboard = [
+                    [InlineKeyboardButton(await ft_instance.find_keyboard('vpn_get_configs'), callback_data=f'vpn_get_configs_separately__{purchase_id}')],
                     [InlineKeyboardButton(await ft_instance.find_keyboard('refresh'), callback_data=f'vpn_advanced_options__{purchase_id}')],
                     [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=f'vpn_my_service_detail__{purchase.purchase_id}')]
                 ]
@@ -214,3 +217,28 @@ async def service_advanced_options(update, context):
 
     except Exception as e:
         raise e
+
+@handle_error.handle_functions_error
+@message_token.check_token
+async def get_configs_separately(update, context):
+    query = update.callback_query
+    ft_instance = FindText(update, context)
+    purchase_id = int(query.data.replace('vpn_get_configs_separately__', ''))
+    get_configs = context.bot.user_data[f'{purchase_id}_configs']
+    configs_text = ''
+
+    if get_configs:
+        pass
+    else:
+        with SessionLocal() as session:
+            with session.begin():
+                purchase = vpn_crud.remove_purchase(session, purchase_id)
+                main_server_ip = purchase.product.main_server.server_ip
+                get_from_server = await panel_api.marzban_api.get_user(main_server_ip, purchase.username)
+                get_configs = get_from_server.get('links')
+
+        for config in get_configs:
+            configs_text += f'\n\n<code>{config}</code>'
+
+    keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=f'vpn_advanced_options__{purchase_id}')]]
+    await query.edit_message_text(text=configs_text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))

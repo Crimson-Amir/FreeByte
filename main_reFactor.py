@@ -6,6 +6,8 @@ from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, Callb
 import setting, wallet_reFactore, my_service, setting_menu, guidnes_and_support
 from vpn_service import buy_and_upgrade_service, my_service_detail, vpn_setting_menu, vpn_guid
 from admin import admin_page, vpn_admin
+from database_sqlalchemy import SessionLocal
+from crud import crud
 
 logging.basicConfig(
     level=logging.INFO,
@@ -26,11 +28,19 @@ sys.excepthook = log_uncaught_exceptions
 async def services(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ft_instance = FindText(update, context)
     text = await ft_instance.find_text('select_section')
-    main_keyboard = [
-        [InlineKeyboardButton(await ft_instance.find_keyboard('buy_vpn_service_label'), callback_data='vpn_set_period_traffic__30_40')],
-        [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='start')]
-    ]
-    return await update.callback_query.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(main_keyboard), parse_mode='html')
+    user = update.effective_chat
+
+    with SessionLocal() as session:
+        config = crud.get_user_config(session, user.id)
+
+        keyboard = [
+            [InlineKeyboardButton(await ft_instance.find_keyboard('buy_vpn_service_label'), callback_data='vpn_set_period_traffic__30_40'),
+            InlineKeyboardButton(await ft_instance.find_keyboard('get_vpn_test_label'), callback_data='vpn_recive_test_service') if config.get_vpn_free_service else None],
+            [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='start')]
+        ]
+
+        keyboard = [list(filter(None, row)) for row in keyboard]
+        return await update.callback_query.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
 
 
 
@@ -68,6 +78,10 @@ if __name__ == '__main__':
     application.add_handler(CallbackQueryHandler(my_service_detail.ask_remove_service_for_user, pattern='vpn_remove_service_ask__(.*)'))
     application.add_handler(CallbackQueryHandler(my_service_detail.remove_service_for_user, pattern='vpn_remove_service__(.*)'))
     application.add_handler(CallbackQueryHandler(my_service_detail.service_advanced_options, pattern='vpn_advanced_options__(.*)'))
+    application.add_handler(CallbackQueryHandler(my_service_detail.get_configs_separately, pattern='vpn_get_configs_separately__(.*)'))
+    application.add_handler(CallbackQueryHandler(buy_and_upgrade_service.recive_test_service_info, pattern='vpn_recive_test_service'))
+    application.add_handler(CallbackQueryHandler(buy_and_upgrade_service.recive_test_service, pattern='vpn_recive_test__(.*)'))
+
 
     # Admin
     application.add_handler(CallbackQueryHandler(admin_page.admin_page, pattern='admin_page'))

@@ -83,6 +83,10 @@ text_transaction = {
         'en': '⚙️ VPN Settings',
         'fa': '⚙️ تنظیمات VPN'
     },
+    'vpn_get_configs': {
+        'en': 'Get Configs Separately',
+        'fa': 'دریافت سرویس ها به صورت جداگانه'
+    },
     'vpn_set_notification_status': {
         'en': '🔔 Choose Notification Preferences:'
               '\n\nYou will receive notifications after:'
@@ -157,6 +161,18 @@ text_transaction = {
     'created_at': {
         'en': 'Created At:',
         'fa': 'ساخته شده در:'
+    },
+    'vpn_test_sevice_test': {
+        'en': '🎁 You can get free service for test our quality.'
+              '\n\nTraffic: {0} GB'
+              '\nPeriod Time: {1}Days',
+        'fa': '🎁 شما میتوانید برای بررسی کیفیت، یک بار سرویس تست تهیه کنید.'
+              '\n\nترافیک: {0} گیگابایت'
+              '\nدوره زمانی: {1} روز'
+    },
+    'vpn_you_already_recive_this_service': {
+        'en': 'You Already Recive This Service!',
+        'fa': 'شما قبلا این سرویس رو دریافت کردید!'
     },
 }
 
