@@ -16,7 +16,6 @@ class UserDetail(Base):
     username = Column(String, unique=True)
     chat_id = Column(BigInteger, unique=True, nullable=False)
     language = Column(String, default='fa')
-    free_service = Column(Boolean, default=False)
     wallet = Column(Integer, default=0)
     invited_by = Column(BigInteger, ForeignKey('UserDetail.chat_id'))
     register_date = Column(DateTime, default=datetime.now())
@@ -32,6 +31,7 @@ class UserConfig(Base):
     user_level = Column(Integer, default=1)
     traffic_notification_percent = Column(Integer, default=85)
     period_notification_day = Column(Integer, default=3)
+    get_vpn_free_service = Column(Boolean, default=False)
 
     chat_id = Column(BigInteger, ForeignKey('UserDetail.chat_id'), unique=True)
     owner = relationship("UserDetail", back_populates="config")

@@ -9,6 +9,16 @@ def get_user(session, chat_id):
 def get_user_config(session, chat_id):
     return session.query(model.UserConfig).filter_by(chat_id=chat_id).first()
 
+def update_user(session, chat_id: int, **kwargs):
+    stmt = (
+        update(model.UserDetail)
+        .where(model.UserDetail.chat_id == chat_id)
+        .values(
+            **kwargs
+        )
+    )
+    session.execute(stmt)
+
 def update_user_config(session, chat_id: int, **kwargs):
     stmt = (
         update(model.UserConfig)

@@ -81,11 +81,11 @@ text_transaction = {
         'fa': '⚙️ تنظیمات VPN'
     },
     'vpn_set_notification_status': {
-        'en': 'Select Notification Status:'
+        'en': '🔔 Select Service Notification Status:'
               '\n\nGet notification after:'
               '\nusing {0}% of traffic'
               '\n{1} days before service expiration',
-        'fa': 'وضعیت نوتیفیکیشن را مشخص کنید:'
+        'fa': '🔔 وضعیت نوتیفیکیشن سرویس را مشخص کنید:'
               '\n\nدریافت نوتیفیکین در:'
               '\nبعد مصرف {0}% حجم سرویس'
               '\n{1} روز قبل از تاریخ اتمام سرویس'
@@ -135,7 +135,7 @@ keyboard_transaction = {
         'fa': 'حذف سرویس ⇣'
     },
     'vpn_notification_setting': {
-        'en': 'Change Notification Stauts',
-        'fa': 'تغییر وضعیت نوتیفیکیشن'
+        'en': '🔔 Notification Setting',
+        'fa': '🔔 تنظیمات نوتیفیکیشن'
     },
 }

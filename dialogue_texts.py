@@ -165,6 +165,10 @@ text_transaction = {
         'en': 'config applied successfully✅',
         'fa': 'تنظیمات با موفقیت اعمال شد✅'
     },
+    'please_select_your_language': {
+        'en': '🌎 Please select your language:',
+        'fa': '🌎 لطفا زبان خود را انتخاب کنید:'
+    },
 }
 
 keyboard_transaction = {
@@ -190,7 +194,7 @@ keyboard_transaction = {
     },
     'my_services': {
         'en': 'My Services 🎛',
-        'fa': '🎛 سرویس‌های ‌من'
+        'fa': 'سرویس‌های ‌من 🎛'
     },
     'invite': {
         'en': 'invite',
@@ -271,8 +275,11 @@ keyboard_transaction = {
     'no': {
         'en': 'No',
         'fa': 'خیر'
+    },
+    'change_language_setting': {
+        'en': 'Change Language 🌎',
+        'fa': 'تغییر زبان 🌎'
     }
-
 }
 
 text_transaction.update(vpn_service_dialogues.text_transaction)
