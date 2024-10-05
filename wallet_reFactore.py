@@ -82,7 +82,7 @@ async def financial_transactions_wallet(update, context):
                     payment_gateway = {
                         'zarinpal': await ft_instance.find_text('zarinpal_label'),
                         'cryptomus': await ft_instance.find_text('cryptomus_label'),
-                        'wallet': await ft_instance.find_text('pay_with_wallet_balance'),
+                        'wallet': await ft_instance.find_keyboard('pay_with_wallet_balance'),
                     }
                     lasts_report += f"\n\n{await ft_instance.find_text('receive_money') if report.operation in ['recive', 'refund'] else await ft_instance.find_text('spend_money')} <code>{report.amount:,}</code> {await ft_instance.find_text('irt')} | "
                     lasts_report += f"{report.register_date.date()}"
