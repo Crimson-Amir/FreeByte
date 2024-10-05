@@ -94,9 +94,9 @@ async def financial_transactions_wallet(update, context):
             keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('refresh'), callback_data='financial_transactions_wallet_1')],]
 
             if page > 1:
-                keyboard.append([InlineKeyboardButton(f'⬅️ {await ft_instance.find_keyboard("previous")}', callback_data=f'financial_transactions_wallet_{page - 1}')])
+                keyboard.append([InlineKeyboardButton(f'{await ft_instance.find_keyboard("previous")}', callback_data=f'financial_transactions_wallet_{page - 1}')])
             if page < total_pages:
-                keyboard.append([InlineKeyboardButton(f'{await ft_instance.find_keyboard("next")} ➡️', callback_data=f'financial_transactions_wallet_{page + 1}')])
+                keyboard.append([InlineKeyboardButton(f'{await ft_instance.find_keyboard("next")}', callback_data=f'financial_transactions_wallet_{page + 1}')])
 
             keyboard.append([InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='wallet_page')])
 

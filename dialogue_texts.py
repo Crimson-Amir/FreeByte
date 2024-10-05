@@ -318,12 +318,12 @@ keyboard_transaction = {
         'fa': 'راهنمای VPN'
     },
     'previous': {
-        'en': 'Previous',
-        'fa': 'قبلی'
+        'en': '⬅️ Previous',
+        'fa': '⬅️ قبلی'
     },
     'next': {
-        'en': 'Next',
-        'fa': 'بعدی'
+        'en': 'Next ➡️',
+        'fa': 'بعدی ➡️'
     }
 }
 
