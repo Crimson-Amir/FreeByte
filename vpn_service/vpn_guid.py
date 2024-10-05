@@ -10,9 +10,9 @@ async def guide_menu(update, context):
     text = f"{await ft_instance.find_text('select_section')}"
 
     keyboard = [
-        [InlineKeyboardButton(await ft_instance.find_keyboard('android_lable'), callback_data='vpn_guid__android'),
-         InlineKeyboardButton(await ft_instance.find_keyboard('ios_lable'), callback_data='vpn_guid__ios')],
-        [InlineKeyboardButton(await ft_instance.find_keyboard('windows_lable'), callback_data='vpn_guid__windows'),
+        [InlineKeyboardButton(await ft_instance.find_keyboard('android_lable'), callback_data='vpn_guide__android'),
+         InlineKeyboardButton(await ft_instance.find_keyboard('ios_lable'), callback_data='vpn_guide__ios')],
+        [InlineKeyboardButton(await ft_instance.find_keyboard('windows_lable'), callback_data='vpn_guide__windows'),
          InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='guide_menu')]
     ]
 
@@ -25,7 +25,7 @@ async def vpn_guide(update, context):
 
     query = update.callback_query
     ft_instance = FindText(update, context)
-    platform = query.data.replace('vpn_guid__', '')
+    platform = query.data.replace('vpn_guide__', '')
 
     if platform == 'android':
         text = f"{await ft_instance.find_text('android_guide')}"
