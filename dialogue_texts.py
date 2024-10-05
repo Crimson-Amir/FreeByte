@@ -7,7 +7,7 @@ text_transaction = {
         'fa': 'ببخشید، مشکلی وجود داشت!'
     },
     'start_menu': {
-        'en': 'Hi, welcome to DataGuardian Bot.',
+        'en': 'Hi, welcome to FreeByte Bot.',
         'fa': 'درود، به ربات فری بایت خوش آمدید!'
     },
     'select_section': {
@@ -241,8 +241,8 @@ keyboard_transaction = {
         'fa': 'سرویس VPN'
     },
     'vpn_setting_lable': {
-        'en': 'VPN service Setting',
-        'fa': 'تنظیمات سرویس VPN'
+        'en': 'VPN Setting',
+        'fa': 'تنظیمات VPN'
     },
     'iran_payment_getway': {
         'en': 'Iran Payment Getway',
