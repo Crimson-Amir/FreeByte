@@ -52,7 +52,11 @@ def get_financial_reports(session, chat_id, offset, limit=5, only_paid_financial
     return financial_reports
 
 def get_total_financial_reports(session, chat_id):
-    financial_reports_count = session.query(model.FinancialReport).filter_by(chat_id=chat_id).count()
+    financial_reports_count = session.query(model.FinancialReport).filter(
+            or_(
+                model.FinancialReport.payment_status == 'paid',
+                model.FinancialReport.payment_status == 'refund'
+            )).filter_by(chat_id=chat_id).count()
     return financial_reports_count
 
 
