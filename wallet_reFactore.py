@@ -17,7 +17,7 @@ async def wallet_page(update, context):
     try:
         with SessionLocal() as session:
             get_user = crud.get_user(session, chat_id)
-            get_financial_reports = crud.get_financial_reports(session, chat_id, 5, True)
+            get_financial_reports = crud.get_financial_reports(session, chat_id, 0, 5, True)
 
             last_transaction = await ft_instance.find_text('no_transaction_yet')
             lasts_report = ''
