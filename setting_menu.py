@@ -58,7 +58,9 @@ async def change_user_language(update, context):
 
     with SessionLocal() as session:
         with session.begin():
-            crud.update_user_config(session, user_detail.id, language=user_new_language)
+            crud.update_user(session, user_detail.id, language=user_new_language)
+            context.user_data['user_language'] = user_new_language
+
 
     await query.answer(await ft_instance.find_text('config_applied_successfully'))
     return await user_language_setting(update, context)
