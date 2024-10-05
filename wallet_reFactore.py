@@ -91,9 +91,7 @@ async def financial_transactions_wallet(update, context):
             else:
                 lasts_report = await ft_instance.find_text('no_transaction_yet')
 
-            keyboard = [
-                [InlineKeyboardButton(await ft_instance.find_keyboard('refresh'), callback_data='financial_transactions_wallet')],
-            ]
+            keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('refresh'), callback_data='financial_transactions_wallet_1')],]
 
             if page > 1:
                 keyboard.append([InlineKeyboardButton('⬅️ Previous', callback_data=f'financial_transactions_wallet_{page - 1}')])
