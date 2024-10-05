@@ -100,7 +100,7 @@ text_transaction = {
     },
     'zarinpal_payment_gateway_body': {
         'en': 'By clicking below, you’ll be transferred to the payment page. Please don’t close the page until the process completes.',
-        'fa': 'با کلیک روی دکمه پایین به صفحه پرداخت منتقل می‌شوید. لطفاً تا پایان فرآیند پرداخت صبور باشید و از بستن صفحه خودداری کنید.'
+        'fa': 'با کلیک روی دکمه پایین به صفحه پرداخت منتقل می‌شوید.\n لطفاً تا پایان فرآیند پرداخت صبور باشید و از بستن صفحه خودداری کنید.'
     },
     'payment_gateway_tail': {
         'en': '• Your transaction will be processed automatically after payment.',
