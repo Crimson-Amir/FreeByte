@@ -31,7 +31,7 @@ async def wallet_page(update, context):
             keyboard = [
                 [InlineKeyboardButton(await ft_instance.find_keyboard('refresh'), callback_data='wallet_page'),
                  InlineKeyboardButton(await ft_instance.find_keyboard('increase_balance'), callback_data='buy_credit_volume')],
-                [InlineKeyboardButton(await ft_instance.find_keyboard('financial_transactions'), callback_data='financial_transactions_wallet')],
+                [InlineKeyboardButton(await ft_instance.find_keyboard('financial_transactions'), callback_data='financial_transactions_wallet_1')],
                 [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='start')]]
 
             text = (
@@ -53,16 +53,15 @@ async def wallet_page(update, context):
 async def financial_transactions_wallet(update, context):
     query = update.callback_query
     chat_id = update.effective_chat.id
-    page = int(query.data.split('_')[-1])  # Get the current page from the callback data
+    page = int(query.data.split('_')[-1])
     items_per_page = 10
     ft_instance = FindText(update, context)
 
     try:
         with SessionLocal() as session:
-            total_reports = crud.get_financial_reports(session, chat_id)  # این تابع باید تعداد کل فاکتورها را برگرداند
-            total_pages = (total_reports + items_per_page - 1) // items_per_page  # محاسبه تعداد کل صفحات
+            total_reports = crud.get_financial_reports(session, chat_id)
+            total_pages = (total_reports + items_per_page - 1) // items_per_page
 
-            # محاسبه offset برای دریافت فاکتورها بر اساس صفحه
             offset = (page - 1) * items_per_page
             get_financial_reports = crud.get_financial_reports(session, chat_id, items_per_page, offset)
 
@@ -92,13 +91,11 @@ async def financial_transactions_wallet(update, context):
             else:
                 lasts_report = await ft_instance.find_text('no_transaction_yet')
 
-            # ایجاد دکمه‌های صفحه‌بندی
             keyboard = [
                 [InlineKeyboardButton(await ft_instance.find_keyboard('refresh'), callback_data='financial_transactions_wallet')],
                 [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='wallet_page')]
             ]
 
-            # دکمه‌های صفحه‌بندی
             if page > 1:
                 keyboard.append([InlineKeyboardButton('⬅️ Previous', callback_data=f'financial_transactions_wallet_{page - 1}')])
             if page < total_pages:
