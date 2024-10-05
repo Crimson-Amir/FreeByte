@@ -12,7 +12,7 @@ async def setting_menu(update, context):
     query = update.callback_query
     ft_instance = FindText(update, context)
 
-    text = f"<b>{await ft_instance.find_text('vpn_setting_section_lable')}</b>\n\n{await ft_instance.find_text('select_section')}"
+    text = await ft_instance.find_text('select_section')
 
     keyboard = [
         [InlineKeyboardButton(await ft_instance.find_keyboard('vpn_notification_setting'), callback_data='vpn_set_notification_period_traffic__db')],

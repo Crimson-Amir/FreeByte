@@ -44,8 +44,8 @@ text_transaction = {
         'fa': '🌐 آدرس سرویس:'
     },
     'vpn_selected_service_info': {
-        'en': 'ℹ️ Selected Service Info:',
-        'fa': 'ℹ️ اطلاعات سرویس انتخاب شده:'
+        'en': 'ℹ️ Selected Service for more Info:',
+        'fa': 'ℹ️ سرویس مورد نظر را انتخاب کنید تا جزئیات آن را مشاهده کنید:'
     },
     'vpn_service_active': {
         'en': '✅ Active',

@@ -33,6 +33,7 @@ async def services(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return await update.callback_query.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(main_keyboard), parse_mode='html')
 
 
+
 if __name__ == '__main__':
     application = ApplicationBuilder().token(setting.telegram_bot_token).build()
 

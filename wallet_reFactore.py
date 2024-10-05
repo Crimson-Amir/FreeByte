@@ -187,7 +187,7 @@ async def pay_by_zarinpal(update, context):
             )
 
             if not create_zarinpal_invoice:
-                return await query.answer(await ft_instance.find_text('fail_to_create_payment_getway'), show_alert=True)
+                return await query.answer(await ft_instance.find_text('fail_to_create_payment_gateway'), show_alert=True)
 
             crud.update_financial_report(
                 session, get_financial.financial_id,
@@ -205,7 +205,7 @@ async def pay_by_zarinpal(update, context):
             text = (
                 f"<b>{await ft_instance.find_text('payment_gateway_title')}</b>"
                 f"\n{await ft_instance.find_text('zarinpal_payment_gateway_body')}"
-                f"\n\n{await ft_instance.find_text('payment_gateway_lable')} {await ft_instance.find_text('zarinpal_lable')}"
+                f"\n\n{await ft_instance.find_text('payment_gateway_label')} {await ft_instance.find_text('zarinpal_label')}"
                 f"\n{await ft_instance.find_text('price')} {get_financial.amount:,} {await ft_instance.find_text('irt')}"
                 f"\n\n<b>{await ft_instance.find_text('payment_gateway_tail')}</b>"
             )
@@ -259,7 +259,7 @@ async def pay_by_cryptomus(update, context):
             text = (
                 f"<b>{await ft_instance.find_text('payment_gateway_title')}</b>"
                 f"\n{await ft_instance.find_text('cryptomus_payment_gateway_body')}"
-                f"\n\n{await ft_instance.find_text('payment_gateway_lable')} {await ft_instance.find_text('cryptomus_lable')}"
+                f"\n\n{await ft_instance.find_text('payment_gateway_label')} {await ft_instance.find_text('cryptomus_label')}"
                 f"\n{await ft_instance.find_text('price')} {amount:,} {await ft_instance.find_text('usd')}"
                 f"\n\n<b>{await ft_instance.find_text('payment_gateway_tail')}</b>"
             )

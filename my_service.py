@@ -20,7 +20,7 @@ async def my_services(update, context):
 
             keyboard = []
             if purchases:
-                keyboard.append([InlineKeyboardButton(await ft_instance.find_keyboard('vpn_services_lable'), callback_data='vpn_my_services')])
+                keyboard.append([InlineKeyboardButton(await ft_instance.find_keyboard('vpn_services_label'), callback_data='vpn_my_services')])
 
             keyboard.append([InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='start')])
 

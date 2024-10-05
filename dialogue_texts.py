@@ -95,8 +95,8 @@ text_transaction = {
         'fa': '• دوره زمانی:'
     },
     'payment_gateway_title': {
-        'en': '• Redirecting to Payment Page...',
-        'fa': '• هدایت به صفحه پرداخت...'
+        'en': '• Redirecting to Payment Page',
+        'fa': '• هدایت به صفحه پرداخت'
     },
     'zarinpal_payment_gateway_body': {
         'en': 'By clicking below, you’ll be transferred to the payment page. Please don’t close the page until the process completes.',
