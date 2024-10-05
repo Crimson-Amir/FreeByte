@@ -175,16 +175,16 @@ text_transaction = {
               '\n\n• آیدی شما: {0}'
     },
     'not_paid': {
-        'en': '❌ پرداخت نشده',
-        'fa': '❌ Not Paid'
+        'en': '❌ Not Paid',
+        'fa': '❌ پرداخت نشده'
     },
     'paid': {
-        'en': '✔️ پرداخت شده',
-        'fa': '✔️ Paid'
+        'en': '✔️ Paid',
+        'fa': '✔️ پرداخت شده'
     },
     'refund': {
-        'en': '↩️ بازپرداخت شده',
-        'fa': '↩️ Refunded'
+        'en': '↩️ Refunded',
+        'fa': '↩️ بازپرداخت شده'
     },
 }
 
