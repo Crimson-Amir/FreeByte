@@ -186,6 +186,18 @@ text_transaction = {
         'en': '↩️ Refunded',
         'fa': '↩️ بازپرداخت شده'
     },
+    'upgrade_vpn_service_action': {
+        'en': 'Upgrade VPN Service Number',
+        'fa': 'ارتقاء سرویس VPN شماره'
+    },
+    'buy_vpn_service_action': {
+        'en': 'Buy VPN Service Number',
+        'fa': 'خرید سرویس VPN شماره'
+    },
+    'increase_wallet_balance_action': {
+        'en': 'Increase Wallet Balance With ID',
+        'fa': 'افزایش اعتبار کیف پول با شماره'
+    },
 }
 
 keyboard_transaction = {
