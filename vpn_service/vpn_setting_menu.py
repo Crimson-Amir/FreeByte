@@ -38,8 +38,8 @@ async def handle_vpn_notification(update, context):
                 period_percent = config.period_notification_day
     else:
         period_percent_callback, traffic_percent_callback = query_data.split('__')
-        traffic_percent = max(min(int(traffic_percent_callback), 5), 95)
-        period_percent = max(min(int(period_percent_callback), 1), 10)
+        traffic_percent = max(min(int(traffic_percent_callback), 95), 5)
+        period_percent = max(min(int(period_percent_callback), 10), 1)
 
     text = await ft_instance.find_text('vpn_set_notification_status')
     text = text.format(traffic_percent, period_percent)
