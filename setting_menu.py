@@ -13,7 +13,7 @@ async def setting_menu(update, context):
 
     keyboard = [
         [InlineKeyboardButton(await ft_instance.find_keyboard('change_language_setting'),callback_data='user_language_setting')],
-        [InlineKeyboardButton(await ft_instance.find_keyboard('vpn_setting_lable'), callback_data='vpn_setting_menu')],
+        [InlineKeyboardButton(await ft_instance.find_keyboard('vpn_setting_label'), callback_data='vpn_setting_menu')],
         [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='start')]
     ]
 
@@ -36,7 +36,7 @@ async def user_language_setting(update, context):
 
             languages = {
                 'fa':  '🇮🇷 فارسی',
-                'en': '🇬🇧 english',
+                'en': '🇬🇧 English',
             }
 
             keyboard = []

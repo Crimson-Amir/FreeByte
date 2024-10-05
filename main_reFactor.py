@@ -3,8 +3,8 @@ from utilities_reFactore import FindText, message_token, handle_error
 import start_reFactore
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, CallbackQueryHandler
-import setting, wallet_reFactore, my_service, setting_menu, quidnes_and_support
-from vpn_service import buy_and_upgrade_service, my_service_detail, vpn_setting_menu, vpn_quid
+import setting, wallet_reFactore, my_service, setting_menu, guidnes_and_support
+from vpn_service import buy_and_upgrade_service, my_service_detail, vpn_setting_menu, vpn_guid
 from admin import admin_page, vpn_admin
 
 logging.basicConfig(
@@ -27,7 +27,7 @@ async def services(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ft_instance = FindText(update, context)
     text = await ft_instance.find_text('select_section')
     main_keyboard = [
-        [InlineKeyboardButton(await ft_instance.find_keyboard('buy_vpn_service_lable'), callback_data='vpn_set_period_traffic__30_40')],
+        [InlineKeyboardButton(await ft_instance.find_keyboard('buy_vpn_service_label'), callback_data='vpn_set_period_traffic__30_40')],
         [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='start')]
     ]
     return await update.callback_query.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(main_keyboard), parse_mode='html')
@@ -81,9 +81,9 @@ if __name__ == '__main__':
     application.add_handler(CallbackQueryHandler(setting_menu.change_user_language, pattern='set_user_language_on__(.*)'))
 
     # Quide And Support
-    application.add_handler(CallbackQueryHandler(quidnes_and_support.quide_menu, pattern='quide_menu'))
-    application.add_handler(CallbackQueryHandler(vpn_quid.quide_menu, pattern='vpn_quide_menu'))
-    application.add_handler(CallbackQueryHandler(vpn_quid.vpn_quide, pattern='vpn_quid__(.*)'))
+    application.add_handler(CallbackQueryHandler(guidnes_and_support.guide_menu, pattern='guide_menu'))
+    application.add_handler(CallbackQueryHandler(vpn_guid.guide_menu, pattern='vpn_guide_menu'))
+    application.add_handler(CallbackQueryHandler(vpn_guid.vpn_guide, pattern='vpn_guid__(.*)'))
 
     application.run_polling()
 

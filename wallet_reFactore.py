@@ -149,9 +149,9 @@ async def create_invoice(update, context):
             finacial_report = crud.create_financial_report(session, operation, chat_id, amount, action, service_id, 'not paid')
 
             keyboard = [
-                [InlineKeyboardButton(await ft_instance.find_keyboard('iran_payment_getway'), callback_data=f"pay_by_zarinpal__{action}__{finacial_report.financial_id}")],
+                [InlineKeyboardButton(await ft_instance.find_keyboard('iran_payment_gateway'), callback_data=f"pay_by_zarinpal__{action}__{finacial_report.financial_id}")],
                 [InlineKeyboardButton(await ft_instance.find_keyboard('pay_with_wallet_balance'), callback_data=f"pay_by_wallet__{action}__{finacial_report.financial_id}") if pay_by_wallet_satatus else [],
-                 InlineKeyboardButton(await ft_instance.find_keyboard('cryptomus_payment_getway'), callback_data=f"pay_by_cryptomus__{action}__{finacial_report.financial_id}")],
+                 InlineKeyboardButton(await ft_instance.find_keyboard('cryptomus_payment_gateway'), callback_data=f"pay_by_cryptomus__{action}__{finacial_report.financial_id}")],
                 [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=back_button_callback)],
             ]
             keyboard = [list(filter(None, row)) for row in keyboard]
@@ -198,16 +198,16 @@ async def pay_by_zarinpal(update, context):
             )
 
             keyboard = [
-                [InlineKeyboardButton(await ft_instance.find_keyboard('login_to_payment_getway'), url=f'https://payment.zarinpal.com/pg/StartPay/{create_zarinpal_invoice.authority}')],
+                [InlineKeyboardButton(await ft_instance.find_keyboard('login_to_payment_gateway'), url=f'https://payment.zarinpal.com/pg/StartPay/{create_zarinpal_invoice.authority}')],
                 [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data="start_in_new_message")]
             ]
 
             text = (
-                f"<b>{await ft_instance.find_text('payment_getway_title')}</b>"
-                f"\n{await ft_instance.find_text('zarinpal_payment_getway_body')}"
-                f"\n\n{await ft_instance.find_text('payment_getway_lable')} {await ft_instance.find_text('zarinpal_lable')}"
+                f"<b>{await ft_instance.find_text('payment_gateway_title')}</b>"
+                f"\n{await ft_instance.find_text('zarinpal_payment_gateway_body')}"
+                f"\n\n{await ft_instance.find_text('payment_gateway_lable')} {await ft_instance.find_text('zarinpal_lable')}"
                 f"\n{await ft_instance.find_text('price')} {get_financial.amount:,} {await ft_instance.find_text('irt')}"
-                f"\n\n<b>{await ft_instance.find_text('payment_getway_tail')}</b>"
+                f"\n\n<b>{await ft_instance.find_text('payment_gateway_tail')}</b>"
             )
 
             await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
@@ -252,16 +252,16 @@ async def pay_by_cryptomus(update, context):
             )
 
             keyboard = [
-                [InlineKeyboardButton(await ft_instance.find_keyboard('login_to_payment_getway'), url=invoice_link)],
+                [InlineKeyboardButton(await ft_instance.find_keyboard('login_to_payment_gateway'), url=invoice_link)],
                 [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data="start_in_new_message")]
             ]
 
             text = (
-                f"<b>{await ft_instance.find_text('payment_getway_title')}</b>"
-                f"\n{await ft_instance.find_text('cryptomus_payment_getway_body')}"
-                f"\n\n{await ft_instance.find_text('payment_getway_lable')} {await ft_instance.find_text('cryptomus_lable')}"
+                f"<b>{await ft_instance.find_text('payment_gateway_title')}</b>"
+                f"\n{await ft_instance.find_text('cryptomus_payment_gateway_body')}"
+                f"\n\n{await ft_instance.find_text('payment_gateway_lable')} {await ft_instance.find_text('cryptomus_lable')}"
                 f"\n{await ft_instance.find_text('price')} {amount:,} {await ft_instance.find_text('usd')}"
-                f"\n\n<b>{await ft_instance.find_text('payment_getway_tail')}</b>"
+                f"\n\n<b>{await ft_instance.find_text('payment_gateway_tail')}</b>"
             )
 
             await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
@@ -279,7 +279,7 @@ async def pay_by_wallet(update, context):
         dialogues = transaction.get(financial.owner.language, transaction.get('fa'))
 
         if financial.amount > financial.owner.wallet:
-            return await query.answer(await ft_instance.find_text('not_enogh_credit'), show_alert=True)
+            return await query.answer(await ft_instance.find_text('not_enough_credit'), show_alert=True)
 
         if not financial or financial.payment_status in ['paid', 'refund']:
             return await query.answer(await ft_instance.find_text('invoice_already_paid'))

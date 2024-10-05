@@ -89,7 +89,7 @@ text_transaction = {
               '\n📊 مصرف {0}% حجم سرویس'
               '\n📅 {1} روز مانده به انقضای سرویس'
     },
-    'android_quid': {
+    'android_guid': {
         'en': '💡 How to Connect on Android:'
               '\n\nCopy the link provided by the bot, open v2rayNG, tap the + icon, and choose "Import config from clipboard".'
               '\n\n🔄 Use the "Update Subscription" option anytime to get the latest server list.'
@@ -99,7 +99,7 @@ text_transaction = {
               '\n\n🔄 با گزینه "Update Subscription" می‌توانید هر زمان لیست جدید سرورها را دریافت کنید.'
               '\n\n📱 لینک دانلود v2rayNG:'
     },
-    'ios_quid': {
+    'ios_guid': {
         'en': '💡 How to Connect on iOS:'
               '\n\nIn the app, tap the + icon, select "Configure Manually", and in the Type section, choose "Subscription".'
               '\n\nEnter a name and paste the link provided by the bot in the URL field. Set Auto-Update to every 6 hours.'
@@ -111,7 +111,7 @@ text_transaction = {
               '\n\n🔄 برای آپدیت اشتراک، روی نام سرویس نگه دارید و "Update" را بزنید.'
               '\n\n📱 لینک دانلود Streisand:'
     },
-    'windows_quid': {
+    'windows_guid': {
         'en': '💡 How to Connect on Windows:'
               '\n\nOpen v2rayN, go to "Subscription Group", then "Subscription Group Setting".'
               '\n\nClick "Add", name it as you wish, and paste the subscription link from the bot. Confirm and click "Update Subscription".'
