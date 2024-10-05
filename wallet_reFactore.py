@@ -53,11 +53,18 @@ async def wallet_page(update, context):
 async def financial_transactions_wallet(update, context):
     query = update.callback_query
     chat_id = update.effective_chat.id
+    page = int(query.data.split('_')[-1])  # Get the current page from the callback data
+    items_per_page = 10
     ft_instance = FindText(update, context)
 
     try:
         with SessionLocal() as session:
-            get_financial_reports = crud.get_financial_reports(session, chat_id, 20)
+            total_reports = crud.get_financial_reports(session, chat_id)  # این تابع باید تعداد کل فاکتورها را برگرداند
+            total_pages = (total_reports + items_per_page - 1) // items_per_page  # محاسبه تعداد کل صفحات
+
+            # محاسبه offset برای دریافت فاکتورها بر اساس صفحه
+            offset = (page - 1) * items_per_page
+            get_financial_reports = crud.get_financial_reports(session, chat_id, items_per_page, offset)
 
             if get_financial_reports:
                 lasts_report = await ft_instance.find_text('recent_transactions') + '\n'
@@ -78,16 +85,24 @@ async def financial_transactions_wallet(update, context):
                         'cryptomus': await ft_instance.find_text('cryptomus_label'),
                         'wallet': await ft_instance.find_text('pay_with_wallet_balance'),
                     }
-                    lasts_report += f"\n\n{await ft_instance.find_text('receive_money') if report.operation in ['recive', 'refund'] else await ft_instance.find_text('spend_money')} {report.amount:,} {await ft_instance.find_text('irt')} | "
+                    lasts_report += f"\n\n{await ft_instance.find_text('receive_money') if report.operation in ['recive', 'refund'] else await ft_instance.find_text('spend_money')} <code>{report.amount:,}</code> {await ft_instance.find_text('irt')} | "
                     lasts_report += f"{report.register_date.date()}"
                     lasts_report += f"\n{payment_status.get(report.payment_status, '')} | {payment_action.get(report.action, '')} {report.id_holder}"
-                    lasts_report += f"\n{await ft_instance.find_text('payment_authority')} {report.authority[-8:] if report.authority else '-'} | {payment_gateway.get(report.payment_getway, '')}"
+                    lasts_report += f"\n<code>{await ft_instance.find_text('payment_authority')}</code> {report.authority[-8:] if report.authority else '-'} | {payment_gateway.get(report.payment_getway, '')}"
             else:
                 lasts_report = await ft_instance.find_text('no_transaction_yet')
 
+            # ایجاد دکمه‌های صفحه‌بندی
             keyboard = [
                 [InlineKeyboardButton(await ft_instance.find_keyboard('refresh'), callback_data='financial_transactions_wallet')],
-                [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='wallet_page')]]
+                [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='wallet_page')]
+            ]
+
+            # دکمه‌های صفحه‌بندی
+            if page > 1:
+                keyboard.append([InlineKeyboardButton('⬅️ Previous', callback_data=f'financial_transactions_wallet_{page - 1}')])
+            if page < total_pages:
+                keyboard.append([InlineKeyboardButton('Next ➡️', callback_data=f'financial_transactions_wallet_{page + 1}')])
 
             text_ = f"\n\n{lasts_report}"
             await query.edit_message_text(text=text_, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
@@ -97,6 +112,7 @@ async def financial_transactions_wallet(update, context):
         if "specified new message content and reply markup are exactly the same" in str(e):
             return await query.answer()
         return await query.answer(await ft_instance.find_text('error_message'))
+
 
 
 async def buy_credit_volume(update, context):
@@ -304,6 +320,13 @@ async def pay_by_wallet(update, context):
             return await query.answer(await ft_instance.find_text('invoice_already_paid'))
 
         try:
+            crud.update_financial_report(
+                session, financial.financial_id,
+                payment_getway='wallet',
+                authority=financial.financial_id,
+                currency='IRT',
+                url_callback=None
+            )
             await WebAppUtilities.handle_successful_payment(session, financial, financial_id, 'WalletPayment')
             session.commit()
         except Exception as e:
