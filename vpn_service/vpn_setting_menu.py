@@ -67,8 +67,8 @@ async def apply_notification_setting(update, context):
     query_data = query.data.replace('vpn_apply_notification_period_traffic__', '')
 
     period_percent_callback, traffic_percent_callback = query_data.split('__')
-    traffic_percent = max(min(int(traffic_percent_callback), 5), 95)
-    period_percent = max(min(int(period_percent_callback), 1), 10)
+    traffic_percent = max(min(int(traffic_percent_callback), 95), 5)
+    period_percent = max(min(int(period_percent_callback), 10), 1)
 
     with SessionLocal() as session:
         with session.begin():
@@ -79,4 +79,4 @@ async def apply_notification_setting(update, context):
                 period_notification_day=period_percent
             )
 
-    await query.answer(ft_instance.find_text('config_applied_successfully'), show_alert=True)
+    await query.answer(await ft_instance.find_text('config_applied_successfully'), show_alert=True)
