@@ -101,15 +101,22 @@ text_transaction = {
     },
     'ios_guide': {
         'en': '💡 How to Connect on iOS:'
+              '\n\nStreisand:'
               '\n\nIn the app, tap the + icon, select "Configure Manually", and in the Type section, choose "Subscription".'
               '\n\nEnter a name and paste the link provided by the bot in the URL field. Set Auto-Update to every 6 hours.'
               '\n\n🔄 To refresh your subscription, hold on the service name and tap "Update".'
-              '\n\n📱 Streisand download link:',
-        'fa': '💡 راهنمای اتصال در iOS:'
+              "\n\nV2Box:"
+              "\n\nCopy the link from the robot and select the + sign inside the program and click on the Add Subscription option. Choose the desired name and enter the subscription link in the url field."
+              '\n\n📱 Download links:',
+        'fa': '💡 راهنمای اتصال در ios:'
+              '\n\nStreisand:'
               '\n\nداخل برنامه روی + کلیک کنید و گزینه "Configure Manually" را انتخاب کنید. در بخش Type گزینه Subscription را انتخاب کنید.'
               '\n\nنام دلخواه خود را وارد کنید و لینک داده شده را در قسمت URL وارد کنید. Auto-Update را روی هر ۶ ساعت یکبار تنظیم کنید.'
               '\n\n🔄 برای آپدیت اشتراک، روی نام سرویس نگه دارید و "Update" را بزنید.'
-              '\n\n📱 لینک دانلود Streisand:'
+              "\n\nV2Box:"
+              "\n\nلینک رو از ربات کپی کنید و داخل برنامه علامت + رو انتخاب کنید و روی گزینه َAdd Subscription بزنید. نام دلخواه رو انتخاب کنید و در قسمت url لینک اشتراک رو وارد کنید."
+              "\n\n🔄 برای آپدیت لینک اشتراکتون به قسمت Configs بروید روی + بالا سمت راست بزنید، سپس گزینه Update all subscriptions را انتخاب کنید."
+              '\n\n📱 لینک دانلود:'
     },
     'windows_guide': {
         'en': '💡 How to Connect on Windows:'
