@@ -12,8 +12,8 @@ async def setting_menu(update, context):
     text = f"⚙️ {await ft_instance.find_text('select_section')}"
 
     keyboard = [
-        [InlineKeyboardButton(await ft_instance.find_keyboard('change_language_setting'),callback_data='user_language_setting')],
-        [InlineKeyboardButton(await ft_instance.find_keyboard('vpn_setting_label'), callback_data='vpn_setting_menu')],
+        [InlineKeyboardButton(await ft_instance.find_keyboard('change_language_setting'),callback_data='user_language_setting'),
+         InlineKeyboardButton(await ft_instance.find_keyboard('vpn_setting_label'), callback_data='vpn_setting_menu')],
         [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='start')]
     ]
 

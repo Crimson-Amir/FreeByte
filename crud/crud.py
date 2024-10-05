@@ -38,7 +38,10 @@ def get_financial_report_by_authority(session, authority):
 def get_financial_reports(session, chat_id, limit=5, only_paid_financial=False):
     financial_reports = session.query(model.FinancialReport)
     if only_paid_financial:
-        financial_reports = financial_reports.where(model.FinancialReport.payment_status == 'paid')
+        financial_reports = financial_reports.where(
+            model.FinancialReport.payment_status == 'paid',
+            model.FinancialReport.payment_status == 'refund'
+        )
     financial_reports = financial_reports.filter_by(chat_id=chat_id).order_by(desc(model.FinancialReport.financial_id)).limit(limit).all()
     return financial_reports
 
