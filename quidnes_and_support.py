@@ -8,9 +8,11 @@ from crud import crud
 @message_token.check_token
 async def quide_menu(update, context):
     query = update.callback_query
+    user = update.effective_chat
     ft_instance = FindText(update, context)
 
-    text = f"{await ft_instance.find_text('quid_and_help_text')}"
+    text = f"{await ft_instance.find_text('quide_and_help_text')}"
+    text = text.format(user.id)
 
     keyboard = [
         [InlineKeyboardButton(await ft_instance.find_keyboard('vpn_quide_lable'), callback_data='vpn_quide_menu')],

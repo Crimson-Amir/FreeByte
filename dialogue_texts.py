@@ -168,7 +168,7 @@ text_transaction = {
         'en': '🌎 Please select your language:',
         'fa': '🌎 لطفاً زبان خود را انتخاب کنید:'
     },
-    'quid_and_help_text': {
+    'quide_and_help_text': {
         'en': '📚 Welcome to the Bot Help Section!'
               '\n\n• Your ID: {0}',
         'fa': '📚 به بخش راهنمای ربات خوش آمدید!'
