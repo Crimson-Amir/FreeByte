@@ -84,7 +84,7 @@ if __name__ == '__main__':
     # Quide And Support
     application.add_handler(CallbackQueryHandler(guidnes_and_support.guide_menu, pattern='guide_menu'))
     application.add_handler(CallbackQueryHandler(vpn_guid.guide_menu, pattern='vpn_guide_menu'))
-    application.add_handler(CallbackQueryHandler(vpn_guid.vpn_guide, pattern='vpn_guid__(.*)'))
+    application.add_handler(CallbackQueryHandler(vpn_guid.vpn_guide, pattern='vpn_guide__(.*)'))
 
     application.run_polling()
 
