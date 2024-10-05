@@ -316,6 +316,14 @@ keyboard_transaction = {
     'vpn_guide_label': {
         'en': 'VPN Guide',
         'fa': 'راهنمای VPN'
+    },
+    'previous': {
+        'en': 'Previous',
+        'fa': 'قبلی'
+    },
+    'next': {
+        'en': 'Next',
+        'fa': 'بعدی'
     }
 }
 
