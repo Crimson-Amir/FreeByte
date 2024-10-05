@@ -7,8 +7,7 @@ class UserDetail(Base):
     __tablename__ = 'UserDetail'
 
     user_id = Column(Integer, primary_key=True)
-    user_level = Column(Integer, default=1)
-    status = Column(String, default="active")
+    active = Column(Boolean, default=True)
 
     email = Column(String, unique=True, default=None)
     phone_number = Column(String, unique=True, default=None)
@@ -24,6 +23,18 @@ class UserDetail(Base):
 
     financial_reports = relationship("FinancialReport", back_populates="owner")
     services = relationship("Purchase", back_populates="owner")
+    config = relationship("UserConfig", back_populates="owner")
+
+class UserConfig(Base):
+    __tablename__ = 'UserConfig'
+
+    config_id = Column(Integer, primary_key=True)
+    user_level = Column(Integer, default=1)
+    traffic_notification_percent = Column(Integer, default=85)
+    period_notification_day = Column(Integer, default=3)
+
+    chat_id = Column(BigInteger, ForeignKey('UserDetail.chat_id'))
+    owner = relationship("UserDetail", back_populates="config")
 
 
 class FinancialReport(Base):

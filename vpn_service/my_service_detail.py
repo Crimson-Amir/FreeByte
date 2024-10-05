@@ -2,6 +2,9 @@ from _datetime import datetime
 import sys, os
 import requests.exceptions
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
+
+import utilities_reFactore
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from utilities_reFactore import FindText, message_token, handle_error, human_readable
 from crud import vpn_crud
@@ -110,7 +113,7 @@ async def ask_remove_service_for_user(update, context):
 
             keyboard = [
                 [InlineKeyboardButton(await ft_instance.find_keyboard('yes_im_sure'), callback_data=f'vpn_remove_service__{purchase_id}'),
-                InlineKeyboardButton(await ft_instance.find_keyboard('no'), callback_data=f'vpn_my_service_detail__{purchase_id}')],
+                 InlineKeyboardButton(await ft_instance.find_keyboard('no'), callback_data=f'vpn_my_service_detail__{purchase_id}')],
                 [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=f'vpn_my_service_detail__{purchase_id}')]
             ]
 
@@ -129,9 +132,18 @@ async def remove_service_for_user(update, context):
             purchase = vpn_crud.remove_purchase(session, purchase_id)
             main_server_ip = purchase.product.main_server.server_ip
             await panel_api.marzban_api.remove_user(main_server_ip, purchase.username)
-            keyboard = [
-                [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=f'vpn_my_services')]
-            ]
+
             text = await ft_instance.find_text('vpn_service_deleted_successfully')
+
+            keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=f'vpn_my_services')]]
+            admin_msg = (
+                f'The user deleted the service.'
+                f'\n\nService username: {purchase.username}'
+                f'\nService ID: {purchase.purchase_id}'
+                f'\nService status before delete: {purchase.active}'
+                f'\nService Product: {purchase.product.product_name}'
+            )
+
+            await utilities_reFactore.report_to_admin('info', 'remove_service_for_user', admin_msg, purchase.owner)
             await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 

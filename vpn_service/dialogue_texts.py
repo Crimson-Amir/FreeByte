@@ -120,4 +120,8 @@ keyboard_transaction = {
         'en': 'Remove Service ⇣',
         'fa': 'حذف سرویس ⇣'
     },
+    'vpn_notification_setting': {
+        'en': 'Change Notification Stauts',
+        'fa': 'تغییر وضعیت نوتیفیکیشن'
+    },
 }

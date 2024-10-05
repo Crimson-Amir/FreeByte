@@ -6,6 +6,19 @@ from sqlalchemy import update, func, desc
 def get_user(session, chat_id):
     return session.query(model.UserDetail).filter_by(chat_id=chat_id).first()
 
+def get_user_config(session, chat_id):
+    return session.query(model.UserConfig).filter_by(chat_id=chat_id).first()
+
+def update_user_config(session, chat_id: int, **kwargs):
+    stmt = (
+        update(model.UserConfig)
+        .where(model.UserConfig.chat_id == chat_id)
+        .values(
+            **kwargs
+        )
+    )
+    session.execute(stmt)
+
 def get_financial_report_by_id(session, financial_id):
     return session.query(model.FinancialReport).where(model.FinancialReport.financial_id == financial_id).first()
 
@@ -31,6 +44,13 @@ def create_user(user_detail, inviter_user_id, selected_language):
                 language=selected_language
             )
             session.add(user)
+            session.flush()
+            session.refresh(user)
+
+            user_config = model.UserConfig(
+                chat_id=user.user_id
+            )
+            session.add(user_config)
 
 
 def add_credit_to_wallet(session, financial_db, payment_status='paid'):

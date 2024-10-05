@@ -36,7 +36,7 @@ async def start(update, context, in_new_message=False, raise_error=False):
             [InlineKeyboardButton(await ft_instance.find_keyboard('menu_services'), callback_data='menu_services')],
             [InlineKeyboardButton(await ft_instance.find_keyboard('wallet'), callback_data='wallet_page'),
              InlineKeyboardButton(await ft_instance.find_keyboard('my_services'), callback_data='my_services')],
-            [InlineKeyboardButton(await ft_instance.find_keyboard('setting'), callback_data='setting'),
+            [InlineKeyboardButton(await ft_instance.find_keyboard('setting'), callback_data='setting_menu'),
              InlineKeyboardButton(await ft_instance.find_keyboard('invite'), callback_data='invite')],
             [InlineKeyboardButton(await ft_instance.find_keyboard('help_button'), callback_data='help_button')],
         ]
@@ -145,27 +145,30 @@ class HandleErrors:
         await context.bot.send_message(text=message_text, chat_id=user_id)
 
 async def report_to_admin(level, fun_name, msg, user_table=None):
-    report_level = {
-        'purchase': {'thread_id': setting.purchased_thread_id, 'emoji': '🟢'},
-        'info': {'thread_id': setting.info_thread_id, 'emoji': '🔵'},
-        'warning': {'thread_id': setting.info_thread_id, 'emoji': '🟡'},
-        'error': {'thread_id': setting.error_thread_id, 'emoji': '🔴'},
-        'emergency_error': {'thread_id': setting.error_thread_id, 'emoji': '🔴🔴'},
-    }
+    try:
+        report_level = {
+            'purchase': {'thread_id': setting.purchased_thread_id, 'emoji': '🟢'},
+            'info': {'thread_id': setting.info_thread_id, 'emoji': '🔵'},
+            'warning': {'thread_id': setting.info_thread_id, 'emoji': '🟡'},
+            'error': {'thread_id': setting.error_thread_id, 'emoji': '🔴'},
+            'emergency_error': {'thread_id': setting.error_thread_id, 'emoji': '🔴🔴'},
+        }
 
-    emoji = report_level.get(level, {}).get('emoji', '🔵')
-    thread_id = report_level.get(level, {}).get('thread_id', setting.info_thread_id)
-    message = f"{emoji} Report {level.replace('_', ' ')} {fun_name}\n\n{msg}"
+        emoji = report_level.get(level, {}).get('emoji', '🔵')
+        thread_id = report_level.get(level, {}).get('thread_id', setting.info_thread_id)
+        message = f"{emoji} Report {level.replace('_', ' ')} {fun_name}\n\n{msg}"
 
-    if user_table:
-        message += (
-            "\n\n👤 User Info:"
-            f"\nUser name: {user_table.first_name} {user_table.last_name}"
-            f"\nUser ID: {user_table.chat_id}"
-            f"\nUsername: @{user_table.username}"
-        )
+        if user_table:
+            message += (
+                "\n\n👤 User Info:"
+                f"\nUser name: {user_table.first_name} {user_table.last_name}"
+                f"\nUser ID: {user_table.chat_id}"
+                f"\nUsername: @{user_table.username}"
+            )
 
-    await HandleErrors.report_to_admin(message, thread_id)
+        await HandleErrors.report_to_admin(message, thread_id)
+    except Exception as e:
+        logging.error(f'error in report to admin.\n{e}')
 
 
 async def report_to_user(level, user_id, msg):

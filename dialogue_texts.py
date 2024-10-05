@@ -161,6 +161,20 @@ text_transaction = {
         'en': 'Select the category fot view info:',
         'fa': 'برای مشاهده جزئیات، دسته بندی مورد نظر را انتخاب کنید:'
     },
+    'vpn_set_notification_status': {
+        'en': 'Select Notification Status:'
+              '\n\nGet notification after:'
+              '\nusing {0}% of traffic'
+              '\n{1} days before service expiration',
+        'fa': 'وضعیت نوتیفیکیشن را مشخص کنید:'
+              '\n\nدریافت نوتیفیکین در:'
+              '\nمصرف {0}% حجم سرویس'
+              '\n{1} روز قبل از تاریخ اتمام سرویس'
+    },
+    'config_applied_successfully': {
+        'en': 'config applied successfully✅',
+        'fa': 'تنظیمات با موفقیت اعمال شد✅'
+    },
 }
 
 keyboard_transaction = {
@@ -169,8 +183,8 @@ keyboard_transaction = {
         'fa': 'ببخشید، مشکلی وجود داشت!'
     },
     'menu_services': {
-        'en': 'services 🎛️',
-        'fa': 'خدمات 🎛️'
+        'en': 'services',
+        'fa': 'خدمات'
     },
     'wallet': {
         'en': 'wallet 👝',
@@ -232,6 +246,10 @@ keyboard_transaction = {
         'en': 'VPN service',
         'fa': 'سرویس VPN'
     },
+    'vpn_setting_lable': {
+        'en': 'VPN service Setting',
+        'fa': 'تنظیمات سرویس VPN'
+    },
     'iran_payment_getway': {
         'en': 'Iran Payment Getway',
         'fa': 'درگاه پرداخت بانکی'
@@ -263,7 +281,7 @@ keyboard_transaction = {
     'no': {
         'en': 'No',
         'fa': 'خیر'
-    },
+    }
 
 }
 

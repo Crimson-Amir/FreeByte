@@ -3,8 +3,8 @@ from utilities_reFactore import FindText, message_token, handle_error
 import start_reFactore
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, CallbackQueryHandler
-import setting, wallet_reFactore, my_service
-from vpn_service import buy_and_upgrade_service, my_service_detail
+import setting, wallet_reFactore, my_service, setting_menu
+from vpn_service import buy_and_upgrade_service, my_service_detail, vpn_setting_menu
 from admin import admin_page, vpn_admin
 
 logging.basicConfig(
@@ -72,6 +72,11 @@ if __name__ == '__main__':
     application.add_handler(vpn_admin.admin_add_product_conversation)
     application.add_handler(vpn_admin.admin_add_mainserver_conversation)
 
+    # Setting
+    application.add_handler(CallbackQueryHandler(setting_menu.setting_menu, pattern='setting_menu'))
+    application.add_handler(CallbackQueryHandler(vpn_setting_menu.setting_menu, pattern='vpn_setting_menu'))
+    application.add_handler(CallbackQueryHandler(vpn_setting_menu.handle_vpn_notification, pattern='vpn_set_notification_period_traffic__(.*)'))
+    application.add_handler(CallbackQueryHandler(vpn_setting_menu.apply_notification_setting, pattern='vpn_apply_notification_period_traffic__(.*)'))
 
     application.run_polling()
 
