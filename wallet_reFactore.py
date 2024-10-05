@@ -63,7 +63,7 @@ async def financial_transactions_wallet(update, context):
                 lasts_report = await ft_instance.find_text('recent_transactions') + '\n'
                 for report in get_financial_reports:
                     lasts_report += f"\n\n{await ft_instance.find_text('recive_money') if report.operation in ['recive', 'refund'] else await ft_instance.find_text('spend_money')}"
-                    lasts_report +=  f" {report.amount:,} {await ft_instance.find_text('irt')} - {report.register_date}"
+                    lasts_report +=  f" {report.amount:,} {await ft_instance.find_text('irt')} - {report.register_date.replace(tzinfo=None)}"
             else:
                 lasts_report = await ft_instance.find_text('no_transaction_yet')
 
