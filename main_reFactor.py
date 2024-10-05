@@ -67,6 +67,7 @@ if __name__ == '__main__':
     application.add_handler(CallbackQueryHandler(my_service_detail.my_services, pattern='vpn_my_services(.*)'))
     application.add_handler(CallbackQueryHandler(my_service_detail.ask_remove_service_for_user, pattern='vpn_remove_service_ask__(.*)'))
     application.add_handler(CallbackQueryHandler(my_service_detail.remove_service_for_user, pattern='vpn_remove_service__(.*)'))
+    application.add_handler(CallbackQueryHandler(my_service_detail.service_advanced_options, pattern='vpn_advanced_options__(.*)'))
 
     # Admin
     application.add_handler(CallbackQueryHandler(admin_page.admin_page, pattern='admin_page'))
