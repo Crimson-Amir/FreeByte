@@ -195,12 +195,13 @@ async def service_advanced_options(update, context):
                     f"\n{await ft_instance.find_text('vpn_used_traffic')} {used_traffic}GB"
                     f"\n{await ft_instance.find_text('vpn_total_traffic')} {data_limit}GB"
                     f"\n{await ft_instance.find_text('vpn_lifetime_used_traffic')} {lifetime_used_traffic}GB"
-                    f"\n{await ft_instance.find_text('created_at')} {datetime.fromisoformat(get_from_server.get('created_at')).strftime("%Y-%m-%d %H:%M:%S")}"
+                    f"\n{await ft_instance.find_text('created_at')} {datetime.fromisoformat(get_from_server.get('created_at')).strftime('%Y-%m-%d %H:%M:%S')}"
                     f"\n\n{await ft_instance.find_text('vpn_subsrciption_address')}"
                     f"\n\n<code>{subscribe_link}</code>"
                 )
 
                 keyboard = [
+                    [InlineKeyboardButton(await ft_instance.find_keyboard('refresh'), callback_data=f'vpn_advanced_options__{purchase_id}')],
                     [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=f'vpn_my_service_detail__{purchase.purchase_id}')]
                 ]
 
