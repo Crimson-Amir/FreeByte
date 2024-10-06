@@ -24,6 +24,8 @@ async def admin_page(update, context):
 
 
 async def cancel(update, context):
+    query = update.callback_query
+    await query.delete_message()
     user_detail = update.effective_chat
     await context.bot.send_message(chat_id=user_detail.id, text="Action cancelled.", message_thread_id=setting.ticket_thread_id)
     return ConversationHandler.END

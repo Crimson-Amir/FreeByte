@@ -215,10 +215,8 @@ text_transaction = {
         'fa': 'همین الان روی این گزینه هستید!'
     },
     'create_ticket_text': {
-        'en': 'Please send Your message (text, photo)'
-              '\n/cancel',
+        'en': 'Please send Your message (text, photo)',
         'fa': 'لطفا پیام خودتون رو بفرستید (پیام یا عکس)'
-              '\nانصراف: /cancel'
     },
     'ticket_recived': {
         'en': 'Your message has been sent✅'
@@ -237,6 +235,10 @@ text_transaction = {
     'ticket_was_answered': {
         'en': '🎯 You recive message from admin',
         'fa': '🎯 یک پیام از مدیر دریافت کردید'
+    },
+    'action_canceled': {
+        'en': 'Action Canceled✅',
+        'fa': 'عملیات کنسل شد✅'
     },
 }
 

@@ -5,7 +5,6 @@ from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 import setting
 from utilities_reFactore import FindText, message_token, handle_error
 from telegram.ext import ConversationHandler, filters, MessageHandler, CallbackQueryHandler, CommandHandler
-from utilities_reFactore import cancel
 from setting import ADMIN_CHAT_IDs
 
 TICKET_MESSAGE = 0
@@ -29,12 +28,22 @@ async def guide_menu(update, context):
     await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
 
+async def cancel(update, context):
+    query = update.callback_query
+    ft_instance = FindText(update, context)
+    await query.delete_message()
+    user_detail = update.effective_chat
+    await context.bot.send_message(chat_id=user_detail.id, text=await ft_instance.find_text('action_canceled'), message_thread_id=setting.ticket_thread_id)
+    return ConversationHandler.END
+
+
 async def create_ticket(update, context):
     await update.callback_query.answer()
     user_detail = update.effective_chat
     ft_instance = FindText(update, context)
+    keyboard = [[InlineKeyboardButton("Cancel", callback_data='cancel_user_ticket_conversation')]]
     text = await ft_instance.find_text('create_ticket_text')
-    await context.bot.send_message(text=text, chat_id=user_detail.id, parse_mode='html')
+    await context.bot.send_message(text=text, chat_id=user_detail.id, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
     return TICKET_MESSAGE
 
 
@@ -79,7 +88,7 @@ async def get_ticket(update, context):
 ticket_conversation = ConversationHandler(
     entry_points=[CallbackQueryHandler(create_ticket, pattern='create_ticket')],
     states={
-        TICKET_MESSAGE: [MessageHandler(filters.TEXT & ~filters.COMMAND & ~filters.PHOTO, get_ticket)],
+        TICKET_MESSAGE: [MessageHandler(filters.TEXT | ~filters.PHOTO, get_ticket)],
     },
-    fallbacks=[CommandHandler('cancel', cancel)]
+    fallbacks=[CallbackQueryHandler(cancel, pattern='cancel_user_ticket_conversation')]
 )

@@ -174,6 +174,7 @@ text_transaction = {
         'en': 'Select service for more info:',
         'fa': 'سرویس مورد نظر رو برای جزئیات بیشتر انتخاب کنید:'
     },
+
 }
 
 keyboard_transaction = {
