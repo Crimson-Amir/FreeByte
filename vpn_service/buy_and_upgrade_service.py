@@ -4,6 +4,9 @@ import pytz, uuid, sys, os, hashlib, qrcode
 from io import BytesIO
 import requests.exceptions
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
+
+import utilities_reFactore
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from utilities_reFactore import FindText, message_token, handle_error, report_to_admin
 from crud import vpn_crud, crud
@@ -243,5 +246,9 @@ async def recive_test_service(update, context):
             service_id = purchase.purchase_id
             await create_service_for_user(update, context, session, service_id)
             crud.update_user_config(session, user.id, get_vpn_free_service=True)
+            admin_msg = ('User Recived Test Service.'
+                         f'\nService ID: {purchase.purchase_id}'
+                         f'\nService Username: {purchase.username}')
+            await utilities_reFactore.report_to_user('info', user.id, msg=admin_msg)
 
     await query.answer(text=text)
