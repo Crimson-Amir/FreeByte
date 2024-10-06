@@ -254,6 +254,6 @@ async def recive_test_service(update, context):
             admin_msg = ('User Recived Test Service.'
                          f'\nService ID: {purchase.purchase_id}'
                          f'\nService Username: {purchase.username}')
-            await utilities_reFactore.report_to_admin('info', 'recive_test_service', msg=admin_msg, purchase.owner)
+            await utilities_reFactore.report_to_admin('info', 'recive_test_service', admin_msg, purchase.owner)
 
     await query.answer(text=text)
