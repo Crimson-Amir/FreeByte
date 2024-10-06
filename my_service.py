@@ -13,7 +13,6 @@ async def my_services(update, context):
     with SessionLocal() as session:
         with session.begin():
             purchases = vpn_crud.get_first_purchase_by_chat_id(session, user_detail.id)
-            print(purchases, purchases.purchase_id)
             numbers = None
 
             if not purchases and not numbers:
