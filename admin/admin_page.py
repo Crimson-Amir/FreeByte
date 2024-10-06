@@ -64,7 +64,7 @@ async def answer_ticket(update, context):
     query = update.callback_query
     try:
         user_id = context.user_data['ticket_user_id']
-        await query.delet_message()
+        await query.delete_message()
         if query.data == 'cancel_send':
             await context.bot.send_message(chat_id=user_detail.id, text='Conversation closed.', message_thread_id=setting.ticket_thread_id)
             return ConversationHandler.END
