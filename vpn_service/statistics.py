@@ -232,9 +232,9 @@ async def report_section(update, context):
 
     get_plot_image = plot.get_plot(get_data[1], period)
 
-    text = (f'<b>{await ft_instance.find_text('usage_report')} {button_name}:</b>'
-            f'\n\n<b>• {await ft_instance.find_text('vpn_traffic_use')} {button_name}: {await format_traffic_from_megabyte(ft_instance, purchase_id)}</b>'
-            f'\n<b>• {await ft_instance.find_text('avreage_usage_in')} {constituent_name}: {await format_traffic_from_megabyte(ft_instance, get_data[3])}</b>')
+    text = (f'<b>{await ft_instance.find_text("usage_report")} {button_name}:</b>'
+            f'\n\n<b>• {await ft_instance.find_text("vpn_traffic_use")} {button_name}: {await format_traffic_from_megabyte(ft_instance, purchase_id)}</b>'
+            f'\n<b>• {await ft_instance.find_text("avreage_usage_in")} {constituent_name}: {await format_traffic_from_megabyte(ft_instance, get_data[3])}</b>')
     text += f'\n{detail_text}'
 
     if query.message.photo:
