@@ -1,4 +1,5 @@
 import asyncio
+import json
 from datetime import datetime, timedelta
 import telegram.error, pytz
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
@@ -59,8 +60,8 @@ async def statistics_timer(context):
                             statistics_usage_traffic[purchase.username] = traffic_use
                             break
 
-            vpn_crud.create_new_last_usage(session, last_usage_dict)
-            vpn_crud.create_new_statistics(session, statistics_usage_traffic)
+            vpn_crud.create_new_last_usage(session, json.dumps(last_usage_dict))
+            vpn_crud.create_new_statistics(session, json.dumps(statistics_usage_traffic))
 
 def datetime_range(start, end, delta):
     current = start
