@@ -4,7 +4,7 @@ import start_reFactore
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, CallbackQueryHandler
 import setting, wallet_reFactore, my_service, setting_menu, guidnes_and_support
-from vpn_service import buy_and_upgrade_service, my_service_detail, vpn_setting_menu, vpn_guid
+from vpn_service import buy_and_upgrade_service, my_service_detail, vpn_setting_menu, vpn_guid, panel_api
 from admin import admin_page, vpn_admin
 from database_sqlalchemy import SessionLocal
 from crud import crud
@@ -81,6 +81,7 @@ if __name__ == '__main__':
     application.add_handler(CallbackQueryHandler(my_service_detail.get_configs_separately, pattern='vpn_get_configs_separately__(.*)'))
     application.add_handler(CallbackQueryHandler(buy_and_upgrade_service.recive_test_service_info, pattern='vpn_recive_test_service'))
     application.add_handler(CallbackQueryHandler(buy_and_upgrade_service.recive_test_service, pattern='vpn_recive_test__(.*)'))
+    application.job_queue.run_repeating(panel_api.marzban_api.refresh_connection_schedule, interval=720 * 60, first=0)
 
     # Admin
     application.add_handler(CallbackQueryHandler(admin_page.admin_page, pattern='admin_page'))

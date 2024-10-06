@@ -34,7 +34,7 @@ async def start(update, context, in_new_message=False, raise_error=False):
     ft_instance = FindText(update, context, notify_user=False)
     text = await ft_instance.find_text('start_menu')
     try:
-        link = f'https://t.me/Fensor_bot/?start=ref_{user_detail.id}'
+        link = f'https://t.me/Free_Byte_Bot/?start=ref_{user_detail.id}'
         invite_text = f'{await ft_instance.find_text("invite_firend")}\n{link}'
 
         main_keyboard = [

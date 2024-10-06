@@ -32,7 +32,10 @@ class MarzbanAPI:
                     'access_token': response['access_token'],
                     'server_instant': server
                 }
-            print(self.servers_bearer_token)
+
+    async def refresh_connection_schedule(self, update, context):
+        self.refresh_connection()
+
     @staticmethod
     def build_full_url(server, endpoint):
         """Construct full URL for a server and endpoint."""

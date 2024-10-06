@@ -13,7 +13,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE, in_new_messa
     except UserNotFound:
         text = ('<b>• زبان خود را انتخاب کنید:'
                 '\n• Please choose your language:</b>')
-        context.user_data['inviter_chat_id'] = context.args[0] if context.args else None
+        context.user_data['inviter_chat_id'] = int(context.args[0]) if context.args else None
         keyboard = [[InlineKeyboardButton('English 🇬🇧', callback_data='register_user_en'),
                      InlineKeyboardButton('فارسی 🇮🇷', callback_data='register_user_fa')]]
         new_select = await context.bot.send_message(chat_id=user_detail.id, text=text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')

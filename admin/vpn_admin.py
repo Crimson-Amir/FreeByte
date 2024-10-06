@@ -7,6 +7,7 @@ from telegram.ext import ConversationHandler, filters, MessageHandler, CallbackQ
 from crud import admin_crud
 from enum import Enum
 from database_sqlalchemy import SessionLocal
+from vpn_service import panel_api
 
 
 class AdminState(Enum):
@@ -72,6 +73,7 @@ async def process_details(update: Update, context, entity_type: str):
                     active, server_ip, server_protocol, server_port, server_username, server_password = user_text.split('\n')
                     active = active == 'True'
                     new_entry = admin_crud.add_mainserver(session, active, server_ip, server_protocol, server_port, server_username, server_password)
+
                     new_id = new_entry.server_id
 
                 text = f'New {entity_type} added successfully\nID: {new_id}'
