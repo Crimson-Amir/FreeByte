@@ -35,8 +35,6 @@ def get_financial_report_by_id(session, financial_id):
 def get_financial_report_by_authority(session, authority):
     return session.query(model.FinancialReport).where(model.FinancialReport.authority == authority).first()
 
-
-
 def get_financial_reports(session, chat_id, offset, limit=5, only_paid_financial=True):
     financial_reports = session.query(model.FinancialReport)
 
@@ -53,10 +51,10 @@ def get_financial_reports(session, chat_id, offset, limit=5, only_paid_financial
 
 def get_total_financial_reports(session, chat_id):
     financial_reports_count = session.query(model.FinancialReport).filter(
-            or_(
-                model.FinancialReport.payment_status == 'paid',
-                model.FinancialReport.payment_status == 'refund'
-            )).filter_by(chat_id=chat_id).count()
+        or_(
+            model.FinancialReport.payment_status == 'paid',
+            model.FinancialReport.payment_status == 'refund'
+        )).filter_by(chat_id=chat_id).count()
     return financial_reports_count
 
 

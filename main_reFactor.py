@@ -82,7 +82,6 @@ if __name__ == '__main__':
     application.add_handler(CallbackQueryHandler(buy_and_upgrade_service.recive_test_service_info, pattern='vpn_recive_test_service'))
     application.add_handler(CallbackQueryHandler(buy_and_upgrade_service.recive_test_service, pattern='vpn_recive_test__(.*)'))
 
-
     # Admin
     application.add_handler(CallbackQueryHandler(admin_page.admin_page, pattern='admin_page'))
     application.add_handler(CallbackQueryHandler(vpn_admin.admin_page, pattern='admin_vpn'))
@@ -101,6 +100,7 @@ if __name__ == '__main__':
     application.add_handler(CallbackQueryHandler(guidnes_and_support.guide_menu, pattern='guide_menu'))
     application.add_handler(CallbackQueryHandler(vpn_guid.guide_menu, pattern='vpn_guide_menu'))
     application.add_handler(CallbackQueryHandler(vpn_guid.vpn_guide, pattern='vpn_guide__(.*)'))
+    application.add_handler(guidnes_and_support.ticket_conversation)
 
     application.run_polling()
 

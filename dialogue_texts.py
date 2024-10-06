@@ -214,6 +214,22 @@ text_transaction = {
         'en': 'You already on this option!',
         'fa': 'همین الان روی این گزینه هستید!'
     },
+    'create_ticket_text': {
+        'en': 'Please send Your message (text, photo)'
+              '\n/cancel',
+        'fa': 'لطفا پیام خودتون رو بفرستید (پیام یا عکس)'
+              '\nانصراف: /cancel'
+    },
+    'ticket_recived': {
+        'en': 'Your message has been sent✅'
+              '\nThe answer of the admin will be sent to you through the bot.',
+        'fa': 'پیام شما ارسال شد✅'
+              '\n• پاسخ ادمین از طریق ربات به اطلاع شما میرسد.'
+    },
+    'error_in_recive_ticket': {
+        'en': '❌ There was a problem sending the message! Please try again later',
+        'fa': '❌ مشکلی در ارسال پیام وجود داشت! لطفا بعدا تلاش کنید'
+    },
 }
 
 keyboard_transaction = {
@@ -345,7 +361,14 @@ keyboard_transaction = {
         'en': '🎁 Get VPN Test',
         'fa': '🎁 دریافت تست VPN'
     },
-
+    'ticket_new_message': {
+        'en': 'New Message 🆕',
+        'fa': 'پیام جدید 🆕'
+    },
+    'create_ticket_label': {
+        'en': '📨 Message To Admins',
+        'fa': '📨 ارتباط با ادمین'
+    },
 }
 
 text_transaction.update(vpn_service_dialogues.text_transaction)

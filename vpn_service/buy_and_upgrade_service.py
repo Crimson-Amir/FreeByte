@@ -150,6 +150,10 @@ async def create_service_for_user(update, context, session, purchase_id: int):
 
 async def upgrade_service_for_user(update, context, session, purchase_id: int):
     purchase = vpn_crud.get_purchase(session, purchase_id)
+
+    if not purchase.upgrade_traffic or not purchase.upgrade_period:
+        raise ValueError('upgrade_traffic or upgrade_period is empty')
+
     ft_instance = FindText(update, context)
     main_server_ip = purchase.product.main_server.server_ip
 
@@ -169,7 +173,15 @@ async def upgrade_service_for_user(update, context, session, purchase_id: int):
         json_config = await create_json_config(purchase.username, date_in_timestamp, traffic_to_byte)
         await panel_api.marzban_api.modify_user(main_server_ip, purchase.username, json_config)
 
-        vpn_crud.update_purchase(session, purchase_id, traffic=purchase.upgrade_traffic, period=purchase.upgrade_period)
+        vpn_crud.update_purchase(
+            session,
+            purchase_id,
+            traffic=purchase.upgrade_traffic,
+            period=purchase.upgrade_period,
+            upgrade_traffic=0,
+            upgrade_period=0
+        )
+
         session.refresh(purchase)
 
         success_text = await ft_instance.find_text('upgrade_service_successfuly')

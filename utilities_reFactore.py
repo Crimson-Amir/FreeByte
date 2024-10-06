@@ -4,6 +4,7 @@ import setting, logging, traceback
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from dialogue_texts import text_transaction, keyboard_transaction
 from setting import default_language, ADMIN_CHAT_IDs, telegram_bot_token
+from telegram.ext import ConversationHandler
 import functools, requests
 from crud import crud
 class UserNotFound(Exception):
@@ -263,6 +264,11 @@ class FakeContext:
 
             response = requests.post(url=url, data=data, files=files)
             print(response)
+
+async def cancel(update, context):
+    user_detail = update.effective_chat
+    await context.bot.send_message(chat_id=user_detail.id, text="Action cancelled.")
+    return ConversationHandler.END
 
 handle_error = HandleErrors()
 message_token = MessageToken()
