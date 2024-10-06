@@ -53,12 +53,10 @@ def get_all_main_servers(session):
         return session.query(model.MainServer).where(model.MainServer.active==True).all()
 
 def get_all_product(session):
-    with session.begin():
-        return session.query(model.Product).where(model.Product.active==True).all()
+    return session.query(model.Product).where(model.Product.active==True).all()
 
 def get_users_last_usage(session):
-    with session.begin():
-        return session.query(model.LastUsage).order_by(model.LastUsage.last_usage_id.desc()).first()
+    return session.query(model.LastUsage).order_by(model.LastUsage.last_usage_id.desc()).first()
 
 
 def create_new_last_usage(session, last_usage_dict):
