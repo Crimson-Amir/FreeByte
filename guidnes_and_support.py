@@ -59,7 +59,7 @@ async def get_ticket(update, context):
                       f"\nUsername: @{user_detail.username}"
                       f"\n\n💬 Message:"
                       f"\n{user_message}")
-        admin_keyboard = [[InlineKeyboardButton("Anwser 🎯", callback_data=f"reply_ticket_{user_detail.id}")]]
+        admin_keyboard = [[InlineKeyboardButton("Reply", callback_data=f"reply_ticket_{user_detail.id}")]]
 
         if file_id:
             context.bot.send_photo(chat_id=ADMIN_CHAT_IDs[0], photo=file_id, caption=admin_text, reply_markup=InlineKeyboardMarkup(admin_keyboard))

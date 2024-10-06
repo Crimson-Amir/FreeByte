@@ -87,6 +87,7 @@ if __name__ == '__main__':
     application.add_handler(CallbackQueryHandler(vpn_admin.admin_page, pattern='admin_vpn'))
     application.add_handler(vpn_admin.admin_add_product_conversation)
     application.add_handler(vpn_admin.admin_add_mainserver_conversation)
+    application.add_handler(admin_page.admin_ticket_reply_conversation)
 
     # Setting
     application.add_handler(CallbackQueryHandler(setting_menu.setting_menu, pattern='setting_menu'))

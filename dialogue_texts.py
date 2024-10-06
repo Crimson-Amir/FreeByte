@@ -230,6 +230,14 @@ text_transaction = {
         'en': '❌ There was a problem sending the message! Please try again later',
         'fa': '❌ مشکلی در ارسال پیام وجود داشت! لطفا بعدا تلاش کنید'
     },
+    'without_caption': {
+        'en': 'Without Caption',
+        'fa': 'بدون توضیحات'
+    },
+    'ticket_was_answered': {
+        'en': '🎯 You recive message from admin',
+        'fa': '🎯 یک پیام از مدیر دریافت کردید'
+    },
 }
 
 keyboard_transaction = {
