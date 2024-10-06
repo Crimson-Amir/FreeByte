@@ -7,7 +7,7 @@ from telegram.ext import ConversationHandler, filters, MessageHandler, CallbackQ
 import setting
 
 
-REPLY_TICKET = 0
+REPLY_TICKET, SEND_TICKET = 0, 0
 
 @admin_access
 @message_token.check_token
@@ -33,28 +33,45 @@ async def reply_ticket(update, context):
     await context.bot.send_message(text=text, chat_id=user_detail.id, parse_mode='html', message_thread_id=setting.ticket_thread_id)
     return REPLY_TICKET
 
-async def get_ticket(update, context):
+async def assurance(update, context):
     user_detail = update.effective_chat
 
+    try:
+        context.user_data[f'admin_message'] = update.message.text if update.message.text else update.message.caption
+        context.user_data[f'file_id'] = update.message.photo[-1].file_id if update.message.photo else None
+        await context.bot.send_message(chat_id=user_detail.id, text='Are you sure you wanna send this message?\n\n/yes\n/no')
+        return SEND_TICKET
+    except Exception as e:
+        await context.bot.send_message(f'Error in send message: {e}', chat_id=user_detail.id, parse_mode='html')
+        return REPLY_TICKET
+
+
+async def answer_ticket(update, context):
+    user_detail = update.effective_chat
     try:
         class Update:
             class effective_chat:
                 id = user_detail.id
+
+        if update.message.text == 'no':
+            await context.bot.send_message(chat_id=user_detail.id, text='Conversation closed.')
+            return ConversationHandler.END
 
         fake_context = FakeContext()
         fake_update = Update()
 
         ft_instance = FindText(fake_update, fake_context)
 
-        file_id = update.message.photo[-1].file_id if update.message.photo else None
+        admin_message = context.user_data[f'admin_message'] or await ft_instance.find_text('without_caption')
+        file_id = context.user_data[f'file_id']
+
         user_id = context.user_data[f'ticket_user_id']
-        print(user_id)
-        text = f'Message Recived And Send to User {user_id}!'
+        text = f'Message Recived And Send to User {user_id}'
         keyboard = [[InlineKeyboardButton('New Message +', callback_data=f"reply_ticket_{user_id}")]]
 
-        await context.bot.send_message(text=text, chat_id=user_detail.id, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html', message_thread_id=setting.ticket_thread_id)
+        await context.bot.send_message(text=text, chat_id=user_detail.id, reply_markup=InlineKeyboardMarkup(keyboard),
+                                       parse_mode='html', message_thread_id=setting.ticket_thread_id)
 
-        admin_message = update.message.text if update.message.text else update.message.caption or await ft_instance.find_text('without_caption')
 
         user_text = (f"{await ft_instance.find_text('ticket_was_answered')}"
                      f"\n\n{admin_message}")
@@ -65,21 +82,22 @@ async def get_ticket(update, context):
         ]
 
         if file_id:
-            context.bot.send_photo(chat_id=user_id, photo=file_id, caption=user_text, reply_markup=InlineKeyboardMarkup(keyboard))
+            await context.bot.send_photo(chat_id=user_id, photo=file_id, caption=user_text,
+                                         reply_markup=InlineKeyboardMarkup(keyboard))
         else:
-            context.bot.send_message(chat_id=user_id, text=user_text, reply_markup=InlineKeyboardMarkup(keyboard))
+            await context.bot.send_message(chat_id=user_id, text=user_text, reply_markup=InlineKeyboardMarkup(keyboard))
+
+        return ConversationHandler.END
 
     except Exception as e:
         await context.bot.send_message(f'Error in send message: {e}', chat_id=user_detail.id, parse_mode='html')
-
-    finally:
-        return ConversationHandler.END
-
+        return REPLY_TICKET
 
 admin_ticket_reply_conversation = ConversationHandler(
     entry_points=[CallbackQueryHandler(reply_ticket, pattern='reply_ticket_(.*)')],
     states={
-        REPLY_TICKET: [MessageHandler(filters.TEXT & ~filters.COMMAND & ~filters.PHOTO, get_ticket)],
+        REPLY_TICKET: [MessageHandler(filters.TEXT & ~filters.COMMAND & ~filters.PHOTO, assurance)],
+        SEND_TICKET: [MessageHandler(filters.COMMAND, answer_ticket)],
     },
     fallbacks=[CommandHandler('cancel', cancel)]
 )
