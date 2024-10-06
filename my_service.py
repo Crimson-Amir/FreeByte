@@ -13,12 +13,14 @@ async def my_services(update, context):
     with SessionLocal() as session:
         with session.begin():
             purchases = vpn_crud.get_first_purchase_by_chat_id(session, user_detail.id)
+            print(purchases)
             numbers = None
 
             if not purchases and not numbers:
                 return await query.answer(await ft_instance.find_text('no_service_available'), show_alert=True)
 
             keyboard = []
+
             if purchases:
                 keyboard.append([InlineKeyboardButton(await ft_instance.find_keyboard('vpn_services_label'), callback_data='vpn_my_services')])
 
