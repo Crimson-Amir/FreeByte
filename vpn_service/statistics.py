@@ -67,8 +67,7 @@ def datetime_range(start, end, delta):
         current += delta
 
 
-async def reports_func(ft_instance, chat_id, get_purchased, period):
-    with SessionLocal() as session:
+async def reports_func(session, ft_instance, chat_id, get_purchased, period):
         with session.begin():
             date_now = datetime.now(pytz.timezone('Asia/Tehran'))
             get_purchased = [get_purchased]
@@ -194,64 +193,65 @@ async def report_section(update, context):
 
     chat_id = query.message.chat_id
     ft_instance = FindText(update, context)
-    get_data = await reports_func(ft_instance, chat_id, get_purchased=purchase_id, period=period)
+    with SessionLocal() as session:
+        get_data = await reports_func(session, ft_instance, chat_id, get_purchased=purchase_id, period=period)
 
-    if sum(get_data[1].values()) == 0 and not query.message.photo:
-        keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='main_menu')]]
-        query.edit_message_text(text=await ft_instance.find_text('vpn_no_usage_recored'), reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
-        return
+        if sum(get_data[1].values()) == 0 and not query.message.photo:
+            keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='main_menu')]]
+            query.edit_message_text(text=await ft_instance.find_text('vpn_no_usage_recored'), reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
+            return
 
-    mapping = {
-        'day': (None, await ft_instance.find_text('day'), f'statistics_week_{purchase_id}_{button_status}', await ft_instance.find_text('hour')),
-        'week': (f'statistics_day_{purchase_id}_{button_status}', await ft_instance.find_text('week'), f'statistics_month_{purchase_id}_{button_status}', await ft_instance.find_text('day')),
-        'month': (f'statistics_week_{purchase_id}_{button_status}', await ft_instance.find_text('month'), f'statistics_year_{purchase_id}_{button_status}', await ft_instance.find_text('week')),
-        'year': (f'statistics_month_{purchase_id}_{button_status}', await ft_instance.find_text('year'), None, await ft_instance.find_text('month')),
-    }
+        mapping = {
+            'day': (None, await ft_instance.find_text('day'), f'statistics_week_{purchase_id}_{button_status}', await ft_instance.find_text('hour')),
+            'week': (f'statistics_day_{purchase_id}_{button_status}', await ft_instance.find_text('week'), f'statistics_month_{purchase_id}_{button_status}', await ft_instance.find_text('day')),
+            'month': (f'statistics_week_{purchase_id}_{button_status}', await ft_instance.find_text('month'), f'statistics_year_{purchase_id}_{button_status}', await ft_instance.find_text('week')),
+            'year': (f'statistics_month_{purchase_id}_{button_status}', await ft_instance.find_text('year'), None, await ft_instance.find_text('month')),
+        }
 
-    back_button, button_name, next_button, constituent_name = (
-        mapping.get(period, (f'statistics_day_{purchase_id}', await ft_instance.find_text('week'), f'statistics_month_{purchase_id}', await ft_instance.find_text('day'))))
+        back_button, button_name, next_button, constituent_name = (
+            mapping.get(period, (f'statistics_day_{purchase_id}', await ft_instance.find_text('week'), f'statistics_month_{purchase_id}', await ft_instance.find_text('day'))))
 
-    detail_emoji, detail_callback, detail_text = '+', 'open', ''
+        detail_emoji, detail_callback, detail_text = '+', 'open', ''
 
-    if button_status == 'open':
-        detail_emoji, detail_callback = '-', 'hide'
-        detail_text = get_data[0]
+        if button_status == 'open':
+            detail_emoji, detail_callback = '-', 'hide'
+            detail_text = get_data[0]
 
-    arrows = []
-    if back_button: arrows.append(InlineKeyboardButton("⇤", callback_data=back_button))
-    arrows.append(InlineKeyboardButton(f"{button_name}", callback_data='just_for_show'))
-    if next_button: arrows.append(InlineKeyboardButton("⇥", callback_data=next_button))
+        arrows = []
+        if back_button: arrows.append(InlineKeyboardButton("⇤", callback_data=back_button))
+        arrows.append(InlineKeyboardButton(f"{button_name}", callback_data='just_for_show'))
+        if next_button: arrows.append(InlineKeyboardButton("⇥", callback_data=next_button))
 
-    keyboard = [
-        arrows,
-        [InlineKeyboardButton(f"{detail_emoji} {await ft_instance.find_keyboard('report_detail')}", callback_data=f'statistics_{period}_{purchase_id}_{detail_callback}')],
-        [InlineKeyboardButton(await ft_instance.find_keyboard('services_report'), callback_data=f'service_statistics_all_10'),
-         InlineKeyboardButton(await ft_instance.find_keyboard('refresh'), callback_data=f"statistics_{period}_{purchase_id}_{button_status}")],
-        [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='start_in_new_message')]
-    ]
+        keyboard = [
+            arrows,
+            [InlineKeyboardButton(f"{detail_emoji} {await ft_instance.find_keyboard('report_detail')}", callback_data=f'statistics_{period}_{purchase_id}_{detail_callback}')],
+            [InlineKeyboardButton(await ft_instance.find_keyboard('services_report'), callback_data=f'service_statistics_all_10'),
+             InlineKeyboardButton(await ft_instance.find_keyboard('refresh'), callback_data=f"statistics_{period}_{purchase_id}_{button_status}")],
+            [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='start_in_new_message')]
+        ]
 
-    get_plot_image = plot.get_plot(get_data[1], period)
+        get_plot_image = plot.get_plot(get_data[1], period)
 
-    text = (f'<b>{await ft_instance.find_text("usage_report")} {button_name}:</b>'
-            f'\n\n<b>• {await ft_instance.find_text("vpn_traffic_use")} {button_name}: {await format_traffic_from_megabyte(ft_instance, purchase_id)}</b>'
-            f'\n<b>• {await ft_instance.find_text("avreage_usage_in")} {constituent_name}: {await format_traffic_from_megabyte(ft_instance, get_data[3])}</b>')
-    text += f'\n{detail_text}'
+        text = (f'<b>{await ft_instance.find_text("usage_report")} {button_name}:</b>'
+                f'\n\n<b>• {await ft_instance.find_text("vpn_traffic_use")} {button_name}: {await format_traffic_from_megabyte(ft_instance, purchase_id)}</b>'
+                f'\n<b>• {await ft_instance.find_text("avreage_usage_in")} {constituent_name}: {await format_traffic_from_megabyte(ft_instance, get_data[3])}</b>')
+        text += f'\n{detail_text}'
 
-    if query.message.photo:
-        media_photo = InputMediaPhoto(media=get_plot_image, parse_mode='html')
-        await context.bot.edit_message_media(media=media_photo, chat_id=chat_id, message_id=query.message.message_id)
-        await context.bot.edit_message_caption(caption=text[:1024], parse_mode='html', chat_id=chat_id, message_id=query.message.message_id, reply_markup=InlineKeyboardMarkup(keyboard))
+        if query.message.photo:
+            media_photo = InputMediaPhoto(media=get_plot_image, parse_mode='html')
+            await context.bot.edit_message_media(media=media_photo, chat_id=chat_id, message_id=query.message.message_id)
+            await context.bot.edit_message_caption(caption=text[:1024], parse_mode='html', chat_id=chat_id, message_id=query.message.message_id, reply_markup=InlineKeyboardMarkup(keyboard))
 
-    else:
-        try:
-            query.delete_message()
-        except telegram.error.BadRequest as e:
-            if "Message can't be deleted for everyone" in str(e):
-                await query.answer()
-            else:
-                raise e
+        else:
+            try:
+                query.delete_message()
+            except telegram.error.BadRequest as e:
+                if "Message can't be deleted for everyone" in str(e):
+                    await query.answer()
+                else:
+                    raise e
 
-        await context.bot.send_photo(photo=get_plot_image, chat_id=chat_id, caption=text[:1024], reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
+            await context.bot.send_photo(photo=get_plot_image, chat_id=chat_id, caption=text[:1024], reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
 
 
 asyncio.run(statistics_timer(None))
