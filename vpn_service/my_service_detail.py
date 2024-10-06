@@ -221,7 +221,7 @@ async def service_advanced_options(update, context):
 async def get_configs_separately(update, context):
     query = update.callback_query
     ft_instance = FindText(update, context)
-    purchase_id, in_new_message = int(query.data.replace('vpn_get_configs_separately__', '').split('__'))
+    purchase_id, in_new_message = query.data.replace('vpn_get_configs_separately__', '').split('__')
     get_service = context.user_data.get(f'service_detail_{purchase_id}')
     user_detail = update.effective_chat
     configs_text = ''
@@ -232,7 +232,7 @@ async def get_configs_separately(update, context):
     else:
         with SessionLocal() as session:
             with session.begin():
-                purchase = vpn_crud.get_purchase(session, purchase_id)
+                purchase = vpn_crud.get_purchase(session, int(purchase_id))
                 main_server_ip = purchase.product.main_server.server_ip
                 get_from_server = await panel_api.marzban_api.get_user(main_server_ip, purchase.username)
                 get_configs = get_from_server.get('links')
