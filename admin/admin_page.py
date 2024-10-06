@@ -34,10 +34,10 @@ async def reply_ticket(update, context):
     user_detail = update.effective_chat
     query = update.callback_query
     user_id = int(query.data.replace('reply_ticket_', ''))
-    print(user_id)
     context.user_data[f'ticket_user_id'] = user_id
+    keyboard = [[InlineKeyboardButton("Cancel", callback_data='cancel_reply_ticket_conversation')]]
     text = 'send message (photo or text):'
-    await context.bot.send_message(text=text, chat_id=user_detail.id, parse_mode='html', message_thread_id=setting.ticket_thread_id)
+    await context.bot.send_message(text=text, chat_id=user_detail.id, parse_mode='html', message_thread_id=setting.ticket_thread_id, reply_markup=InlineKeyboardMarkup(keyboard))
     return REPLY_TICKET
 
 async def assurance(update, context):
@@ -105,5 +105,5 @@ admin_ticket_reply_conversation = ConversationHandler(
         REPLY_TICKET: [MessageHandler(filters.TEXT | filters.PHOTO, assurance)],
         SEND_TICKET: [CallbackQueryHandler(answer_ticket, pattern='^(confirm_send|cancel_send)$')],
     },
-    fallbacks=[CommandHandler('cancel', cancel)]
+    fallbacks=[CallbackQueryHandler(cancel, pattern='cancel_reply_ticket_conversation')]
 )
