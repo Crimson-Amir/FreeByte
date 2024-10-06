@@ -17,7 +17,7 @@ class UserDetail(Base):
     chat_id = Column(BigInteger, unique=True, nullable=False)
     language = Column(String, default='fa')
     wallet = Column(Integer, default=0)
-    invited_by = Column(BigInteger, ForeignKey('user_detail.chat_id'))
+    invited_by = Column(BigInteger, ForeignKey('UserDetail.chat_id'))
     register_date = Column(DateTime, default=datetime.now())
 
     financial_reports = relationship("FinancialReport", back_populates="owner", cascade="all, delete-orphan")
@@ -33,7 +33,7 @@ class UserConfig(Base):
     period_notification_day = Column(Integer, default=3)
     get_vpn_free_service = Column(Boolean, default=False)
 
-    chat_id = Column(BigInteger, ForeignKey('user_detail.chat_id'), unique=True)
+    chat_id = Column(BigInteger, ForeignKey('UserDetail.chat_id'), unique=True)
     owner = relationship("UserDetail", back_populates="config")
 
 
@@ -56,7 +56,7 @@ class FinancialReport(Base):
 
     register_date = Column(DateTime, default=datetime.now())
 
-    chat_id = Column(BigInteger, ForeignKey('user_detail.chat_id'))
+    chat_id = Column(BigInteger, ForeignKey('UserDetail.chat_id'))
     owner = relationship("UserDetail", back_populates="financial_reports")
 
 
@@ -80,7 +80,7 @@ class Product(Base):
     register_date = Column(DateTime, default=datetime.now())
     purchase = relationship("Purchase", back_populates="product")
 
-    main_server_id = Column(Integer, ForeignKey('main_server.server_id'))
+    main_server_id = Column(Integer, ForeignKey('MainServer.server_id'))
     main_server = relationship("MainServer", back_populates="products")
 
 
@@ -99,9 +99,9 @@ class Purchase(Base):
     upgrade_traffic = Column(Integer, default=0)
     upgrade_period = Column(Integer, default=0)
 
-    product_id = Column(Integer, ForeignKey('product.product_id'))
+    product_id = Column(Integer, ForeignKey('Product.product_id'))
     product = relationship("Product", back_populates="purchase")
-    chat_id = Column(BigInteger, ForeignKey('user_detail.chat_id'))
+    chat_id = Column(BigInteger, ForeignKey('UserDetail.chat_id'))
     owner = relationship("UserDetail", back_populates="services")
 
     register_date = Column(DateTime, default=datetime.now())
