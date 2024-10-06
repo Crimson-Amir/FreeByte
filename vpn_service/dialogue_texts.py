@@ -174,13 +174,108 @@ text_transaction = {
         'en': 'Select service for more info:',
         'fa': 'سرویس مورد نظر رو برای جزئیات بیشتر انتخاب کنید:'
     },
-
+    'saturday': {
+        'en': 'Saturday',
+        'fa': 'شنبه'
+    },
+    'sunday': {
+        'en': 'Sunday',
+        'fa': 'یکشنبه'
+    },
+    'monday': {
+        'en': 'Monday',
+        'fa': 'دوشنبه'
+    },
+    'tuesday': {
+        'en': 'Tuesday',
+        'fa': 'سه‌شنبه'
+    },
+    'wednesday': {
+        'en': 'Wednesday',
+        'fa': 'چهارشنبه'
+    },
+    'thursday': {
+        'en': 'Thursday',
+        'fa': 'پنج‌شنبه'
+    },
+    'friday': {
+        'en': 'Friday',
+        'fa': 'جمعه'
+    },
+    'without_usage': {
+        'en': 'Without Usage',
+        'fa': 'بدون مصرف'
+    },
+    'megabyte': {
+        'en': 'MB',
+        'fa': 'مگابایت'
+    },
+    'gigabyte': {
+        'en': 'GB',
+        'fa': 'گیگابایت'
+    },
+    'day': {
+        'en': 'day',
+        'fa': 'روز',
+    },
+    'week': {
+        'en': 'week',
+        'fa': 'هفته',
+    },
+    'month': {
+        'en': 'month',
+        'fa': 'ماه',
+    },
+    'year': {
+        'en': 'year',
+        'fa': 'سال',
+    },
+    'annually': {
+        'en': 'Annually',
+        'fa': 'سالانه',
+    },
+    'vpn_service_with_number': {
+        'en': 'Service With ID',
+        'fa': 'سرویس شماره',
+    },
+    'vpn_from_clock': {
+        'en': 'From',
+        'fa': 'از ساعت',
+    },
+    'to': {
+        'en': 'To',
+        'fa': 'تا',
+    },
+    'in': {
+        'en': 'In',
+        'fa': 'در',
+    },
+    'vpn_no_usage_recored': {
+        'en': 'No Usage Recorded',
+        'fa': 'مصرقی برای شما ثبت نشده است.',
+    },
+    'hour': {
+        'en': 'Hour',
+        'fa': 'ساعت',
+    },
+    'avreage_usage_in': {
+        'en': 'Avreage Usage In',
+        'fa': 'میانگین مصرف در'
+    },
+    'usage_report': {
+        'en': 'Usage Report',
+        'fa': 'گزارش مصرف'
+    },
 }
 
 keyboard_transaction = {
     'vpn_buy_vpn': {
         'en': '🛒 Buy Service',
         'fa': '🛒 خرید سرویس'
+    },
+    'services_report': {
+        'en': 'Services Report',
+        'fa': 'گزارش سرویس ها'
     },
     'vpn_reports': {
         'en': '📊 Reports',

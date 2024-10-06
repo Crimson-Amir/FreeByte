@@ -73,7 +73,7 @@ async def process_details(update: Update, context, entity_type: str):
                     active, server_ip, server_protocol, server_port, server_username, server_password = user_text.split('\n')
                     active = active == 'True'
                     new_entry = admin_crud.add_mainserver(session, active, server_ip, server_protocol, server_port, server_username, server_password)
-
+                    panel_api.marzban_api.refresh_connection()
                     new_id = new_entry.server_id
 
                 text = f'New {entity_type} added successfully\nID: {new_id}'

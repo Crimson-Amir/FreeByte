@@ -33,7 +33,7 @@ class MarzbanAPI:
                     'server_instant': server
                 }
 
-    async def refresh_connection_schedule(self, update, context):
+    async def refresh_connection_schedule(self, context):
         self.refresh_connection()
 
     @staticmethod

@@ -1,5 +1,5 @@
 from database_sqlalchemy import Base
-from sqlalchemy import Integer, String, Column, Boolean, ForeignKey, DateTime, BigInteger, ARRAY, Text
+from sqlalchemy import Integer, String, Column, Boolean, ForeignKey, DateTime, BigInteger, ARRAY, Text, JSON
 from sqlalchemy.orm import relationship
 from datetime import datetime
 
@@ -109,19 +109,15 @@ class Purchase(Base):
 
 
 class Statistics(Base):
-    __tablename__ = 'Statistics'
+    __tablename__ = 'statistics'
 
     statistics_id = Column(Integer, primary_key=True)
     traffic_usage = Column(String)
-    data = Column(String)
-
     register_date = Column(DateTime, default=datetime.now())
 
 class LastUsage(Base):
-    __tablename__ = 'Last_usage'
+    __tablename__ = 'last_usage'
 
     last_usage_id = Column(Integer, primary_key=True)
-    last_usage = Column(String)
-    data = Column(String)
-
+    last_usage = Column(JSON)
     register_date = Column(DateTime, default=datetime.now())

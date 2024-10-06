@@ -51,3 +51,23 @@ def remove_purchase(session, purchase_id:int):
 def get_all_main_servers(session):
     with session.begin():
         return session.query(model.MainServer).where(model.MainServer.active==True).all()
+
+def get_all_product(session):
+    with session.begin():
+        return session.query(model.Product).where(model.Product.active==True).all()
+
+def get_users_last_usage(session):
+    with session.begin():
+        return session.query(model.LastUsage).order_by(model.LastUsage.last_usage_id.desc()).first()
+
+
+def create_new_last_usage(session, last_usage_dict):
+    last_usage = model.LastUsage(last_usage=last_usage_dict)
+    session.add(last_usage)
+
+def create_new_statistics(session, statistics_usage_traffic):
+    statistics = model.Statistics(traffic_usage=statistics_usage_traffic)
+    session.add(statistics)
+
+def get_specific_time_statistics(session, date):
+    return session.query(model.Statistics).filter(model.Statistics.register_date > date).all()

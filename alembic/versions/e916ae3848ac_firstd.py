@@ -1,8 +1,8 @@
 """firstd
 
-Revision ID: 7eabb73f9bdc
+Revision ID: e916ae3848ac
 Revises: 
-Create Date: 2024-10-06 18:01:19.101473
+Create Date: 2024-10-07 01:12:23.306671
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '7eabb73f9bdc'
+revision: str = 'e916ae3848ac'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -27,7 +27,14 @@ def upgrade() -> None:
     sa.Column('register_date', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('last_usage_id')
     )
-    op.create_table('MainServer',
+    op.create_table('Statistics',
+    sa.Column('statistics_id', sa.Integer(), nullable=False),
+    sa.Column('traffic_usage', sa.String(), nullable=True),
+    sa.Column('data', sa.String(), nullable=True),
+    sa.Column('register_date', sa.DateTime(), nullable=True),
+    sa.PrimaryKeyConstraint('statistics_id')
+    )
+    op.create_table('main_server',
     sa.Column('server_id', sa.Integer(), nullable=False),
     sa.Column('active', sa.Boolean(), nullable=True),
     sa.Column('server_ip', sa.String(), nullable=True),
@@ -37,14 +44,7 @@ def upgrade() -> None:
     sa.Column('server_password', sa.String(), nullable=True),
     sa.PrimaryKeyConstraint('server_id')
     )
-    op.create_table('Statistics',
-    sa.Column('statistics_id', sa.Integer(), nullable=False),
-    sa.Column('traffic_usage', sa.String(), nullable=True),
-    sa.Column('data', sa.String(), nullable=True),
-    sa.Column('register_date', sa.DateTime(), nullable=True),
-    sa.PrimaryKeyConstraint('statistics_id')
-    )
-    op.create_table('UserDetail',
+    op.create_table('user_detail',
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('active', sa.Boolean(), nullable=True),
     sa.Column('email', sa.String(), nullable=True),
@@ -57,14 +57,14 @@ def upgrade() -> None:
     sa.Column('wallet', sa.Integer(), nullable=True),
     sa.Column('invited_by', sa.BigInteger(), nullable=True),
     sa.Column('register_date', sa.DateTime(), nullable=True),
-    sa.ForeignKeyConstraint(['invited_by'], ['UserDetail.chat_id'], ),
+    sa.ForeignKeyConstraint(['invited_by'], ['user_detail.chat_id'], ),
     sa.PrimaryKeyConstraint('user_id'),
     sa.UniqueConstraint('chat_id'),
     sa.UniqueConstraint('email'),
     sa.UniqueConstraint('phone_number'),
     sa.UniqueConstraint('username')
     )
-    op.create_table('FinancialReport',
+    op.create_table('financial_report',
     sa.Column('financial_id', sa.Integer(), nullable=False),
     sa.Column('operation', sa.String(), nullable=True),
     sa.Column('amount', sa.Integer(), nullable=False),
@@ -78,30 +78,30 @@ def upgrade() -> None:
     sa.Column('payment_status', sa.String(), nullable=True),
     sa.Column('register_date', sa.DateTime(), nullable=True),
     sa.Column('chat_id', sa.BigInteger(), nullable=True),
-    sa.ForeignKeyConstraint(['chat_id'], ['UserDetail.chat_id'], ),
+    sa.ForeignKeyConstraint(['chat_id'], ['user_detail.chat_id'], ),
     sa.PrimaryKeyConstraint('financial_id')
     )
-    op.create_table('Product',
+    op.create_table('product',
     sa.Column('product_id', sa.Integer(), nullable=False),
     sa.Column('active', sa.Boolean(), nullable=True),
     sa.Column('product_name', sa.String(), nullable=True),
     sa.Column('register_date', sa.DateTime(), nullable=True),
     sa.Column('main_server_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['main_server_id'], ['MainServer.server_id'], ),
+    sa.ForeignKeyConstraint(['main_server_id'], ['main_server.server_id'], ),
     sa.PrimaryKeyConstraint('product_id')
     )
-    op.create_table('UserConfig',
+    op.create_table('user_config',
     sa.Column('config_id', sa.Integer(), nullable=False),
     sa.Column('user_level', sa.Integer(), nullable=True),
     sa.Column('traffic_notification_percent', sa.Integer(), nullable=True),
     sa.Column('period_notification_day', sa.Integer(), nullable=True),
     sa.Column('get_vpn_free_service', sa.Boolean(), nullable=True),
     sa.Column('chat_id', sa.BigInteger(), nullable=True),
-    sa.ForeignKeyConstraint(['chat_id'], ['UserDetail.chat_id'], ),
+    sa.ForeignKeyConstraint(['chat_id'], ['user_detail.chat_id'], ),
     sa.PrimaryKeyConstraint('config_id'),
     sa.UniqueConstraint('chat_id')
     )
-    op.create_table('Purchase',
+    op.create_table('purchase',
     sa.Column('purchase_id', sa.Integer(), nullable=False),
     sa.Column('username', sa.String(), nullable=True),
     sa.Column('active', sa.Boolean(), nullable=True),
@@ -115,8 +115,8 @@ def upgrade() -> None:
     sa.Column('product_id', sa.Integer(), nullable=True),
     sa.Column('chat_id', sa.BigInteger(), nullable=True),
     sa.Column('register_date', sa.DateTime(), nullable=True),
-    sa.ForeignKeyConstraint(['chat_id'], ['UserDetail.chat_id'], ),
-    sa.ForeignKeyConstraint(['product_id'], ['Product.product_id'], ),
+    sa.ForeignKeyConstraint(['chat_id'], ['user_detail.chat_id'], ),
+    sa.ForeignKeyConstraint(['product_id'], ['product.product_id'], ),
     sa.PrimaryKeyConstraint('purchase_id')
     )
     # ### end Alembic commands ###
@@ -124,12 +124,12 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     # ### commands auto generated by Alembic - please adjust! ###
-    op.drop_table('Purchase')
-    op.drop_table('UserConfig')
-    op.drop_table('Product')
-    op.drop_table('FinancialReport')
-    op.drop_table('UserDetail')
+    op.drop_table('purchase')
+    op.drop_table('user_config')
+    op.drop_table('product')
+    op.drop_table('financial_report')
+    op.drop_table('user_detail')
+    op.drop_table('main_server')
     op.drop_table('Statistics')
-    op.drop_table('MainServer')
     op.drop_table('Last_usage')
     # ### end Alembic commands ###
