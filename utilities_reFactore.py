@@ -28,6 +28,7 @@ def human_readable(date, user_language):
 
 
 async def start(update, context, in_new_message=False, raise_error=False):
+    query = update.callback_query
     user_detail = update.effective_chat
     ft_instance = FindText(update, context, notify_user=False)
     text = await ft_instance.find_text('start_menu')
@@ -45,7 +46,8 @@ async def start(update, context, in_new_message=False, raise_error=False):
         ]
 
         if update.callback_query and "start_in_new_message" not in update.callback_query.data and not in_new_message:
-            return await update.callback_query.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(main_keyboard), parse_mode='html')
+            return await query.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(main_keyboard), parse_mode='html')
+        if query: await query.answer()
         return await context.bot.send_message(chat_id=user_detail.id, text=text, reply_markup=InlineKeyboardMarkup(main_keyboard), parse_mode='html')
 
     except Exception as e:

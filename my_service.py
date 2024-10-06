@@ -28,4 +28,5 @@ async def my_services(update, context):
             text = f"<b>{await ft_instance.find_text('select_service_category')}</b>"
             if update.callback_query:
                 return await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+            if query: await query.answer()
             return await context.bot.send_message(chat_id=user_detail.id, text=text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')

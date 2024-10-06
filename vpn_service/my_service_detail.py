@@ -35,6 +35,8 @@ async def my_services(update, context):
 
             if update.callback_query and update.callback_query.data != 'vpn_my_services_new':
                 return await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+
+            if query: await query.answer()
             return await context.bot.send_message(chat_id=user_detail.id, text=text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
 
 
@@ -242,5 +244,5 @@ async def get_configs_separately(update, context):
 
     keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=f'vpn_advanced_options__{purchase_id}')]]
     if in_new_message == 'yes':
-        return await context.send_message(text=configs_text, chat_id=user_detail.id, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+        return await context.bot.send_message(text=configs_text, chat_id=user_detail.id, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
     await query.edit_message_text(text=configs_text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
