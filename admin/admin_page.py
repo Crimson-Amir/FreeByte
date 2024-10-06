@@ -27,6 +27,7 @@ async def reply_ticket(update, context):
     user_detail = update.effective_chat
     query = update.callback_query
     user_id = int(query.data.replace('reply_ticket_', ''))
+    print(user_id)
     context.user_data[f'ticket_user_id'] = user_id
     text = ('send message (photo or text):'
             '\n\n/cancel')
@@ -37,8 +38,8 @@ async def assurance(update, context):
     user_detail = update.effective_chat
 
     try:
-        context.user_data[f'admin_message'] = update.message.text if update.message.text else update.message.caption
-        context.user_data[f'file_id'] = update.message.photo[-1].file_id if update.message.photo else None
+        context.user_data['admin_message'] = update.message.text if update.message.text else update.message.caption
+        context.user_data['file_id'] = update.message.photo[-1].file_id if update.message.photo else None
         await context.bot.send_message(chat_id=user_detail.id, text='Are you sure you wanna send this message?\n\n/yes\n/no', message_thread_id=setting.ticket_thread_id)
         return SEND_TICKET
 
