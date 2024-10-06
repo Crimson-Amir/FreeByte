@@ -1,3 +1,4 @@
+import logging
 import sys, os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from utilities_reFactore import message_token, cancel, FindText, FakeContext
@@ -92,7 +93,8 @@ async def answer_ticket(update, context):
         return ConversationHandler.END
 
     except Exception as e:
-        await context.bot.send_message(text='Error in send message: {e}', chat_id=user_detail.id, parse_mode='html', message_thread_id=setting.ticket_thread_id)
+        logging.error(f'erro in send ticket. {e}')
+        await context.bot.send_message(text=f'Error in send message: {e}', chat_id=user_detail.id, parse_mode='html', message_thread_id=setting.ticket_thread_id)
         return REPLY_TICKET
 
 admin_ticket_reply_conversation = ConversationHandler(
