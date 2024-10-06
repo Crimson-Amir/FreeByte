@@ -37,9 +37,11 @@ async def format_traffic_from_megabyte(ft_instance, traffic_in_begabyte):
 async def statistics_timer(context):
     with SessionLocal() as session:
         with session.begin():
-            users_last_usage = vpn_crud.get_users_last_usage(session).last_usage
+            users_last_usage = vpn_crud.get_users_last_usage(session)
             if not users_last_usage:
                 users_last_usage = {}
+            else:
+                users_last_usage = users_last_usage.last_usage
             all_product = vpn_crud.get_all_product(session)
             last_usage_dict, statistics_usage_traffic = {}, {}
             for product in all_product:
