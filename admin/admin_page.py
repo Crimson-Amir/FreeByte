@@ -56,7 +56,7 @@ async def answer_ticket(update, context):
 
         class Update:
             class effective_chat:
-                id = user_detail.user_id
+                id = user_id
 
         if update.message.text == 'no':
             await context.bot.send_message(chat_id=user_detail.id, text='Conversation closed.', message_thread_id=setting.ticket_thread_id)
