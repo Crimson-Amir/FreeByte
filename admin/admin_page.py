@@ -45,7 +45,8 @@ async def assurance(update, context):
         return SEND_TICKET
 
     except Exception as e:
-        await context.bot.send_message(f'Error in send message: {e}', chat_id=user_detail.id, parse_mode='html', message_thread_id=setting.ticket_thread_id)
+        logging.error(f'error in get message.\n{e}')
+        await context.bot.send_message(text=f'Error in send message: {e}', chat_id=user_detail.id, parse_mode='html', message_thread_id=setting.ticket_thread_id)
         return REPLY_TICKET
 
 
@@ -67,8 +68,8 @@ async def answer_ticket(update, context):
 
         ft_instance = FindText(fake_update, fake_context)
 
-        admin_message = context.user_data[f'admin_message'] or await ft_instance.find_text('without_caption')
-        file_id = context.user_data[f'file_id']
+        admin_message = context.user_data['admin_message'] or await ft_instance.find_text('without_caption')
+        file_id = context.user_data['file_id']
 
         text = f'Message Recived And Send to User {user_id}'
         keyboard = [[InlineKeyboardButton('New Message +', callback_data=f"reply_ticket_{user_id}")]]
