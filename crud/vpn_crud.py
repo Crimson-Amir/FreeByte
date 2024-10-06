@@ -15,7 +15,7 @@ def get_purchase_by_chat_id(session, chat_id):
 
 def get_first_purchase_by_chat_id(session, chat_id):
     return session.query(model.Purchase).filter(
-        chat_id==chat_id,
+        model.Purchase.chat_id==chat_id,
         model.Purchase.subscription_url.isnot(None)
     ).first()
 
