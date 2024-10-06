@@ -242,12 +242,13 @@ async def recive_test_service(update, context):
     text = f"{await ft_instance.find_text('vpn_test_sevice_test')}"
     with SessionLocal() as session:
         with session.begin():
-            purchase = crud.create_purchase(session, product_id, user.id, traffic, period)
+            config = crud.get_user_config(session, user.id)
 
-            if purchase.owner.config.get_vpn_free_service:
+            if config.get_vpn_free_service:
                 text = f"{await ft_instance.find_text('vpn_you_already_recive_this_service')}"
                 return await query.answer(text=text)
 
+            purchase = crud.create_purchase(session, product_id, user.id, traffic, period)
             service_id = purchase.purchase_id
             await create_service_for_user(update, context, session, service_id)
             crud.update_user_config(session, user.id, get_vpn_free_service=True)
