@@ -83,10 +83,9 @@ async def answer_ticket(update, context):
         ]
 
         if file_id:
-            await context.bot.send_photo(chat_id=user_id, photo=file_id, caption=user_text,
-                                         reply_markup=InlineKeyboardMarkup(keyboard))
+            await context.bot.send_photo(chat_id=int(user_id), photo=file_id, caption=user_text, reply_markup=InlineKeyboardMarkup(keyboard))
         else:
-            await context.bot.send_message(chat_id=user_id, text=user_text, reply_markup=InlineKeyboardMarkup(keyboard))
+            await context.bot.send_message(chat_id=int(user_id), text=user_text, reply_markup=InlineKeyboardMarkup(keyboard))
 
         return ConversationHandler.END
 
