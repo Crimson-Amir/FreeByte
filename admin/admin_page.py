@@ -65,6 +65,7 @@ async def answer_ticket(update, context):
             class effective_chat:
                 id = user_id
 
+        print(update.message.text)
         if update.message.text == '/no':
             await context.bot.send_message(chat_id=user_detail.id, text='Conversation closed.', message_thread_id=setting.ticket_thread_id)
             return ConversationHandler.END
@@ -105,10 +106,10 @@ async def answer_ticket(update, context):
         return REPLY_TICKET
 
 admin_ticket_reply_conversation = ConversationHandler(
-    entry_points=[CallbackQueryHandler(reply_ticket, pattern='reply_ticket_(.*)')],
+    entry_points=[CallbackQueryHandler(reply_ticket, pattern=r'reply_ticket_(\d+)')],
     states={
-        REPLY_TICKET: [MessageHandler(filters.TEXT | ~filters.PHOTO | ~filters.COMMAND, assurance)],
-        SEND_TICKET: [MessageHandler(filters.COMMAND, answer_ticket)],
+        REPLY_TICKET: [MessageHandler(filters.TEXT | filters.PHOTO, assurance), CommandHandler('cancel', cancel)],
+        SEND_TICKET: [MessageHandler(filters.TEXT & filters.COMMAND, answer_ticket), CommandHandler('cancel', cancel)],
     },
     fallbacks=[CommandHandler('cancel', cancel)]
 )
