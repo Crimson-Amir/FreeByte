@@ -39,11 +39,11 @@ async def assurance(update, context):
     try:
         context.user_data[f'admin_message'] = update.message.text if update.message.text else update.message.caption
         context.user_data[f'file_id'] = update.message.photo[-1].file_id if update.message.photo else None
-        await context.bot.send_message(chat_id=user_detail.id, text='Are you sure you wanna send this message?\n\n/yes\n/no')
+        await context.bot.send_message(chat_id=user_detail.id, text='Are you sure you wanna send this message?\n\n/yes\n/no', message_thread_id=setting.ticket_thread_id)
         return SEND_TICKET
 
     except Exception as e:
-        await context.bot.send_message(f'Error in send message: {e}', chat_id=user_detail.id, parse_mode='html')
+        await context.bot.send_message(f'Error in send message: {e}', chat_id=user_detail.id, parse_mode='html', message_thread_id=setting.ticket_thread_id)
         return REPLY_TICKET
 
 
@@ -55,7 +55,7 @@ async def answer_ticket(update, context):
                 id = user_detail.id
 
         if update.message.text == 'no':
-            await context.bot.send_message(chat_id=user_detail.id, text='Conversation closed.')
+            await context.bot.send_message(chat_id=user_detail.id, text='Conversation closed.', message_thread_id=setting.ticket_thread_id)
             return ConversationHandler.END
 
         fake_context = FakeContext()
@@ -91,7 +91,7 @@ async def answer_ticket(update, context):
         return ConversationHandler.END
 
     except Exception as e:
-        await context.bot.send_message(f'Error in send message: {e}', chat_id=user_detail.id, parse_mode='html')
+        await context.bot.send_message(f'Error in send message: {e}', chat_id=user_detail.id, parse_mode='html', message_thread_id=setting.ticket_thread_id)
         return REPLY_TICKET
 
 admin_ticket_reply_conversation = ConversationHandler(
