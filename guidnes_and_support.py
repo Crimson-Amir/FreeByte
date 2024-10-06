@@ -70,7 +70,7 @@ async def get_ticket(update, context):
 
     except Exception as e:
         logging.error(f'erro in recive ticket:\n{e}')
-        await context.bot.send_message(await ft_instance.find_text('error_in_recive_ticket'), chat_id=user_detail.id, parse_mode='html')
+        await context.bot.send_message(text=await ft_instance.find_text('error_in_recive_ticket'), chat_id=user_detail.id, parse_mode='html')
 
     finally:
         return ConversationHandler.END
