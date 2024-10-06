@@ -7,7 +7,7 @@ from telegram.ext import ConversationHandler, filters, MessageHandler, CallbackQ
 import setting
 
 
-REPLY_TICKET, SEND_TICKET = 0, 0
+REPLY_TICKET, SEND_TICKET = 0, 1
 
 @admin_access
 @message_token.check_token
@@ -41,6 +41,7 @@ async def assurance(update, context):
         context.user_data[f'file_id'] = update.message.photo[-1].file_id if update.message.photo else None
         await context.bot.send_message(chat_id=user_detail.id, text='Are you sure you wanna send this message?\n\n/yes\n/no')
         return SEND_TICKET
+
     except Exception as e:
         await context.bot.send_message(f'Error in send message: {e}', chat_id=user_detail.id, parse_mode='html')
         return REPLY_TICKET
