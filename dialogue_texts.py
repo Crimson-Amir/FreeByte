@@ -164,6 +164,10 @@ text_transaction = {
         'en': 'Configuration applied successfully ✅',
         'fa': 'تنظیمات با موفقیت اعمال شد ✅'
     },
+    'operation_successful': {
+        'en': 'The operation was successful ✅',
+        'fa': 'عملیات با موفقیت انجام شد ✅'
+    },
     'please_select_your_language': {
         'en': '🌎 Please select your language:',
         'fa': '🌎 لطفاً زبان خود را انتخاب کنید:'

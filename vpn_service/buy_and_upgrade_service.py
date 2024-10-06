@@ -209,7 +209,7 @@ async def handle_http_error(purchase, main_server_ip, purchase_id, original_erro
 async def recive_test_service_info(update, context):
     query = update.callback_query
     ft_instance = FindText(update, context)
-    traffic, period, inbound_id = 1, 7, 1
+    traffic, period, product_id = 1, 7, 1
     user = update.effective_chat
 
     with SessionLocal() as session:
@@ -224,7 +224,7 @@ async def recive_test_service_info(update, context):
             text = text.format(traffic, period)
 
             keyboard = [
-                [InlineKeyboardButton(await ft_instance.find_keyboard('recive_service'), callback_data=f'vpn_recive_test__{traffic}__{period}__{inbound_id}')],
+                [InlineKeyboardButton(await ft_instance.find_keyboard('recive_service'), callback_data=f'vpn_recive_test__{traffic}__{period}__{product_id}')],
                 [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='menu_services')]
             ]
 
@@ -237,9 +237,8 @@ async def recive_test_service(update, context):
     query = update.callback_query
     ft_instance = FindText(update, context)
     user = update.effective_chat
-    product_id, traffic, period = query.data.replace('vpn_recive_test__', '').split('__')
+    traffic, period, product_id = query.data.replace('vpn_recive_test__', '').split('__')
 
-    text = f"{await ft_instance.find_text('vpn_test_sevice_test')}"
     with SessionLocal() as session:
         with session.begin():
             config = crud.get_user_config(session, user.id)
@@ -257,4 +256,5 @@ async def recive_test_service(update, context):
                          f'\nService Username: {purchase.username}')
             await utilities_reFactore.report_to_admin('info', 'recive_test_service', admin_msg, purchase.owner)
 
-    await query.answer(text=text)
+    keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='menu_services')]]
+    await query.edit_message_text(text=await ft_instance.find_text('operation_successful'), reply_markup=InlineKeyboardMarkup(keyboard))

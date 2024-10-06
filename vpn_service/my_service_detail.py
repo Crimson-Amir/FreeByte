@@ -15,6 +15,7 @@ from vpn_service import panel_api, vpn_utilities
 @message_token.check_token
 async def my_services(update, context):
     query = update.callback_query
+    await query.answer()
     ft_instance = FindText(update, context)
     user_detail = update.effective_chat
 
@@ -30,7 +31,7 @@ async def my_services(update, context):
                 False: '🔴'
             }
 
-            text = f"<b>{await ft_instance.find_text('vpn_selected_service_info')}</b>"
+            text = f"<b>{await ft_instance.find_text('vpn_select_service_for_info')}</b>"
             keyboard = [[InlineKeyboardButton(f"{service.username} {service_status.get(service.active)}",
                                               callback_data=f'vpn_my_service_detail__{service.purchase_id}')]
                         for service in purchases]
@@ -75,7 +76,7 @@ async def service_info(update, context):
 
                 text = (
                     f"<b>{await ft_instance.find_text('vpn_selected_service_info')}</b>"
-                    f"\n\n{await ft_instance.find_text('vpn_service_name')} {purchase.username}"
+                    f"\n\n{await ft_instance.find_text('vpn_service_name')} <code>{purchase.username}</code>"
                     f"\n\n{await ft_instance.find_text('online_at')} {onlien_at}"
                     f"\n{await ft_instance.find_text('vpn_service_status')} {service_status.get(get_from_server.get('status'))}"
                     f"\n{await ft_instance.find_text('vpn_expire_date')} {expire_date}"
@@ -147,7 +148,7 @@ async def remove_service_for_user(update, context):
                 f'\n\nService username: {purchase.username}'
                 f'\nService ID: {purchase.purchase_id}'
                 f'\nService status before delete: {purchase.active}'
-                f'\nService Product: {purchase.product.product_name}'
+                f'\nService Product Name: {purchase.product.product_name}'
             )
 
             await utilities_reFactore.report_to_admin('info', 'remove_service_for_user', admin_msg, purchase.owner)
@@ -236,8 +237,8 @@ async def get_configs_separately(update, context):
                 get_from_server = await panel_api.marzban_api.get_user(main_server_ip, purchase.username)
                 get_configs = get_from_server.get('links')
 
-        for config in get_configs:
-            configs_text += f'\n\n<code>{config}</code>'
+    for config in get_configs:
+        configs_text += f'\n\n<code>{config}</code>'
 
     keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=f'vpn_advanced_options__{purchase_id}')]]
     await query.edit_message_text(text=configs_text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))

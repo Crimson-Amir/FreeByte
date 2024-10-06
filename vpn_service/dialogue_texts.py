@@ -83,10 +83,6 @@ text_transaction = {
         'en': '⚙️ VPN Settings',
         'fa': '⚙️ تنظیمات VPN'
     },
-    'vpn_get_configs': {
-        'en': 'Get Configs Separately',
-        'fa': 'دریافت سرویس ها به صورت جداگانه'
-    },
     'vpn_set_notification_status': {
         'en': '🔔 Choose Notification Preferences:'
               '\n\nYou will receive notifications after:'
@@ -174,6 +170,10 @@ text_transaction = {
         'en': 'You Already Recive This Service!',
         'fa': 'شما قبلا این سرویس رو دریافت کردید!'
     },
+    'vpn_select_service_for_info': {
+        'en': 'Select service for more info:',
+        'fa': 'سرویس مورد نظر رو برای جزئیات بیشتر انتخاب کنید:'
+    },
 }
 
 keyboard_transaction = {
@@ -236,5 +236,9 @@ keyboard_transaction = {
     'vpn_advanced_options': {
         'en': 'Advanced options ⥣',
         'fa': 'گزینه های پیشرفته ⥣'
+    },
+    'vpn_get_configs': {
+        'en': 'Get Service Configs ⥥',
+        'fa': 'دریافت کانفیگ های سرویس ⥥'
     },
 }
