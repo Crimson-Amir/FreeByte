@@ -83,7 +83,7 @@ async def answer_ticket(update, context):
                      f"\n\n{admin_message}")
         keyboard = [
             [InlineKeyboardButton(await ft_instance.find_from_database(user_id, 'ticket_new_message', 'keyboard'), callback_data=f"create_ticket")],
-            [InlineKeyboardButton(await ft_instance.find_from_database(user_id, 'back_button', 'keyboard'), callback_data='start')]
+            [InlineKeyboardButton(await ft_instance.find_from_database(user_id, 'back_button', 'keyboard'), callback_data='start_in_new_message')]
         ]
 
         if file_id:
