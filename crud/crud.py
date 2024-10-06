@@ -163,10 +163,10 @@ def create_purchase(session, product_id, chat_id, traffic, period):
     return purchase
 
 
-def update_purchase(session, product_id: int, upgrade_traffic, upgrade_period):
+def update_purchase(session, purchase_id: int, upgrade_traffic, upgrade_period):
     stmt = (
         update(model.Purchase)
-        .where(model.Purchase.purchase_id == product_id)
+        .where(model.Purchase.purchase_id == purchase_id)
         .values(
             upgrade_traffic = upgrade_traffic,
             upgrade_period = upgrade_period
@@ -178,6 +178,21 @@ def update_purchase(session, product_id: int, upgrade_traffic, upgrade_period):
     updated_purchase_id = result.scalar()
     return updated_purchase_id
 
+
+def chane_purchase_ownership(purchas_id: int, new_ownership_id):
+    with SessionLocal() as session:
+        with session.begin():
+            stmt = (
+                update(model.Purchase)
+                .where(model.Purchase.purchase_id == purchas_id)
+                .values(
+                    chat_id = new_ownership_id,
+                )
+                .returning(model.Purchase.purchase_id)
+            )
+
+            session.execute(stmt)
+            session.commit()
 
 def create_financial_report(session, operation, chat_id, amount, action, service_id, payment_status):
     financial = model.FinancialReport(

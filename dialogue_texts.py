@@ -240,6 +240,26 @@ text_transaction = {
         'en': 'Action Canceled✅',
         'fa': 'عملیات کنسل شد✅'
     },
+    'send_new_ownership_user_id': {
+        'en': 'Please send new user chat id.',
+        'fa': 'لطفا آیدی یوزر جدید رو بفرستید.'
+    },
+    'ask_for_assurnace': {
+        'en': 'Are you sure you want to do this?'
+              '\nService ID: {0}'
+              '\nNew user ID: {1}',
+        'fa': 'از انجام این کار مطمئن هستید؟'
+              '\nشماره سرویس: {0}'
+              '\nآیدی یوزر جدید: {1}'
+    },
+    'somthin_wrong_in_change_ownership': {
+        'en': 'Somthing went srong with changing ownership.\nPlease try again later',
+        'fa': 'مشکلی در تغییر مالکیت وجود داشت.\n لطفا بعدا امتحان کنید.'
+    },
+    'change_ownership_was_successfull': {
+        'en': '✅ Service with ID {0} was successfully transferred to user with chatID {1}',
+        'fa': '✅ سرویس شماره {0} با موفقیت به یوزر با آیدی {1} انتقال یافت.'
+    },
 }
 
 keyboard_transaction = {

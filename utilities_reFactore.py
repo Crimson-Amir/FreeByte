@@ -132,6 +132,28 @@ class HandleErrors:
                 await self.report_to_admin(err)
                 await self.handle_error_message_for_user(update, context)
         return wrapper
+    def handle_conversetion_error(self, func):
+        @functools.wraps(func)
+        async def wrapper(update, context, **kwargs):
+            user_detail = update.effective_chat
+            try:
+                return await func(update, context, **kwargs)
+            except Exception as e:
+                logging.error(f'error in {func.__name__}: {str(e)}')
+                tb = traceback.format_exc()
+                err = (
+                    f"🔴 An error occurred in {func.__name__}:"
+                    f"\n\nerror type:{type(e)}"
+                    f"\nerror reason: {str(e)}"
+                    f"\n\nUser fullname: {user_detail.first_name} {user_detail.last_name}"
+                    f"\nUsername: @{user_detail.username}"
+                    f"\nUser ID: {user_detail.id}"
+                    f"\n\nTraceback: \n{tb}"
+                )
+                await self.report_to_admin(err)
+                await self.handle_error_message_for_user(update, context)
+                return ConversationHandler.END
+        return wrapper
 
     @staticmethod
     async def report_to_admin(msg, message_thread_id=setting.error_thread_id):
@@ -268,6 +290,14 @@ class FakeContext:
 async def cancel(update, context):
     user_detail = update.effective_chat
     await context.bot.send_message(chat_id=user_detail.id, text="Action cancelled.")
+    return ConversationHandler.END
+
+async def cancel_user(update, context):
+    query = update.callback_query
+    ft_instance = FindText(update, context)
+    await query.delete_message()
+    user_detail = update.effective_chat
+    await context.bot.send_message(chat_id=user_detail.id, text=await ft_instance.find_text('action_canceled'))
     return ConversationHandler.END
 
 handle_error = HandleErrors()

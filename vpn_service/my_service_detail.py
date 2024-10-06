@@ -1,12 +1,15 @@
 from _datetime import datetime
-import sys, os
+import sys, os, logging
 import requests.exceptions
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from utilities_reFactore import FindText, message_token, handle_error, human_readable, report_to_admin
-from crud import vpn_crud
+from utilities_reFactore import FindText, message_token, handle_error, human_readable, report_to_admin, cancel_user as cancel
+from telegram.ext import ConversationHandler, filters, MessageHandler, CallbackQueryHandler, CommandHandler
+from crud import vpn_crud, crud
 from database_sqlalchemy import SessionLocal
 from vpn_service import panel_api, vpn_utilities
+
+GET_NEW_USER_CHAT_ID, GET_ASSURNACE = range(2)
 
 @handle_error.handle_functions_error
 @message_token.check_token
@@ -249,3 +252,58 @@ async def get_configs_separately(update, context):
     await query.edit_message_text(text=configs_text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
 
+@handle_error.handle_conversetion_error
+async def get_new_user_chat_id(update, context):
+    ft_instance = FindText(update, context)
+    user_detail = update.effective_chat
+    keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('cancel_button'), callback_data='cancel_change_ownership_conversation')]]
+    text = await ft_instance.find_text('send_new_ownership_user_id')
+    context.user_data['change_ownership_purchase_id'] = int(update.callback_query.data.replace('vpn_change_service_ownership__', ''))
+    await update.callback_query.answer()
+    await context.bot.send_message(text=text, chat_id=user_detail.id, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+    return GET_NEW_USER_CHAT_ID
+
+
+@handle_error.handle_conversetion_error
+async def assurance(update, context):
+    user_detail = update.effective_chat
+    ft_instance = FindText(update, context)
+    context.user_data['new_ownership_user_id'] = int(update.message.text)
+    keyboard = [
+        [InlineKeyboardButton(await ft_instance.find_keyboard('yes_im_sure'), callback_data='confirm_change')],
+        [InlineKeyboardButton(await ft_instance.find_keyboard('cancel_button'), callback_data='cancel_change')]
+    ]
+    text = await ft_instance.find_text('ask_for_assurnace')
+    text = text.format(context.user_data['change_ownership_purchase_id'], update.message.text)
+    await context.bot.send_message(chat_id=user_detail.id, text=text, reply_markup=InlineKeyboardMarkup(keyboard))
+    return GET_ASSURNACE
+
+@handle_error.handle_conversetion_error
+async def change_ownership(update, context):
+    user_detail = update.effective_chat
+    ft_instance = FindText(update, context)
+    query = update.callback_query
+    purchase_id = context.user_data['change_ownership_purchase_id']
+    new_user_id = context.user_data['change_ownership_purchase_id']
+    await query.delete_message()
+    if query.data == 'cancel_send':
+        await context.bot.send_message(chat_id=user_detail.id, text=await ft_instance.find_text('action_canceled'))
+        return ConversationHandler.END
+    crud.chane_purchase_ownership(purchase_id, new_user_id)
+    text = await ft_instance.find_text('change_ownership_was_successfull')
+    text = text.format(purchase_id, new_user_id)
+    keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='start_in_new_message')]]
+    await context.bot.send_message(chat_id=user_detail.id, text=text, reply_markup=InlineKeyboardMarkup(keyboard))
+    return ConversationHandler.END
+
+
+change_ownership_conversation = ConversationHandler(
+    entry_points=[CallbackQueryHandler(get_new_user_chat_id, pattern=r'vpn_change_service_ownership__(\d+)')],
+    states={
+        GET_NEW_USER_CHAT_ID: [MessageHandler(filters.TEXT, assurance)],
+        GET_ASSURNACE: [CallbackQueryHandler(change_ownership, pattern='^(confirm_change|cancel_change)$')],
+    },
+    fallbacks=[CallbackQueryHandler(cancel, pattern='cancel_change_ownership_conversation')],
+    conversation_timeout=600
+
+)

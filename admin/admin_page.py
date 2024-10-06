@@ -107,5 +107,7 @@ admin_ticket_reply_conversation = ConversationHandler(
         REPLY_TICKET: [MessageHandler(filters.TEXT | filters.PHOTO, assurance)],
         SEND_TICKET: [CallbackQueryHandler(answer_ticket, pattern='^(confirm_send|cancel_send)$')],
     },
-    fallbacks=[CallbackQueryHandler(cancel, pattern='cancel_reply_ticket_conversation')]
+    fallbacks=[CallbackQueryHandler(cancel, pattern='cancel_reply_ticket_conversation')],
+    conversation_timeout=600
+
 )

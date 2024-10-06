@@ -81,6 +81,7 @@ if __name__ == '__main__':
     application.add_handler(CallbackQueryHandler(my_service_detail.get_configs_separately, pattern='vpn_get_configs_separately__(.*)'))
     application.add_handler(CallbackQueryHandler(buy_and_upgrade_service.recive_test_service_info, pattern='vpn_recive_test_service'))
     application.add_handler(CallbackQueryHandler(buy_and_upgrade_service.recive_test_service, pattern='vpn_recive_test__(.*)'))
+    application.add_handler(my_service_detail.change_ownership_conversation)
 
     application.job_queue.run_repeating(panel_api.marzban_api.refresh_connection_schedule, interval=720 * 60, first=0)
 
