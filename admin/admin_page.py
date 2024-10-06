@@ -46,9 +46,10 @@ async def get_ticket(update, context):
 
         ft_instance = FindText(fake_update, fake_context)
 
-        text = 'Message Recived And Send to User {}!'
         file_id = update.message.photo[-1].file_id if update.message.photo else None
         user_id = context.user_data[f'ticket_user_id']
+        print(user_id)
+        text = f'Message Recived And Send to User {user_id}!'
         keyboard = [[InlineKeyboardButton('New Message +', callback_data=f"reply_ticket_{user_id}")]]
 
         await context.bot.send_message(text=text, chat_id=user_detail.id, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html', message_thread_id=setting.ticket_thread_id)
