@@ -20,9 +20,9 @@ class UserDetail(Base):
     invited_by = Column(BigInteger, ForeignKey('UserDetail.chat_id'))
     register_date = Column(DateTime, default=datetime.now())
 
-    financial_reports = relationship("FinancialReport", back_populates="owner")
-    services = relationship("Purchase", back_populates="owner")
-    config = relationship("UserConfig", back_populates="owner")
+    financial_reports = relationship("FinancialReport", back_populates="owner", cascade="all, delete-orphan")
+    services = relationship("Purchase", back_populates="owner", cascade="all, delete-orphan")
+    config = relationship("UserConfig", back_populates="owner", cascade="all, delete-orphan")
 
 class UserConfig(Base):
     __tablename__ = 'UserConfig'
