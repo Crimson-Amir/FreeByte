@@ -237,7 +237,7 @@ async def recive_test_service(update, context):
     query = update.callback_query
     ft_instance = FindText(update, context)
     user = update.effective_chat
-    product_id, traffic, period = query.data.replace('vpn_recive_test__', '')
+    product_id, traffic, period = query.data.replace('vpn_recive_test__', '').split('__')
 
     text = f"{await ft_instance.find_text('vpn_test_sevice_test')}"
     with SessionLocal() as session:
