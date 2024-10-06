@@ -2,11 +2,8 @@ from _datetime import datetime
 import sys, os
 import requests.exceptions
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
-
-import utilities_reFactore
-
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from utilities_reFactore import FindText, message_token, handle_error, human_readable
+from utilities_reFactore import FindText, message_token, handle_error, human_readable, report_to_admin
 from crud import vpn_crud
 from database_sqlalchemy import SessionLocal
 from vpn_service import panel_api, vpn_utilities
@@ -57,7 +54,9 @@ async def service_info(update, context):
                     return await query.answer(await ft_instance.find_text('no_service_available'), show_alert=True)
 
                 main_server = purchase.product.main_server
-                get_from_server = await panel_api.marzban_api.get_user(main_server.server_ip, purchase.username)
+
+                get_from_server = await vpn_utilities.get_purchase_info_from_server(context, purchase)
+
                 expire_date = human_readable(datetime.fromtimestamp(get_from_server.get('expire')), await ft_instance.find_user_language())
 
                 onlien_at = human_readable(get_from_server.get('online_at'), await ft_instance.find_user_language()) \
@@ -151,7 +150,9 @@ async def remove_service_for_user(update, context):
                 f'\nService Product Name: {purchase.product.product_name}'
             )
 
-            await utilities_reFactore.report_to_admin('info', 'remove_service_for_user', admin_msg, purchase.owner)
+            del context.user_data[f'service_detail_{purchase_id}'] if context.user_data[f'service_detail_{purchase_id}'] else None
+
+            await report_to_admin('info', 'remove_service_for_user', admin_msg, purchase.owner)
             await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
 
@@ -164,49 +165,49 @@ async def service_advanced_options(update, context):
     purchase_id = int(query.data.replace('vpn_advanced_options__', ''))
 
     try:
+
         with (SessionLocal() as session):
-            with session.begin():
-                purchase = vpn_crud.get_purchase(session, purchase_id)
-                if not purchase:
-                    return await query.answer(await ft_instance.find_text('no_service_available'), show_alert=True)
+            purchase = vpn_crud.get_purchase(session, purchase_id)
 
-                main_server = purchase.product.main_server
-                get_from_server = await panel_api.marzban_api.get_user(main_server.server_ip, purchase.username)
-                context.user_data[f'{purchase_id}_configs'] = get_from_server.get('links')
+            if not purchase:
+                return await query.answer(await ft_instance.find_text('no_service_available'), show_alert=True)
 
-                used_traffic = round(get_from_server.get('used_traffic') / (1024 ** 3), 3)
-                data_limit = round(get_from_server.get('data_limit') / (1024 ** 3), 3)
-                lifetime_used_traffic = round(get_from_server.get('lifetime_used_traffic') / (1024 ** 3), 3)
+            main_server = purchase.product.main_server
+            get_from_server = await vpn_utilities.get_purchase_info_from_server(context, purchase)
 
-                server_port = f":{main_server.server_port}" if main_server.server_port != 443 else ""
-                subscribe_link = f"{main_server.server_protocol}{main_server.server_ip}{server_port}{get_from_server.get('subscription_url')}"
+            used_traffic = round(get_from_server.get('used_traffic') / (1024 ** 3), 3)
+            data_limit = round(get_from_server.get('data_limit') / (1024 ** 3), 3)
+            lifetime_used_traffic = round(get_from_server.get('lifetime_used_traffic') / (1024 ** 3), 3)
 
-                service_status = {
-                    'active': await ft_instance.find_text('vpn_service_active'),
-                    'inactive': await ft_instance.find_text('vpn_service_inactive')
-                }
+            server_port = f":{main_server.server_port}" if main_server.server_port != 443 else ""
+            subscribe_link = f"{main_server.server_protocol}{main_server.server_ip}{server_port}{get_from_server.get('subscription_url')}"
 
-                text = (
-                    f"<b>{await ft_instance.find_text('vpn_selected_service_advanced_info')}</b>"
-                    f"\n\n{await ft_instance.find_text('vpn_service_name')} {purchase.username}"
-                    f"\n\n{await ft_instance.find_text('online_at')} {get_from_server.get('online_at') or await ft_instance.find_text('not_connected_yet')}"
-                    f"\n{await ft_instance.find_text('vpn_service_status')} {service_status.get(get_from_server.get('status'))}"
-                    f"\n{await ft_instance.find_text('vpn_used_traffic')} {used_traffic}GB"
-                    f"\n{await ft_instance.find_text('vpn_total_traffic')} {data_limit}GB"
-                    f"\n{await ft_instance.find_text('vpn_lifetime_used_traffic')} {lifetime_used_traffic}GB"
-                    f"\n{await ft_instance.find_text('created_at')} {datetime.fromisoformat(get_from_server.get('created_at')).strftime('%Y-%m-%d %H:%M:%S')}"
-                    f"\n{await ft_instance.find_text('vpn_expire_date')} {datetime.fromtimestamp(get_from_server.get('expire'))}"
-                    f"\n\n{await ft_instance.find_text('vpn_subsrciption_address')}"
-                    f"\n\n<code>{subscribe_link}</code>"
-                )
+            service_status = {
+                'active': await ft_instance.find_text('vpn_service_active'),
+                'inactive': await ft_instance.find_text('vpn_service_inactive')
+            }
 
-                keyboard = [
-                    [InlineKeyboardButton(await ft_instance.find_keyboard('vpn_get_configs'), callback_data=f'vpn_get_configs_separately__{purchase_id}')],
-                    [InlineKeyboardButton(await ft_instance.find_keyboard('refresh'), callback_data=f'vpn_advanced_options__{purchase_id}')],
-                    [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=f'vpn_my_service_detail__{purchase.purchase_id}')]
-                ]
+            text = (
+                f"<b>{await ft_instance.find_text('vpn_selected_service_advanced_info')}</b>"
+                f"\n\n{await ft_instance.find_text('vpn_service_name')} {purchase.username}"
+                f"\n\n{await ft_instance.find_text('online_at')} {get_from_server.get('online_at') or await ft_instance.find_text('not_connected_yet')}"
+                f"\n{await ft_instance.find_text('vpn_service_status')} {service_status.get(get_from_server.get('status'))}"
+                f"\n{await ft_instance.find_text('vpn_used_traffic')} {used_traffic}GB"
+                f"\n{await ft_instance.find_text('vpn_total_traffic')} {data_limit}GB"
+                f"\n{await ft_instance.find_text('vpn_lifetime_used_traffic')} {lifetime_used_traffic}GB"
+                f"\n{await ft_instance.find_text('created_at')} {datetime.fromisoformat(get_from_server.get('created_at')).strftime('%Y-%m-%d %H:%M:%S')}"
+                f"\n{await ft_instance.find_text('vpn_expire_date')} {datetime.fromtimestamp(get_from_server.get('expire'))}"
+                f"\n\n{await ft_instance.find_text('vpn_subsrciption_address')}"
+                f"\n\n<code>{subscribe_link}</code>"
+            )
 
-                await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+            keyboard = [
+                [InlineKeyboardButton(await ft_instance.find_keyboard('vpn_get_configs'), callback_data=f'vpn_get_configs_separately__{purchase_id}')],
+                [InlineKeyboardButton(await ft_instance.find_keyboard('refresh'), callback_data=f'vpn_advanced_options__{purchase_id}')],
+                [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=f'vpn_my_service_detail__{purchase.purchase_id}')]
+            ]
+
+            await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
     except requests.exceptions.HTTPError as e:
         if '404 Client Error' in str(e):
@@ -216,17 +217,20 @@ async def service_advanced_options(update, context):
     except Exception as e:
         raise e
 
+
 @handle_error.handle_functions_error
 @message_token.check_token
 async def get_configs_separately(update, context):
     query = update.callback_query
     ft_instance = FindText(update, context)
     purchase_id = int(query.data.replace('vpn_get_configs_separately__', ''))
-    get_configs = context.user_data[f'{purchase_id}_configs']
     configs_text = ''
 
-    if get_configs:
-        pass
+    get_service = context.user_data.get(f'service_detail_{purchase_id}')
+
+    if get_service:
+        get_configs = get_service.get('links')
+
     else:
         with SessionLocal() as session:
             with session.begin():
@@ -237,8 +241,6 @@ async def get_configs_separately(update, context):
 
     for config in get_configs:
         configs_text += f'\n\n<code>{config}</code>'
-
-    print(get_configs)
 
     keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=f'vpn_advanced_options__{purchase_id}')]]
     await query.edit_message_text(text=configs_text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
