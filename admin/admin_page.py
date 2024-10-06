@@ -36,8 +36,7 @@ async def reply_ticket(update, context):
     user_id = int(query.data.replace('reply_ticket_', ''))
     print(user_id)
     context.user_data[f'ticket_user_id'] = user_id
-    text = ('send message (photo or text):'
-            '\n\n/cancel')
+    text = 'send message (photo or text):'
     await context.bot.send_message(text=text, chat_id=user_detail.id, parse_mode='html', message_thread_id=setting.ticket_thread_id)
     return REPLY_TICKET
 
@@ -64,7 +63,7 @@ async def answer_ticket(update, context):
     user_detail = update.effective_chat
     query = update.callback_query
     try:
-        user_id = context.user_data[f'ticket_user_id']
+        user_id = context.user_data['ticket_user_id']
         await query.delet_message()
         if query.data == 'cancel_send':
             await context.bot.send_message(chat_id=user_detail.id, text='Conversation closed.', message_thread_id=setting.ticket_thread_id)
@@ -99,10 +98,11 @@ async def answer_ticket(update, context):
         await context.bot.send_message(text=f'Error in send message: {e}', chat_id=user_detail.id, parse_mode='html', message_thread_id=setting.ticket_thread_id)
         return REPLY_TICKET
 
+
 admin_ticket_reply_conversation = ConversationHandler(
     entry_points=[CallbackQueryHandler(reply_ticket, pattern=r'reply_ticket_(\d+)')],
     states={
-        REPLY_TICKET: [MessageHandler(filters.TEXT | filters.PHOTO, assurance), CommandHandler('cancel', cancel)],
+        REPLY_TICKET: [MessageHandler(filters.TEXT | filters.PHOTO, assurance)],
         SEND_TICKET: [CallbackQueryHandler(answer_ticket, pattern='^(confirm_send|cancel_send)$')],
     },
     fallbacks=[CommandHandler('cancel', cancel)]
