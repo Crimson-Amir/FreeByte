@@ -12,7 +12,7 @@ class Admin:
         with SessionLocal() as session:
             admins = admin_crud.get_admins(session)
             for admin in admins:
-                self.allow_admin[admin.chat_id] = admin.user_level
+                self.allow_admin[admin.chat_id] = admin.config.user_level
 
     async def refresh_admins_schedule(self):
         self.refresh_admins()
