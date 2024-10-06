@@ -284,11 +284,13 @@ async def change_ownership(update, context):
     ft_instance = FindText(update, context)
     query = update.callback_query
     purchase_id = context.user_data['change_ownership_purchase_id']
-    new_user_id = context.user_data['change_ownership_purchase_id']
+    new_user_id = context.user_data['new_ownership_user_id']
     await query.delete_message()
-    if query.data == 'cancel_send':
+
+    if query.data == 'cancel_change':
         await context.bot.send_message(chat_id=user_detail.id, text=await ft_instance.find_text('action_canceled'))
         return ConversationHandler.END
+
     crud.chane_purchase_ownership(purchase_id, new_user_id)
     text = await ft_instance.find_text('change_ownership_was_successfull')
     text = text.format(purchase_id, new_user_id)

@@ -185,12 +185,8 @@ def chane_purchase_ownership(purchas_id: int, new_ownership_id):
             stmt = (
                 update(model.Purchase)
                 .where(model.Purchase.purchase_id == purchas_id)
-                .values(
-                    chat_id = new_ownership_id,
-                )
-                .returning(model.Purchase.purchase_id)
+                .values(chat_id=new_ownership_id)
             )
-
             session.execute(stmt)
             session.commit()
 
