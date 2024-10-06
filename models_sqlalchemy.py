@@ -22,7 +22,7 @@ class UserDetail(Base):
 
     financial_reports = relationship("FinancialReport", back_populates="owner", cascade="all, delete-orphan")
     services = relationship("Purchase", back_populates="owner", cascade="all, delete-orphan")
-    config = relationship("UserConfig", back_populates="owner", cascade="all, delete-orphan")
+    config = relationship("UserConfig", back_populates="owner", cascade="all, delete-orphan", uselist=False)
 
 class UserConfig(Base):
     __tablename__ = 'user_config'
