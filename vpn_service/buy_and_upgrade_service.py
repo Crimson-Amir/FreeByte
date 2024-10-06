@@ -221,11 +221,11 @@ async def recive_test_service_info(update, context):
                 return await query.answer(text=text)
 
             text = f"{await ft_instance.find_text('vpn_test_sevice_test')}"
-            text.format(traffic, period)
+            text = text.format(traffic, period)
 
             keyboard = [
                 [InlineKeyboardButton(await ft_instance.find_keyboard('recive_service'), callback_data=f'vpn_recive_test__{traffic}__{period}__{inbound_id}')],
-                [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='start')]
+                [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='menu_services')]
             ]
 
             await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
