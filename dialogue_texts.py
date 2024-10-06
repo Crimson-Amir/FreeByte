@@ -216,7 +216,7 @@ text_transaction = {
     },
     'create_ticket_text': {
         'en': 'Please send Your message (text, photo)',
-        'fa': 'لطفا پیام خودتون رو بفرستید (پیام یا عکس)'
+        'fa': 'لطفا پیام خودتون رو بفرستید (متن یا عکس)'
     },
     'ticket_recived': {
         'en': 'Your message has been sent✅'
@@ -373,7 +373,7 @@ keyboard_transaction = {
     },
     'vpn_guide_label': {
         'en': 'VPN Guide',
-        'fa': 'راهنمای VPN'
+        'fa': 'راهنما VPN'
     },
     'previous': {
         'en': '⬅️ Previous',
