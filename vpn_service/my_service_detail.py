@@ -226,11 +226,10 @@ async def get_configs_separately(update, context):
     ft_instance = FindText(update, context)
     purchase_id = int(query.data.replace('vpn_get_configs_separately__', ''))
     configs_text = ''
-
     get_service = context.user_data.get(f'service_detail_{purchase_id}')
 
     if get_service:
-        get_configs = get_service.get('links')
+        get_configs = get_service.get('info_from_server', {}).get('links', ['no_links'])
 
     else:
         with SessionLocal() as session:
