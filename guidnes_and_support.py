@@ -41,39 +41,39 @@ async def create_ticket(update, context):
 async def get_ticket(update, context):
     user_detail = update.effective_chat
     ft_instance = FindText(update, context)
-    # try:
+    try:
 
-    text = await ft_instance.find_text('ticket_recived')
-    file_id = update.message.photo[-1].file_id if update.message.photo else None
+        text = await ft_instance.find_text('ticket_recived')
+        file_id = update.message.photo[-1].file_id if update.message.photo else None
 
-    keyboard = [
-        [InlineKeyboardButton(await ft_instance.find_keyboard('ticket_new_message'), callback_data=f"create_ticket")],
-        [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='start')]
-    ]
+        keyboard = [
+            [InlineKeyboardButton(await ft_instance.find_keyboard('ticket_new_message'), callback_data=f"create_ticket")],
+            [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='start')]
+        ]
 
-    await context.bot.send_message(text, chat_id=user_detail.id, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
+        await context.bot.send_message(text=text, chat_id=user_detail.id, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
 
-    user_message = update.message.text if update.message.text else update.message.caption or 'Witout Caption!'
-    admin_text = (f"📩 New Ticket Recived"
-                  "\n\n👤 User Info:"
-                  f"\nUser name: {user_detail.first_name} {user_detail.last_name}"
-                  f"\nUser ID: {user_detail.id}"
-                  f"\nUsername: @{user_detail.username}"
-                  f"\n\n💬 Message:"
-                  f"\n{user_message}")
-    admin_keyboard = [[InlineKeyboardButton("Reply", callback_data=f"reply_ticket_{user_detail.id}")]]
+        user_message = update.message.text if update.message.text else update.message.caption or 'Witout Caption!'
+        admin_text = (f"📩 New Ticket Recived"
+                      "\n\n👤 User Info:"
+                      f"\nUser name: {user_detail.first_name} {user_detail.last_name}"
+                      f"\nUser ID: {user_detail.id}"
+                      f"\nUsername: @{user_detail.username}"
+                      f"\n\n💬 Message:"
+                      f"\n{user_message}")
+        admin_keyboard = [[InlineKeyboardButton("Reply", callback_data=f"reply_ticket_{user_detail.id}")]]
 
-    if file_id:
-        await context.bot.send_photo(chat_id=ADMIN_CHAT_IDs[0], photo=file_id, caption=admin_text, reply_markup=InlineKeyboardMarkup(admin_keyboard), message_thread_id=setting.ticket_thread_id)
-    else:
-        await context.bot.send_message(chat_id=ADMIN_CHAT_IDs[0], text=admin_text, reply_markup=InlineKeyboardMarkup(admin_keyboard), message_thread_id=setting.ticket_thread_id)
+        if file_id:
+            await context.bot.send_photo(chat_id=ADMIN_CHAT_IDs[0], photo=file_id, caption=admin_text, reply_markup=InlineKeyboardMarkup(admin_keyboard), message_thread_id=setting.ticket_thread_id)
+        else:
+            await context.bot.send_message(chat_id=ADMIN_CHAT_IDs[0], text=admin_text, reply_markup=InlineKeyboardMarkup(admin_keyboard), message_thread_id=setting.ticket_thread_id)
 
-    # except Exception as e:
-    #     logging.error(f'erro in recive ticket:\n{e}')
-    #     await context.bot.send_message(text=await ft_instance.find_text('error_in_recive_ticket'), chat_id=user_detail.id, parse_mode='html')
-    #
-    # finally:
-    #     return ConversationHandler.END
+    except Exception as e:
+        logging.error(f'erro in recive ticket:\n{e}')
+        await context.bot.send_message(text=await ft_instance.find_text('error_in_recive_ticket'), chat_id=user_detail.id, parse_mode='html')
+
+    finally:
+        return ConversationHandler.END
 
 
 ticket_conversation = ConversationHandler(
