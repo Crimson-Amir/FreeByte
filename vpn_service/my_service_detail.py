@@ -12,7 +12,6 @@ from vpn_service import panel_api, vpn_utilities
 @message_token.check_token
 async def my_services(update, context):
     query = update.callback_query
-    await query.answer()
     ft_instance = FindText(update, context)
     user_detail = update.effective_chat
 
@@ -166,8 +165,7 @@ async def service_advanced_options(update, context):
     purchase_id = int(query.data.replace('vpn_advanced_options__', ''))
 
     try:
-
-        with (SessionLocal() as session):
+        with SessionLocal() as session:
             purchase = vpn_crud.get_purchase(session, purchase_id)
 
             if not purchase:
@@ -213,7 +211,6 @@ async def service_advanced_options(update, context):
     except requests.exceptions.HTTPError as e:
         if '404 Client Error' in str(e):
             return await query.answer(await ft_instance.find_text('vpn_service_not_exit_in_server'), show_alert=True)
-        raise e
 
     except Exception as e:
         raise e
