@@ -4,6 +4,7 @@ from utilities_reFactore import message_token, cancel, FindText, FakeContext
 from admin.admin_utilities import admin_access
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import ConversationHandler, filters, MessageHandler, CallbackQueryHandler, CommandHandler
+import setting
 
 
 REPLY_TICKET = 0
@@ -29,7 +30,7 @@ async def reply_ticket(update, context):
     context.user_data[f'ticket_user_id'] = user_id
     text = ('send message (photo or text):'
             '\n\n/cancel')
-    await context.bot.send_message(text=text, chat_id=user_detail.id, parse_mode='html')
+    await context.bot.send_message(text=text, chat_id=user_detail.id, parse_mode='html', message_thread_id=setting.ticket_thread_id)
     return REPLY_TICKET
 
 async def get_ticket(update, context):
@@ -50,7 +51,7 @@ async def get_ticket(update, context):
         user_id = context.user_data[f'ticket_user_id']
         keyboard = [[InlineKeyboardButton('New Message +', callback_data=f"reply_ticket_{user_id}")]]
 
-        await context.bot.send_message(text, chat_id=user_detail.id, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
+        await context.bot.send_message(text=text, chat_id=user_detail.id, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html', message_thread_id=setting.ticket_thread_id)
 
         admin_message = update.message.text if update.message.text else update.message.caption or await ft_instance.find_text('without_caption')
 
