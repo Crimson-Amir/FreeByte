@@ -32,7 +32,7 @@ async def services(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     with SessionLocal() as session:
         config = crud.get_user_config(session, user.id)
-
+        print(config.get_vpn_free_service)
         keyboard = [
             [InlineKeyboardButton(await ft_instance.find_keyboard('buy_vpn_service_label'), callback_data='vpn_set_period_traffic__30_40'),
             InlineKeyboardButton(await ft_instance.find_keyboard('get_vpn_test_label'), callback_data='vpn_recive_test_service') if config.get_vpn_free_service else None],
