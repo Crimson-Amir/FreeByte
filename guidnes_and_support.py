@@ -64,9 +64,9 @@ async def get_ticket(update, context):
         admin_keyboard = [[InlineKeyboardButton("Reply", callback_data=f"reply_ticket_{user_detail.id}")]]
 
         if file_id:
-            context.bot.send_photo(chat_id=ADMIN_CHAT_IDs[0], photo=file_id, caption=admin_text, reply_markup=InlineKeyboardMarkup(admin_keyboard), message_thread_id=setting.ticket_thread_id)
+            await context.bot.send_photo(chat_id=ADMIN_CHAT_IDs[0], photo=file_id, caption=admin_text, reply_markup=InlineKeyboardMarkup(admin_keyboard), message_thread_id=setting.ticket_thread_id)
         else:
-            context.bot.send_message(chat_id=ADMIN_CHAT_IDs[0], text=admin_text, reply_markup=InlineKeyboardMarkup(admin_keyboard), message_thread_id=setting.ticket_thread_id)
+            await context.bot.send_message(chat_id=ADMIN_CHAT_IDs[0], text=admin_text, reply_markup=InlineKeyboardMarkup(admin_keyboard), message_thread_id=setting.ticket_thread_id)
 
     except Exception as e:
         logging.error(f'erro in recive ticket:\n{e}')
