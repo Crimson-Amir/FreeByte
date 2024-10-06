@@ -1,7 +1,7 @@
 import logging
 import sys, os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from utilities_reFactore import message_token, cancel, FindText, FakeContext
+from utilities_reFactore import message_token, FindText, FakeContext
 from admin.admin_utilities import admin_access
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import ConversationHandler, filters, MessageHandler, CallbackQueryHandler, CommandHandler
@@ -21,6 +21,12 @@ async def admin_page(update, context):
     if update.callback_query:
         return await update.callback_query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
     return await context.bot.send_message(chat_id=user_detail.id, text=text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
+
+
+async def cancel(update, context):
+    user_detail = update.effective_chat
+    await context.bot.send_message(chat_id=user_detail.id, text="Action cancelled.", message_thread_id=setting.ticket_thread_id)
+    return ConversationHandler.END
 
 
 async def reply_ticket(update, context):
