@@ -186,8 +186,6 @@ async def service_advanced_options(update, context):
                     'inactive': await ft_instance.find_text('vpn_service_inactive')
                 }
 
-                print(get_from_server.get('sub_last_user_agent'))
-
                 text = (
                     f"<b>{await ft_instance.find_text('vpn_selected_service_advanced_info')}</b>"
                     f"\n\n{await ft_instance.find_text('vpn_service_name')} {purchase.username}"
@@ -239,6 +237,8 @@ async def get_configs_separately(update, context):
 
     for config in get_configs:
         configs_text += f'\n\n<code>{config}</code>'
+
+    print(get_configs)
 
     keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=f'vpn_advanced_options__{purchase_id}')]]
     await query.edit_message_text(text=configs_text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
