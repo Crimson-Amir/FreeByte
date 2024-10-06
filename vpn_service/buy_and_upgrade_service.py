@@ -243,12 +243,17 @@ async def recive_test_service(update, context):
     with SessionLocal() as session:
         with session.begin():
             purchase = crud.create_purchase(session, product_id, user.id, traffic, period)
+
+            if purchase.owner.config.get_vpn_free_service:
+                text = f"{await ft_instance.find_text('vpn_you_already_recive_this_service')}"
+                return await query.answer(text=text)
+
             service_id = purchase.purchase_id
             await create_service_for_user(update, context, session, service_id)
             crud.update_user_config(session, user.id, get_vpn_free_service=True)
             admin_msg = ('User Recived Test Service.'
                          f'\nService ID: {purchase.purchase_id}'
                          f'\nService Username: {purchase.username}')
-            await utilities_reFactore.report_to_user('info', user.id, msg=admin_msg)
+            await utilities_reFactore.report_to_admin('info', 'recive_test_service', msg=admin_msg, purchase.owner)
 
     await query.answer(text=text)
