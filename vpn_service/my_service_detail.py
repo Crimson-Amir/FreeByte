@@ -193,11 +193,11 @@ async def service_advanced_options(update, context):
                     f"\n\n{await ft_instance.find_text('vpn_service_name')} {purchase.username}"
                     f"\n\n{await ft_instance.find_text('online_at')} {get_from_server.get('online_at') or await ft_instance.find_text('not_connected_yet')}"
                     f"\n{await ft_instance.find_text('vpn_service_status')} {service_status.get(get_from_server.get('status'))}"
-                    f"\n{await ft_instance.find_text('vpn_expire_date')} {datetime.fromtimestamp(get_from_server.get('expire'))}"
                     f"\n{await ft_instance.find_text('vpn_used_traffic')} {used_traffic}GB"
                     f"\n{await ft_instance.find_text('vpn_total_traffic')} {data_limit}GB"
                     f"\n{await ft_instance.find_text('vpn_lifetime_used_traffic')} {lifetime_used_traffic}GB"
                     f"\n{await ft_instance.find_text('created_at')} {datetime.fromisoformat(get_from_server.get('created_at')).strftime('%Y-%m-%d %H:%M:%S')}"
+                    f"\n{await ft_instance.find_text('vpn_expire_date')} {datetime.fromtimestamp(get_from_server.get('expire'))}"
                     f"\n\n{await ft_instance.find_text('vpn_subsrciption_address')}"
                     f"\n\n<code>{subscribe_link}</code>"
                 )
