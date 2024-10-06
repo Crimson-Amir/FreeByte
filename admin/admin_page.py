@@ -8,7 +8,7 @@ from telegram.ext import ConversationHandler, filters, MessageHandler, CallbackQ
 import setting
 
 
-REPLY_TICKET, SEND_TICKET = 0, 1
+REPLY_TICKET, SEND_TICKET = range(2)
 
 @admin_access
 @message_token.check_token
@@ -107,7 +107,7 @@ async def answer_ticket(update, context):
 admin_ticket_reply_conversation = ConversationHandler(
     entry_points=[CallbackQueryHandler(reply_ticket, pattern='reply_ticket_(.*)')],
     states={
-        REPLY_TICKET: [MessageHandler(filters.TEXT & ~filters.COMMAND & filters.PHOTO, assurance)],
+        REPLY_TICKET: [MessageHandler(filters.TEXT & ~filters.COMMAND & ~filters.PHOTO, assurance)],
         SEND_TICKET: [MessageHandler(filters.COMMAND, answer_ticket)],
     },
     fallbacks=[CommandHandler('cancel', cancel)]
