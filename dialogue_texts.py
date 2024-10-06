@@ -338,8 +338,8 @@ keyboard_transaction = {
         'fa': 'دریافت سرویس ↧'
     },
     'get_vpn_test_label': {
-        'en': '🎁 Get VPN Test Service',
-        'fa': '🎁 دریافت سرویس تست VPN'
+        'en': '🎁 Get VPN Test',
+        'fa': '🎁 دریافت تست VPN'
     },
 
 }
