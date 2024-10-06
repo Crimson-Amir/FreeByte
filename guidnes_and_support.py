@@ -88,7 +88,7 @@ async def get_ticket(update, context):
 ticket_conversation = ConversationHandler(
     entry_points=[CallbackQueryHandler(create_ticket, pattern='create_ticket')],
     states={
-        TICKET_MESSAGE: [MessageHandler(filters.TEXT | ~filters.PHOTO, get_ticket)],
+        TICKET_MESSAGE: [MessageHandler(filters.TEXT | filters.PHOTO, get_ticket)],
     },
     fallbacks=[CallbackQueryHandler(cancel, pattern='cancel_user_ticket_conversation')]
 )
