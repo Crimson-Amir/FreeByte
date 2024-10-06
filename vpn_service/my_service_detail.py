@@ -150,7 +150,8 @@ async def remove_service_for_user(update, context):
                 f'\nService Product Name: {purchase.product.product_name}'
             )
 
-            del context.user_data[f'service_detail_{purchase_id}'] if context.user_data[f'service_detail_{purchase_id}'] else None
+            if context.user_data.get(f'service_detail_{purchase_id}'):
+                del context.user_data[f'service_detail_{purchase_id}']
 
             await report_to_admin('info', 'remove_service_for_user', admin_msg, purchase.owner)
             await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
