@@ -231,7 +231,7 @@ async def get_configs_separately(update, context):
     else:
         with SessionLocal() as session:
             with session.begin():
-                purchase = vpn_crud.remove_purchase(session, purchase_id)
+                purchase = vpn_crud.get_purchase(session, purchase_id)
                 main_server_ip = purchase.product.main_server.server_ip
                 get_from_server = await panel_api.marzban_api.get_user(main_server_ip, purchase.username)
                 get_configs = get_from_server.get('links')

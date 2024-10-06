@@ -251,9 +251,11 @@ async def recive_test_service(update, context):
             service_id = purchase.purchase_id
             await create_service_for_user(update, context, session, service_id)
             crud.update_user_config(session, user.id, get_vpn_free_service=True)
+
             admin_msg = ('User Recived Test Service.'
                          f'\nService ID: {purchase.purchase_id}'
                          f'\nService Username: {purchase.username}')
+
             await utilities_reFactore.report_to_admin('info', 'recive_test_service', admin_msg, purchase.owner)
 
     keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='menu_services')]]
