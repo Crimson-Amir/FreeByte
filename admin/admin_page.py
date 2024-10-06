@@ -50,49 +50,50 @@ async def assurance(update, context):
 
 async def answer_ticket(update, context):
     user_detail = update.effective_chat
-    # try:
-    class Update:
-        class effective_chat:
-            id = user_detail.id
+    try:
+        user_id = context.user_data[f'ticket_user_id']
 
-    if update.message.text == 'no':
-        await context.bot.send_message(chat_id=user_detail.id, text='Conversation closed.', message_thread_id=setting.ticket_thread_id)
+        class Update:
+            class effective_chat:
+                id = user_detail.user_id
+
+        if update.message.text == 'no':
+            await context.bot.send_message(chat_id=user_detail.id, text='Conversation closed.', message_thread_id=setting.ticket_thread_id)
+            return ConversationHandler.END
+
+        fake_context = FakeContext()
+        fake_update = Update()
+
+        ft_instance = FindText(fake_update, fake_context)
+
+        admin_message = context.user_data[f'admin_message'] or await ft_instance.find_text('without_caption')
+        file_id = context.user_data[f'file_id']
+
+        text = f'Message Recived And Send to User {user_id}'
+        keyboard = [[InlineKeyboardButton('New Message +', callback_data=f"reply_ticket_{user_id}")]]
+
+        await context.bot.send_message(text=text, chat_id=user_detail.id, reply_markup=InlineKeyboardMarkup(keyboard),
+                                       parse_mode='html', message_thread_id=setting.ticket_thread_id)
+
+
+        user_text = (f"{await ft_instance.find_text('ticket_was_answered')}"
+                     f"\n\n{admin_message}")
+
+        keyboard = [
+            [InlineKeyboardButton(await ft_instance.find_keyboard('ticket_new_message'), callback_data=f"create_ticket")],
+            [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='start')]
+        ]
+
+        if file_id:
+            await context.bot.send_photo(chat_id=int(user_id), photo=file_id, caption=user_text, reply_markup=InlineKeyboardMarkup(keyboard))
+        else:
+            await context.bot.send_message(chat_id=int(user_id), text=user_text, reply_markup=InlineKeyboardMarkup(keyboard))
+
         return ConversationHandler.END
 
-    fake_context = FakeContext()
-    fake_update = Update()
-
-    ft_instance = FindText(fake_update, fake_context)
-
-    admin_message = context.user_data[f'admin_message'] or await ft_instance.find_text('without_caption')
-    file_id = context.user_data[f'file_id']
-
-    user_id = context.user_data[f'ticket_user_id']
-    text = f'Message Recived And Send to User {user_id}'
-    keyboard = [[InlineKeyboardButton('New Message +', callback_data=f"reply_ticket_{user_id}")]]
-
-    await context.bot.send_message(text=text, chat_id=user_detail.id, reply_markup=InlineKeyboardMarkup(keyboard),
-                                   parse_mode='html', message_thread_id=setting.ticket_thread_id)
-
-
-    user_text = (f"{await ft_instance.find_text('ticket_was_answered')}"
-                 f"\n\n{admin_message}")
-
-    keyboard = [
-        [InlineKeyboardButton(await ft_instance.find_keyboard('ticket_new_message'), callback_data=f"create_ticket")],
-        [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='start')]
-    ]
-
-    if file_id:
-        await context.bot.send_photo(chat_id=int(user_id), photo=file_id, caption=user_text, reply_markup=InlineKeyboardMarkup(keyboard))
-    else:
-        await context.bot.send_message(chat_id=int(user_id), text=user_text, reply_markup=InlineKeyboardMarkup(keyboard))
-
-    return ConversationHandler.END
-
-    # except Exception as e:
-    #     await context.bot.send_message(text='Error in send message: {e}', chat_id=user_detail.id, parse_mode='html', message_thread_id=setting.ticket_thread_id)
-    #     return REPLY_TICKET
+    except Exception as e:
+        await context.bot.send_message(text='Error in send message: {e}', chat_id=user_detail.id, parse_mode='html', message_thread_id=setting.ticket_thread_id)
+        return REPLY_TICKET
 
 admin_ticket_reply_conversation = ConversationHandler(
     entry_points=[CallbackQueryHandler(reply_ticket, pattern='reply_ticket_(.*)')],
