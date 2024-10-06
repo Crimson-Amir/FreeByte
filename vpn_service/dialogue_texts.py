@@ -241,4 +241,8 @@ keyboard_transaction = {
         'en': 'Get Service Configs ⥥',
         'fa': 'دریافت کانفیگ های سرویس ⥥'
     },
+    'vpn_change_service_ownership': {
+        'en': 'Change Service Ownership',
+        'fa': 'تغییر مالکیت سرویس'
+    },
 }

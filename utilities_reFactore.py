@@ -81,9 +81,9 @@ class FindText:
     @staticmethod
     async def get_language_from_database(user_id):
         with SessionLocal() as session:
-            language = crud.get_user(session, user_id)
-        if language:
-            return language.language
+            user = crud.get_user(session, user_id)
+        if user:
+            return user.language
 
     async def find_user_language(self):
         user_id = self._update.effective_chat.id

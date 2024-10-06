@@ -47,7 +47,11 @@ async def assurance(update, context):
     try:
         context.user_data['admin_message'] = update.message.text if update.message.text else update.message.caption
         context.user_data['file_id'] = update.message.photo[-1].file_id if update.message.photo else None
-        await context.bot.send_message(chat_id=user_detail.id, text='Are you sure you wanna send this message?\n\n/yes\n/no', message_thread_id=setting.ticket_thread_id)
+        keyboard = [
+            [InlineKeyboardButton("Yes", callback_data='confirm_send')],
+            [InlineKeyboardButton("Cancel", callback_data='cancel_send')]
+        ]
+        await context.bot.send_message(chat_id=user_detail.id, text=f'Are you sure you want to send this message?\n\n{context.user_data["admin_message"]}', reply_markup=InlineKeyboardMarkup(keyboard), message_thread_id=setting.ticket_thread_id)
         return SEND_TICKET
 
     except Exception as e:
@@ -58,24 +62,16 @@ async def assurance(update, context):
 
 async def answer_ticket(update, context):
     user_detail = update.effective_chat
+    query = update.callback_query
     try:
         user_id = context.user_data[f'ticket_user_id']
 
-        class Update:
-            class effective_chat:
-                id = user_id
-
-        print(update.message.text)
-        if update.message.text == '/no':
+        if query.data == 'cancel_send':
             await context.bot.send_message(chat_id=user_detail.id, text='Conversation closed.', message_thread_id=setting.ticket_thread_id)
             return ConversationHandler.END
 
-        fake_context = FakeContext()
-        fake_update = Update()
-
-        ft_instance = FindText(fake_update, fake_context)
-
-        admin_message = context.user_data['admin_message'] or await ft_instance.find_text('without_caption')
+        ft_instance = FindText(None, None)
+        admin_message = context.user_data['admin_message'] or await ft_instance.find_from_database(user_id, 'without_caption')
         file_id = context.user_data['file_id']
 
         text = f'Message Recived And Send to User {user_id}'
@@ -84,13 +80,11 @@ async def answer_ticket(update, context):
         await context.bot.send_message(text=text, chat_id=user_detail.id, reply_markup=InlineKeyboardMarkup(keyboard),
                                        parse_mode='html', message_thread_id=setting.ticket_thread_id)
 
-
-        user_text = (f"{await ft_instance.find_text('ticket_was_answered')}"
+        user_text = (f"{await ft_instance.find_from_database(user_id, 'ticket_was_answered')}"
                      f"\n\n{admin_message}")
-
         keyboard = [
-            [InlineKeyboardButton(await ft_instance.find_keyboard('ticket_new_message'), callback_data=f"create_ticket")],
-            [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='start')]
+            [InlineKeyboardButton(await ft_instance.find_from_database(user_id, 'ticket_new_message', 'keyboard'), callback_data=f"create_ticket")],
+            [InlineKeyboardButton(await ft_instance.find_from_database(user_id, 'back_button', 'keyboard'), callback_data='start')]
         ]
 
         if file_id:
@@ -109,7 +103,7 @@ admin_ticket_reply_conversation = ConversationHandler(
     entry_points=[CallbackQueryHandler(reply_ticket, pattern=r'reply_ticket_(\d+)')],
     states={
         REPLY_TICKET: [MessageHandler(filters.TEXT | filters.PHOTO, assurance), CommandHandler('cancel', cancel)],
-        SEND_TICKET: [MessageHandler(filters.TEXT & filters.COMMAND, answer_ticket), CommandHandler('cancel', cancel)],
+        SEND_TICKET: [CallbackQueryHandler(answer_ticket, pattern='^(confirm_send|cancel_send)$')],
     },
     fallbacks=[CommandHandler('cancel', cancel)]
 )

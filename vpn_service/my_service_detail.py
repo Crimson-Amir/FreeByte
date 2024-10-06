@@ -204,7 +204,8 @@ async def service_advanced_options(update, context):
 
             keyboard = [
                 [InlineKeyboardButton(await ft_instance.find_keyboard('vpn_get_configs'), callback_data=f'vpn_get_configs_separately__{purchase_id}__no')],
-                [InlineKeyboardButton(await ft_instance.find_keyboard('refresh'), callback_data=f'vpn_advanced_options__{purchase_id}')],
+                [InlineKeyboardButton(await ft_instance.find_keyboard('vpn_change_service_ownership'), callback_data=f'vpn_change_service_ownership__{purchase_id}'),
+                 InlineKeyboardButton(await ft_instance.find_keyboard('refresh'), callback_data=f'vpn_advanced_options__{purchase_id}')],
                 [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=f'vpn_my_service_detail__{purchase.purchase_id}')]
             ]
 
@@ -246,3 +247,5 @@ async def get_configs_separately(update, context):
     if in_new_message == 'yes':
         return await context.bot.send_message(text=configs_text, chat_id=user_detail.id, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
     await query.edit_message_text(text=configs_text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+
+
