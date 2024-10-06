@@ -41,7 +41,7 @@ async def create_ticket(update, context):
     await update.callback_query.answer()
     user_detail = update.effective_chat
     ft_instance = FindText(update, context)
-    keyboard = [[InlineKeyboardButton(await ft_instance.find_text('cancel_button'), callback_data='cancel_user_ticket_conversation')]]
+    keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('cancel_button'), callback_data='cancel_user_ticket_conversation')]]
     text = await ft_instance.find_text('create_ticket_text')
     await context.bot.send_message(text=text, chat_id=user_detail.id, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
     return TICKET_MESSAGE
