@@ -22,4 +22,4 @@ async def get_purchase_info_from_server(context, purchase):
         exp = (current_time + timedelta(minutes=10)).timestamp()
         context.user_data[key] = {'info_from_server': get_from_server, 'exp': exp}
 
-    return get_from_memory['info_from_server']
+    return context.user_data[key]['info_from_server']

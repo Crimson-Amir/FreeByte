@@ -120,6 +120,7 @@ async def create_service_in_servers(session, purchase_id: int):
     session.refresh(get_purchase)
     return get_purchase
 
+
 async def create_service_for_user(update, context, session, purchase_id: int):
     get_purchase = await create_service_in_servers(session, purchase_id)
 
