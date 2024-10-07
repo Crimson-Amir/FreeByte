@@ -176,6 +176,9 @@ async def upgrade_service_for_user(update, context, session, purchase_id: int):
         json_config = await create_json_config(purchase.username, date_in_timestamp, traffic_to_byte)
         await panel_api.marzban_api.modify_user(main_server_ip, purchase.username, json_config)
 
+        success_text = await ft_instance.find_text('upgrade_service_successfuly')
+        success_text = success_text.format(purchase.username, purchase.upgrade_traffic, purchase.upgrade_period)
+
         vpn_crud.update_purchase(
             session,
             purchase_id,
@@ -189,8 +192,7 @@ async def upgrade_service_for_user(update, context, session, purchase_id: int):
         )
         session.refresh(purchase)
 
-        success_text = await ft_instance.find_text('upgrade_service_successfuly')
-        success_text = success_text.format(purchase.username, purchase.upgrade_traffic, purchase.upgrade_period)
+        await update.message.reply(text='hola')
 
         await context.bot.send_message(text=success_text, chat_id=purchase.chat_id)
         await context.bot.send_message(text='stfu', chat_id=setting.ADMIN_CHAT_IDs[0])
