@@ -1,14 +1,11 @@
-import logging
+import logging, copy
 from _datetime import datetime, timedelta
 import pytz, uuid, sys, os, hashlib, qrcode
 from io import BytesIO
 import requests.exceptions
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
-
-import setting
-import utilities_reFactore
-
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import setting
 from utilities_reFactore import FindText, message_token, handle_error, report_to_admin
 from crud import vpn_crud, crud
 from vpn_service import panel_api, vpn_utilities
@@ -151,6 +148,8 @@ async def create_service_for_user(update, context, session, purchase_id: int):
 
 async def upgrade_service_for_user(update, context, session, purchase_id: int):
     purchase = vpn_crud.get_purchase(session, purchase_id)
+    traffic_for_upgrade = copy.deepcopy(purchase.upgrade_traffic)
+    period_for_upgrade = copy.deepcopy(purchase.upgrade_period)
 
     if not purchase.upgrade_traffic or not purchase.upgrade_period:
         raise ValueError('upgrade_traffic or upgrade_period is empty')
@@ -190,17 +189,16 @@ async def upgrade_service_for_user(update, context, session, purchase_id: int):
             day_notification_status=False,
             traffic_notification_status=False
         )
-        session.refresh(purchase)
 
+        session.refresh(purchase)
         await context.bot.send_message(text=success_text, chat_id=purchase.chat_id)
-        await context.bot.send_message(text='stfu', chat_id=setting.ADMIN_CHAT_IDs[0])
-        return purchase
+        return purchase, traffic_for_upgrade, period_for_upgrade
 
     except Exception as e:
         await handle_http_error(purchase, main_server_ip, purchase_id, e)
 
 
-async def handle_http_error(purchase, main_server_ip, purchase_id, original_error: requests.exceptions.HTTPError):
+async def handle_http_error(purchase, main_server_ip, purchase_id, original_error):
     """
     Handles HTTP errors during the upgrade process and attempts to deactivate the user's service.
     """
@@ -275,7 +273,7 @@ async def recive_test_service(update, context):
                          f'\nService ID: {purchase.purchase_id}'
                          f'\nService Username: {purchase.username}')
 
-            await utilities_reFactore.report_to_admin('info', 'recive_test_service', admin_msg, purchase.owner)
+            await report_to_admin('info', 'recive_test_service', admin_msg, purchase.owner)
 
     keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='menu_services')]]
     await query.edit_message_text(text=await ft_instance.find_text('operation_successful'), reply_markup=InlineKeyboardMarkup(keyboard))
