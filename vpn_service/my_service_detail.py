@@ -32,7 +32,7 @@ async def my_services(update, context):
             }
 
             text = f"<b>{await ft_instance.find_text('vpn_select_service_for_info')}</b>"
-            keyboard = [[InlineKeyboardButton(f"{service.username} {service_status.get(service.active)}",
+            keyboard = [[InlineKeyboardButton(f"{service.username} {service_status.get(service.status)}",
                                               callback_data=f'vpn_my_service_detail__{service.purchase_id}')]
                         for service in purchases]
             keyboard.append([InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='my_services_new')])
