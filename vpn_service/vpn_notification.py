@@ -5,7 +5,7 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
 import sys, os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from vpn_service import panel_api, vpn_utilities
-from crud import vpn_crud
+from crud import vpn_crud, crud
 from utilities_reFactore import FindText, report_to_admin, human_readable
 from database_sqlalchemy import SessionLocal
 
@@ -16,7 +16,7 @@ async def report_service_termination_to_user(context, purchase, ft_instance):
         [InlineKeyboardButton(await ft_instance.find_keyboard('vpn_upgrade_service'), callback_data=f'vpn_upgrade_service__30__40__{purchase.purchase_id}'),
          InlineKeyboardButton(await ft_instance.find_keyboard('vpn_buy_vpn'), callback_data='vpn_set_period_traffic__30_40')]
     ]
-    await context.bot.send_message(purchase.chat_id, text=text, reply_markup=InlineKeyboardMarkup(keyboard))
+    await context.bot.send_message(purchase.chat_id, text=text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
 
 
 async def report_service_expired_in_days(context, purchase, ft_instance, days_left):
@@ -26,7 +26,7 @@ async def report_service_expired_in_days(context, purchase, ft_instance, days_le
         [InlineKeyboardButton(await ft_instance.find_from_database(purchase.chat_id,'vpn_upgrade_service','keyboard'), callback_data=f'vpn_upgrade_service__30__40__{purchase.purchase_id}'),
          InlineKeyboardButton(await ft_instance.find_from_database(purchase.chat_id,'vpn_view_service_detail','keyboard'), callback_data=f'vpn_my_service_detail__{purchase.purchase_id}')]
     ]
-    await context.bot.send_message(purchase.chat_id, text=text, reply_markup=InlineKeyboardMarkup(keyboard))
+    await context.bot.send_message(purchase.chat_id, text=text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
 
 
 async def report_service_expired_in_gigabyte(context, purchase, ft_instance, percentage_traffic_consumed, left_traffic_in_gigabyte):
@@ -37,7 +37,7 @@ async def report_service_expired_in_gigabyte(context, purchase, ft_instance, per
         [InlineKeyboardButton(await ft_instance.find_from_database(purchase.chat_id,'vpn_upgrade_service','keyboard'), callback_data=f'vpn_upgrade_service__30__40__{purchase.purchase_id}'),
          InlineKeyboardButton(await ft_instance.find_from_database(purchase.chat_id,'vpn_view_service_detail','keyboard'), callback_data=f'vpn_my_service_detail__{purchase.purchase_id}')]
     ]
-    await context.bot.send_message(purchase.chat_id, text=text, reply_markup=InlineKeyboardMarkup(keyboard))
+    await context.bot.send_message(purchase.chat_id, text=text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
 
 
 async def report_service_termination_to_admin(purchase):
@@ -79,6 +79,8 @@ async def notification_timer(context):
 
                                 elif days_left <= purchase.owner.config.period_notification_day:
                                     await report_service_expired_in_days(context, purchase, ft_instanc, days_left)
+                                    crud.update_user_config(session, purchase.chat_id, period_notification_day=True)
+
 
                                 elif traffic_percent >= purchase.owner.config.traffic_notification_percent:
                                     await report_service_expired_in_gigabyte(
@@ -88,6 +90,7 @@ async def notification_timer(context):
                                         traffic_percent,
                                         traffic_left_in_gigabyte
                                     )
+                                    crud.update_user_config(session, purchase.chat_id, traffic_notification_percent=True)
 
 
     except Exception as e:
