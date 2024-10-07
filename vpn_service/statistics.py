@@ -107,7 +107,6 @@ async def reports_func(session, ft_instance, chat_id, get_purchased, period):
                 for index, (timedate, usage_list) in enumerate(user_usage_dict.items()):
                     time = timedate
                     first_time = timedate - timedelta(hours=STATISTICS_TIMER_HORSE)
-                    print(timedate, type(timedate), type(first_time))
 
                     usage_detail, get_traffic = [], 0
 
