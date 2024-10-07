@@ -95,8 +95,8 @@ async def reports_func(session, ft_instance, chat_id, get_purchased, period):
             user_usage_dict = {}
 
             for get_date in get_statistics:
-                get_user_usage = [{user_purchased[0]: user_purchased[1]} for user_purchased in eval(get_date[1]).items() if user_purchased[0] in purchased]
-                user_usage_dict[get_date[2]] = get_user_usage
+                get_user_usage = [{user_purchased[0]: user_purchased[1]} for user_purchased in eval(get_date.traffic_usage).items() if user_purchased[0] in purchased]
+                user_usage_dict[get_date.register_date] = get_user_usage
 
             detail_text, final_dict, final_traffic, avreage_traffic, index = '', {}, 0, 0, 1
 
