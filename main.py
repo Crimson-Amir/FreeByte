@@ -2,7 +2,7 @@ import logging, sys
 from utilities_reFactore import FindText, message_token, handle_error
 import start_reFactore
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, CallbackQueryHandler
+from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, CallbackQueryHandler, MessageHandler, filters
 import setting, wallet_reFactore, my_service, setting_menu, guidnes_and_support
 from vpn_service import buy_and_upgrade_service, my_service_detail, vpn_setting_menu, vpn_guid, panel_api, statistics, vpn_notification
 from admin import admin_page, vpn_admin
@@ -42,6 +42,10 @@ async def services(update: Update, context: ContextTypes.DEFAULT_TYPE):
         keyboard = [list(filter(None, row)) for row in keyboard]
         return await update.callback_query.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
 
+async def unknown_message(update, context):
+    ft_instance = FindText(update, context)
+    text = await ft_instance.find_text('unknown_message')
+    await update.message.reply_text(text)
 
 
 if __name__ == '__main__':
@@ -107,6 +111,8 @@ if __name__ == '__main__':
     application.add_handler(CallbackQueryHandler(vpn_guid.guide_menu, pattern='vpn_guide_menu(.*)'))
     application.add_handler(CallbackQueryHandler(vpn_guid.vpn_guide, pattern='vpn_guide__(.*)'))
     application.add_handler(guidnes_and_support.ticket_conversation)
+
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, unknown_message))
 
     application.run_polling()
 

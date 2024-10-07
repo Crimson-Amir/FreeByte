@@ -4,7 +4,7 @@ import logging
 from crud import crud
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from database_sqlalchemy import SessionLocal
-from utilities_reFactore import FindText, message_token, handle_error, human_readable
+from utilities_reFactore import FindText, message_token, handle_error, human_readable, report_to_user, report_to_admin
 from API import zarinPalAPI, cryptomusAPI, convert_irt_to_usd
 from WebApp.WebAppDialogue import transaction
 
@@ -327,12 +327,19 @@ async def pay_by_wallet(update, context):
             crud.less_from_wallet(session, financial)
             await WebAppUtilities.handle_successful_payment(session, financial, financial_id, 'WalletPayment')
             session.commit()
+
         except Exception as e:
             session.rollback()
-            await WebAppUtilities.handle_failed_payment(session, financial, e, dialogues, financial_id, 'WalletPayment')
+            error_msg = WebAppUtilities.log_error(
+                'Amount refunded to user wallet! Payment was not successful!', e, financial_id
+            )
+            message = dialogues.get('operation_failed_user').format(f"{financial.amount:,}")
+
+            await report_to_admin('error', 'WalletPayment', error_msg, financial.owner)
+            await report_to_user('warning', financial.chat_id, message)
 
 
-    keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data="start_in_new_message")]]
+    keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data="start")]]
     return await query.edit_message_text(
         await ft_instance.find_text('invoice_paid_by_wallet_message'),
         reply_markup=InlineKeyboardMarkup(keyboard)
