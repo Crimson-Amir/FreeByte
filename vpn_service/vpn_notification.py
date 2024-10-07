@@ -30,10 +30,9 @@ async def report_service_expired_in_days(context, purchase, ft_instance, days_le
 
 
 async def report_service_expired_in_gigabyte(context, purchase, ft_instance, percentage_traffic_consumed, left_traffic_in_gigabyte):
-    left_traffic = vpn_utilities.format_traffic_from_megabyte(ft_instance, int(left_traffic_in_gigabyte * 1024))
+    left_traffic = await vpn_utilities.format_traffic_from_megabyte(ft_instance, int(left_traffic_in_gigabyte * 1024))
     text = await ft_instance.find_from_database(purchase.chat_id, 'vpn_service_gigabyte_percent_notification')
     text = text.format(percentage_traffic_consumed, f"<code>{purchase.username}</code>", left_traffic)
-    print(left_traffic, text)
     keyboard = [
         [InlineKeyboardButton(await ft_instance.find_from_database(purchase.chat_id, 'vpn_upgrade_service', 'keyboard'), callback_data=f'vpn_upgrade_service__30__40__{purchase.purchase_id}'),
          InlineKeyboardButton(await ft_instance.find_from_database(purchase.chat_id, 'vpn_view_service_detail', 'keyboard'), callback_data=f'vpn_my_service_detail__{purchase.purchase_id}')]
@@ -75,15 +74,16 @@ async def notification_timer(context):
                                 days_left = (expiry - now).days
 
                                 if service_stauts == 'limited' and purchase.status == 'active':
+                                    vpn_crud.update_purchase(session, purchase.purchase_id, active='limited')
                                     await report_service_termination_to_user(context, purchase, ft_instanc)
                                     await report_service_termination_to_admin(purchase)
-                                    vpn_crud.update_purchase(session, purchase.purchase_id, active='limited')
 
                                 elif days_left <= purchase.owner.config.period_notification_day and not purchase.day_notification_status:
-                                    await report_service_expired_in_days(context, purchase, ft_instanc, days_left)
                                     vpn_crud.update_purchase(session, purchase.purchase_id, day_notification_status=True)
+                                    await report_service_expired_in_days(context, purchase, ft_instanc, days_left)
 
                                 elif traffic_percent >= purchase.owner.config.traffic_notification_percent and not purchase.traffic_notification_status:
+                                    vpn_crud.update_purchase(session, purchase.purchase_id, traffic_notification_status=True)
                                     await report_service_expired_in_gigabyte(
                                         context,
                                         purchase,
@@ -91,7 +91,6 @@ async def notification_timer(context):
                                         traffic_percent,
                                         traffic_left_in_gigabyte
                                     )
-                                    vpn_crud.update_purchase(session, purchase.purchase_id, traffic_notification_status=True)
 
 
     except Exception as e:
