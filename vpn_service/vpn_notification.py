@@ -33,9 +33,10 @@ async def report_service_expired_in_gigabyte(context, purchase, ft_instance, per
     left_traffic = vpn_utilities.format_traffic_from_megabyte(ft_instance, int(left_traffic_in_gigabyte * 1024))
     text = await ft_instance.find_from_database(purchase.chat_id, 'vpn_service_gigabyte_percent_notification')
     text = text.format(percentage_traffic_consumed, f"<code>{purchase.username}</code>", left_traffic)
+    print(left_traffic, text)
     keyboard = [
-        [InlineKeyboardButton(await ft_instance.find_from_database(purchase.chat_id,'vpn_upgrade_service','keyboard'), callback_data=f'vpn_upgrade_service__30__40__{purchase.purchase_id}'),
-         InlineKeyboardButton(await ft_instance.find_from_database(purchase.chat_id,'vpn_view_service_detail','keyboard'), callback_data=f'vpn_my_service_detail__{purchase.purchase_id}')]
+        [InlineKeyboardButton(await ft_instance.find_from_database(purchase.chat_id, 'vpn_upgrade_service', 'keyboard'), callback_data=f'vpn_upgrade_service__30__40__{purchase.purchase_id}'),
+         InlineKeyboardButton(await ft_instance.find_from_database(purchase.chat_id, 'vpn_view_service_detail', 'keyboard'), callback_data=f'vpn_my_service_detail__{purchase.purchase_id}')]
     ]
     await context.bot.send_message(purchase.chat_id, text=text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
 
