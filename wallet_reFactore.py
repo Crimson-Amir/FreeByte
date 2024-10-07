@@ -181,16 +181,17 @@ async def create_invoice(update, context):
 
             keyboard = [
                 [InlineKeyboardButton(await ft_instance.find_keyboard('iran_payment_gateway'), callback_data=f"pay_by_zarinpal__{action}__{finacial_report.financial_id}")],
-                [InlineKeyboardButton(await ft_instance.find_keyboard('pay_with_wallet_balance'), callback_data=f"pay_by_wallet__{action}__{finacial_report.financial_id}") if pay_by_wallet_satatus else [],
+                [InlineKeyboardButton(await ft_instance.find_keyboard('pay_with_wallet_balance'), callback_data=f"pay_by_wallet__{action}__{finacial_report.financial_id}")
+                 if pay_by_wallet_satatus and finacial_report.owner.wallet > amount else [],
                  InlineKeyboardButton(await ft_instance.find_keyboard('cryptomus_payment_gateway'), callback_data=f"pay_by_cryptomus__{action}__{finacial_report.financial_id}")],
                 [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=back_button_callback)],
             ]
             keyboard = [list(filter(None, row)) for row in keyboard]
 
             text = (f"<b>{await ft_instance.find_text('invoice_title')}"
-                    f"\n\n{await ft_instance.find_text('price')} {amount:,} {await ft_instance.find_text('irt')}</b>"
+                    f"\n\n<b>{await ft_instance.find_text('wallet_credit_label')} {finacial_report.owner.wallet:,} {await ft_instance.find_text('irt')}</b>"
                     f"\n\n{await ft_instance.find_text('invoice_extra_data')}\n{invoice_extra_data}"
-                    f"\n\n<b>{await ft_instance.find_text('wallet_credit_label')} {finacial_report.owner.wallet:,}</b>"
+                    f"\n\n<b>{await ft_instance.find_text('wallet_credit_label')} {finacial_report.owner.wallet:,} {await ft_instance.find_text('irt')}</b>"
                     f"\n{await ft_instance.find_text('payment_option_title')}")
 
             await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
