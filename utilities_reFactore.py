@@ -19,7 +19,7 @@ def human_readable(date, user_language):
 
     except ValueError as e:
         if 'week' in str(e) and user_language == 'fa':
-            return str(get_date.humanize()).replace('weeks ago', 'هفته پیش').replace('a week ago', 'هفته پیش').replace('in', 'در').replace('weeks', 'هفته')
+            return str(get_date.humanize()).replace('weeks ago', 'هفته پیش').replace('a week ago', 'هفته پیش').replace('in', 'در').replace('weeks', 'هفته').replace('a week', 'یک هفته')
         else:
             return get_date.humanize()
 
