@@ -272,6 +272,10 @@ text_transaction = {
         'en': 'message is invalid ❌',
         'fa': 'پیام شما نامعتبر است❌'
     },
+    'increase_balance_by_admin': {
+        'en': 'increase balance by admin',
+        'fa': 'افزایش اعتبار توسط ادمین'
+    },
 }
 
 keyboard_transaction = {

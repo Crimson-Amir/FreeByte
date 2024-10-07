@@ -78,7 +78,9 @@ async def financial_transactions_wallet(update, context):
                         'upgrade_vpn_service': await ft_instance.find_text('upgrade_vpn_service_action'),
                         'buy_vpn_service': await ft_instance.find_text('buy_vpn_service_action'),
                         'increase_wallet_balance': await ft_instance.find_text('increase_wallet_balance_action'),
-                        'remove_vpn_service': await ft_instance.find_text('remove_vpn_sevice_and_recive_payback')
+                        'remove_vpn_service': await ft_instance.find_text('remove_vpn_sevice_and_recive_payback'),
+                        'increase_balance_by_admin': await ft_instance.find_text('increase_balance_by_admin'),
+
                     }
                     payment_gateway = {
                         'zarinpal': await ft_instance.find_text('zarinpal_label'),

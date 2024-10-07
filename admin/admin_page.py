@@ -6,6 +6,8 @@ from admin.admin_utilities import admin_access
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import ConversationHandler, filters, MessageHandler, CallbackQueryHandler, CommandHandler
 import setting
+from crud import crud
+from database_sqlalchemy import SessionLocal
 
 
 REPLY_TICKET, SEND_TICKET = range(2)
@@ -111,3 +113,34 @@ admin_ticket_reply_conversation = ConversationHandler(
     conversation_timeout=600
 
 )
+
+
+async def add_credit_for_user(update, context):
+    user_detail = update.effective_chat
+    ft_instance = FindText(None, None)
+    try:
+        with SessionLocal() as session:
+            with session.begin():
+
+                amount, user_chat_id = context.args
+
+                finacial_report = crud.create_financial_report(
+                    session, 'recive',
+                    chat_id=user_detail.id,
+                    amount=amount,
+                    action='increase_balance_by_admin',
+                    service_id=None,
+                    payment_status='not paid',
+                    payment_getway='wallet',
+                    currency='IRT'
+                )
+
+                crud.add_credit_to_wallet(session, finacial_report)
+                text = await ft_instance.find_from_database(user_chat_id, 'amount_added_to_wallet_successfully')
+                text = text.format(f"{amount:,}")
+
+                await context.bot.send_message(chat_id=user_chat_id, text=text)
+                await context.bot.send_message(chat_id=user_detail.id, text=f'+ successfully Add {amount:,} IRT to user wallet.')
+
+    except Exception as e:
+                await context.bot.send_message(chat_id=user_detail.id, text=f'- failed to add credit to user wallet.\n{str(e)}')

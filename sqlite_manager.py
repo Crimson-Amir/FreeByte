@@ -123,8 +123,9 @@ with SessionLocal() as session:
             if user_name == 'None':
                 user_name = None
 
-            if chat_id in user_id:
+            if chat_id in user_id or chat_id == 6450325872:
                 continue
+
             new_user = model.UserDetail(
                 first_name=name,
                 username=user_name,
@@ -142,6 +143,8 @@ with SessionLocal() as session:
             )
             session.add(user_config)
             user_id.append(chat_id)
+
+            sqlite_manager.custom(f'update UserDetail set wallet = 0 where chat_id = {chat_id}')
 #
 
 with SessionLocal() as session:
