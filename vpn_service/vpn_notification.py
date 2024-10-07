@@ -37,7 +37,7 @@ async def report_service_expired_in_days(context, purchase, ft_instance, days_le
     await context.bot.send_message(purchase.chat_id, text=text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
 
 
-async def report_service_expired_in_gigabyte(context, purchase, ft_instance, percentage_traffic_consumed, left_traffic_in_gigabyte):
+async def report_service_expired_in_gigabyte(context, purchase, ft_instance, percentage_traffic_consumed:int, left_traffic_in_gigabyte):
     left_traffic = await format_traffic_from_megabyte(ft_instance, int(left_traffic_in_gigabyte * 1024), purchase.chat_id)
     text = await ft_instance.find_from_database(purchase.chat_id, 'vpn_service_gigabyte_percent_notification')
     text = text.format(percentage_traffic_consumed, f"<code>{purchase.username}</code>", left_traffic)
@@ -74,14 +74,14 @@ async def notification_timer(context):
                                 usage_traffic_in_gigabyte = round(user['used_traffic'] / (1024 ** 3), 2)
                                 data_limit_in_gigabyte = round(user['data_limit'] / (1024 ** 3), 2)
                                 traffic_left_in_gigabyte = data_limit_in_gigabyte - usage_traffic_in_gigabyte
-                                traffic_percent = (usage_traffic_in_gigabyte / data_limit_in_gigabyte) * 100
+                                traffic_percent = int((usage_traffic_in_gigabyte / data_limit_in_gigabyte) * 100)
                                 service_stauts = user['status']
 
                                 expiry = datetime.fromtimestamp(user['expire'])
                                 now = datetime.now(pytz.timezone('Asia/Tehran')).replace(tzinfo=None)
                                 days_left = (expiry - now).days
 
-                                if service_stauts == 'limited' and purchase.status == 'active':
+                                if service_stauts in ['limited', 'expired'] and purchase.status == 'active':
                                     vpn_crud.update_purchase(session, purchase.purchase_id, active='limited')
                                     await report_service_termination_to_user(context, purchase, ft_instanc)
                                     await report_service_termination_to_admin(purchase)
