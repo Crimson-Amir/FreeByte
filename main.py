@@ -102,9 +102,9 @@ if __name__ == '__main__':
     application.add_handler(CallbackQueryHandler(setting_menu.user_language_setting, pattern='user_language_setting'))
     application.add_handler(CallbackQueryHandler(setting_menu.change_user_language, pattern='set_user_language_on__(.*)'))
 
-    # Quide And Support
+    # Guide And Support
     application.add_handler(CallbackQueryHandler(guidnes_and_support.guide_menu, pattern='guide_menu'))
-    application.add_handler(CallbackQueryHandler(vpn_guid.guide_menu, pattern='vpn_guide_menu'))
+    application.add_handler(CallbackQueryHandler(vpn_guid.guide_menu, pattern='vpn_guide_menu(.*)'))
     application.add_handler(CallbackQueryHandler(vpn_guid.vpn_guide, pattern='vpn_guide__(.*)'))
     application.add_handler(guidnes_and_support.ticket_conversation)
 

@@ -6,6 +6,7 @@ from utilities_reFactore import FindText, message_token, handle_error
 async def guide_menu(update, context):
     query = update.callback_query
     ft_instance = FindText(update, context)
+    user_detail = update.effective_chat
 
     text = f"{await ft_instance.find_text('select_section')}"
 
@@ -15,6 +16,9 @@ async def guide_menu(update, context):
         [InlineKeyboardButton(await ft_instance.find_keyboard('windows_lable'), callback_data='vpn_guide__windows'),
          InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='guide_menu')]
     ]
+
+    if "in_new_message" in query.data:
+        return await context.bot.send_message(chat_id=user_detail.id, text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
     await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
