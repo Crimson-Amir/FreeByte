@@ -114,7 +114,6 @@ admin_ticket_reply_conversation = ConversationHandler(
 
 )
 
-
 async def add_credit_for_user(update, context):
     user_detail = update.effective_chat
     ft_instance = FindText(None, None)
