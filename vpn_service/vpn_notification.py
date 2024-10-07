@@ -48,7 +48,7 @@ async def report_service_termination_to_admin(purchase):
             f'\nService Product Name: {purchase.purchase_id}'
             f'\nService Traffic: {purchase.traffic}'
             f'\nService Period Time: {purchase.period}'
-            f'\nRegister Date: {human_readable(purchase.register_date, 'en')}')
+            f'\nRegister Date: {human_readable(purchase.register_date, "en")}')
     await report_to_admin('info', 'report_termination', text, purchase.owner)
 
 async def notification_timer(context):
