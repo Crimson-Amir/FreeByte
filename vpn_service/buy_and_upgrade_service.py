@@ -159,9 +159,9 @@ async def upgrade_service_for_user(update, context, session, purchase_id: int):
     main_server_ip = purchase.product.main_server.server_ip
 
     try:
+        user = await panel_api.marzban_api.get_user(main_server_ip, purchase.username)
 
-        if purchase.status == 'active':
-            user = await panel_api.marzban_api.get_user(main_server_ip, purchase.username)
+        if user['status'] == 'active':
             traffic_to_byte = int((purchase.upgrade_traffic * (1024 ** 3)) + user['data_limit'])
             expire_date = datetime.fromtimestamp(user['expire'])
         else:

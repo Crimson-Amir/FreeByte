@@ -81,8 +81,8 @@ async def service_info(update, context):
                 get_from_server = await vpn_utilities.get_purchase_info_from_server(context, purchase)
                 service_stauts_server = get_from_server['status']
 
-                if service_stauts_server in ['limited', 'expired'] and purchase.status == 'active':
-                    vpn_crud.update_purchase(session, purchase.purchase_id, status=service_stauts_server)
+                # if service_stauts_server in ['limited', 'expired'] and purchase.status == 'active':
+                #     vpn_crud.update_purchase(session, purchase.purchase_id, status=service_stauts_server)
 
                 expire_date = human_readable(datetime.fromtimestamp(get_from_server.get('expire')), await ft_instance.find_user_language())
                 onlien_at = human_readable(get_from_server.get('online_at'), await ft_instance.find_user_language()) \
