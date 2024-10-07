@@ -81,7 +81,7 @@ async def notification_timer(context):
                             days_left = (expiry - now).days
 
                             if service_stauts in ['limited', 'expired'] and purchase.status == 'active':
-                                vpn_crud.update_purchase(session, purchase.purchase_id, status='limited')
+                                vpn_crud.update_purchase(session, purchase.purchase_id, status=service_stauts)
                                 session.commit()
                                 await report_service_termination_to_user(context, purchase, ft_instanc)
                                 await report_service_termination_to_admin(purchase)

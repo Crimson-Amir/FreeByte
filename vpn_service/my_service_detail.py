@@ -79,6 +79,11 @@ async def service_info(update, context):
 
                 main_server = purchase.product.main_server
                 get_from_server = await vpn_utilities.get_purchase_info_from_server(context, purchase)
+                service_stauts_server = get_from_server['status']
+
+                if service_stauts_server in ['limited', 'expired'] and purchase.status == 'active':
+                    vpn_crud.update_purchase(session, purchase.purchase_id, status=service_stauts_server)
+
                 expire_date = human_readable(datetime.fromtimestamp(get_from_server.get('expire')), await ft_instance.find_user_language())
                 onlien_at = human_readable(get_from_server.get('online_at'), await ft_instance.find_user_language()) \
                     if get_from_server.get('online_at') else await ft_instance.find_text('not_connected_yet')
@@ -100,7 +105,7 @@ async def service_info(update, context):
                     f"<b>{await ft_instance.find_text('vpn_selected_service_info')}</b>"
                     f"\n\n{await ft_instance.find_text('vpn_service_name')} <code>{purchase.username}</code>"
                     f"\n\n{await ft_instance.find_text('online_at')} {onlien_at}"
-                    f"\n{await ft_instance.find_text('vpn_service_status')} {service_status.get(get_from_server.get('status'), get_from_server.get('status'))}"
+                    f"\n{await ft_instance.find_text('vpn_service_status')} {service_status.get(service_stauts_server, service_stauts_server)}"
                     f"\n{await ft_instance.find_text('vpn_expire_date')} {expire_date}"
                     f"\n{await ft_instance.find_text('vpn_traffic_use')} {used_traffic}/{data_limit}GB"
                     f"\n\n{await ft_instance.find_text('vpn_subsrciption_address')}"
