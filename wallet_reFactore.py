@@ -88,7 +88,7 @@ async def financial_transactions_wallet(update, context):
                     lasts_report += f"\n\n{await ft_instance.find_text('receive_money') if report.operation in ['recive', 'refund'] else await ft_instance.find_text('spend_money')} <code>{report.amount:,}</code> {await ft_instance.find_text('irt')} | "
                     lasts_report += f"{report.register_date.date()}"
                     lasts_report += f"\n{payment_status.get(report.payment_status, '')} | {payment_action.get(report.action, '')} {report.id_holder}"
-                    lasts_report += f"\n<code>{await ft_instance.find_text('payment_authority')}</code> {report.authority[-8:] if report.authority else '-'} | {payment_gateway.get(report.payment_getway, '')}"
+                    lasts_report += f"\n{await ft_instance.find_text('payment_authority')} <code>{report.authority[-8:] if report.authority else '-'}</code> | {payment_gateway.get(report.payment_getway, '')}"
             else:
                 lasts_report = await ft_instance.find_text('no_transaction_yet')
 
@@ -109,7 +109,6 @@ async def financial_transactions_wallet(update, context):
         if "specified new message content and reply markup are exactly the same" in str(e):
             return await query.answer()
         return await query.answer(await ft_instance.find_text('error_message'))
-
 
 
 async def buy_credit_volume(update, context):

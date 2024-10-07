@@ -42,7 +42,6 @@ async def my_services(update, context):
 
                         for service in current_services]
 
-            # دکمه‌های جابجایی بین صفحات
             nav_buttons = []
             if page > 1:
                 nav_buttons.append(InlineKeyboardButton(await ft_instance.find_keyboard('previous'), callback_data=f'vpn_my_services__{page - 1}'))
@@ -89,7 +88,7 @@ async def service_info(update, context):
                     if get_from_server.get('online_at') else await ft_instance.find_text('not_connected_yet')
 
                 used_traffic = round(get_from_server.get('used_traffic') / (1024 ** 3), 2)
-                data_limit = round(get_from_server.get('data_limit') / (1024 ** 3), 2)
+                data_limit = int(get_from_server.get('data_limit') / (1024 ** 3))
 
                 server_port = f":{main_server.server_port}" if main_server.server_port != 443 else ""
                 subscribe_link = f"{main_server.server_protocol}{main_server.server_ip}{server_port}{get_from_server.get('subscription_url')}"
@@ -202,18 +201,17 @@ async def remove_service_for_user(update, context):
             )
 
             crud.add_credit_to_wallet(session, finacial_report)
-
             await panel_api.marzban_api.remove_user(main_server_ip, purchase.username)
-
             text = await ft_instance.find_text('vpn_service_deleted_successfully')
-
             keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=f'vpn_my_services__1')]]
+
             admin_msg = (
                 f'The user deleted the service.'
                 f'\n\nService username: {purchase.username}'
                 f'\nService ID: {purchase.purchase_id}'
                 f'\nService status before delete: {purchase.active}'
                 f'\nService Product Name: {purchase.product.product_name}'
+                f'\nReturnable Amount: {returnable_amount:,}'
             )
 
             if context.user_data.get(f'service_detail_{purchase_id}'):
@@ -221,7 +219,6 @@ async def remove_service_for_user(update, context):
 
             await report_to_admin('info', 'remove_service_for_user', admin_msg, purchase.owner)
             await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
-
 
 
 @handle_error.handle_functions_error
@@ -248,6 +245,9 @@ async def service_advanced_options(update, context):
             server_port = f":{main_server.server_port}" if main_server.server_port != 443 else ""
             subscribe_link = f"{main_server.server_protocol}{main_server.server_ip}{server_port}{get_from_server.get('subscription_url')}"
 
+            onlien_at = human_readable(get_from_server.get('online_at'), await ft_instance.find_user_language()) \
+                if get_from_server.get('online_at') else await ft_instance.find_text('not_connected_yet')
+
             service_status = {
                 'active': await ft_instance.find_text('vpn_service_active'),
                 'limited': await ft_instance.find_text('vpn_service_limited'),
@@ -257,7 +257,7 @@ async def service_advanced_options(update, context):
             text = (
                 f"<b>{await ft_instance.find_text('vpn_selected_service_advanced_info')}</b>"
                 f"\n\n{await ft_instance.find_text('vpn_service_name')} {purchase.username}"
-                f"\n\n{await ft_instance.find_text('online_at')} {get_from_server.get('online_at') or await ft_instance.find_text('not_connected_yet')}"
+                f"\n\n{await ft_instance.find_text('online_at')} {onlien_at}"
                 f"\n{await ft_instance.find_text('vpn_service_status')} {service_status.get(get_from_server.get('status'), get_from_server.get('status'))}"
                 f"\n{await ft_instance.find_text('vpn_used_traffic')} {used_traffic}GB"
                 f"\n{await ft_instance.find_text('vpn_total_traffic')} {data_limit}GB"

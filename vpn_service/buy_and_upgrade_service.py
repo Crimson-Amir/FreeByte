@@ -5,6 +5,7 @@ from io import BytesIO
 import requests.exceptions
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 
+import setting
 import utilities_reFactore
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -138,8 +139,7 @@ async def create_service_for_user(update, context, session, purchase_id: int):
     qr_image.save(buffer)
     binary_data = buffer.getvalue()
 
-    keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('vpn_get_configs'), callback_data=f"vpn_get_configs_separately__{purchase_id}__yes")],
-                [InlineKeyboardButton(await ft_instance.find_keyboard('vpn_guide_button_label'), callback_data=f"vpn_guide_menu_in_new_message"),
+    keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('vpn_guide_button_label'), callback_data=f"vpn_guide_menu_in_new_message"),
                  InlineKeyboardButton(await ft_instance.find_keyboard('my_services'), callback_data=f"vpn_my_services_new__1")],
                 [InlineKeyboardButton(await ft_instance.find_keyboard('bot_main_menu'), callback_data=f"start_in_new_message")]]
 
@@ -190,12 +190,10 @@ async def upgrade_service_for_user(update, context, session, purchase_id: int):
         )
 
         session.refresh(purchase)
-
         success_text = await ft_instance.find_text('upgrade_service_successfuly')
         message_text = success_text.format(purchase.username, purchase.upgrade_traffic, purchase.upgrade_period)
-        print(purchase.chat_id)
-        a = await context.bot.send_message(text=message_text, chat_id=purchase.chat_id)
-        print(a)
+        await context.bot.send_message(text=message_text, chat_id=purchase.chat_id)
+        await context.bot.send_message(text=message_text, chat_id=setting.ADMIN_CHAT_IDs[0])
 
         return purchase
 
