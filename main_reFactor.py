@@ -3,7 +3,8 @@ from utilities_reFactore import FindText, message_token, handle_error
 import start_reFactore
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, CallbackQueryHandler
-import setting, wallet_reFactore, my_service, setting_menu, guidnes_and_support, vpn_service
+import setting, wallet_reFactore, my_service, setting_menu, guidnes_and_support
+from vpn_service import buy_and_upgrade_service, my_service_detail, vpn_setting_menu, vpn_guid, panel_api, statistics, vpn_notification
 from admin import admin_page, vpn_admin
 from database_sqlalchemy import SessionLocal
 from crud import crud
@@ -69,22 +70,22 @@ if __name__ == '__main__':
     application.add_handler(CallbackQueryHandler(wallet_reFactore.pay_by_wallet, pattern='pay_by_wallet__(.*)'))
 
     # VPN Section
-    application.add_handler(CallbackQueryHandler(vpn_service.buy_and_upgrade_service.buy_custom_service, pattern='vpn_set_period_traffic__(.*)'))
-    application.add_handler(CallbackQueryHandler(vpn_service.buy_and_upgrade_service.upgrade_service, pattern='vpn_upgrade_service__(.*)'))
-    application.add_handler(CallbackQueryHandler(vpn_service.my_service_detail.service_info, pattern='vpn_my_service_detail__(.*)'))
-    application.add_handler(CallbackQueryHandler(vpn_service.my_service_detail.my_services, pattern='vpn_my_services(.*)'))
-    application.add_handler(CallbackQueryHandler(vpn_service.my_service_detail.ask_remove_service_for_user, pattern='vpn_remove_service_ask__(.*)'))
-    application.add_handler(CallbackQueryHandler(vpn_service.my_service_detail.remove_service_for_user, pattern='vpn_remove_service__(.*)'))
-    application.add_handler(CallbackQueryHandler(vpn_service.my_service_detail.service_advanced_options, pattern='vpn_advanced_options__(.*)'))
-    application.add_handler(CallbackQueryHandler(vpn_service.my_service_detail.get_configs_separately, pattern='vpn_get_configs_separately__(.*)'))
-    application.add_handler(CallbackQueryHandler(vpn_service.buy_and_upgrade_service.recive_test_service_info, pattern='vpn_recive_test_service'))
-    application.add_handler(CallbackQueryHandler(vpn_service.buy_and_upgrade_service.recive_test_service, pattern='vpn_recive_test__(.*)'))
-    application.add_handler(CallbackQueryHandler(vpn_service.statistics.report_section, pattern='statistics_(.*)'))
-    application.add_handler(vpn_service.my_service_detail.change_ownership_conversation)
+    application.add_handler(CallbackQueryHandler(buy_and_upgrade_service.buy_custom_service, pattern='vpn_set_period_traffic__(.*)'))
+    application.add_handler(CallbackQueryHandler(buy_and_upgrade_service.upgrade_service, pattern='vpn_upgrade_service__(.*)'))
+    application.add_handler(CallbackQueryHandler(my_service_detail.service_info, pattern='vpn_my_service_detail__(.*)'))
+    application.add_handler(CallbackQueryHandler(my_service_detail.my_services, pattern='vpn_my_services(.*)'))
+    application.add_handler(CallbackQueryHandler(my_service_detail.ask_remove_service_for_user, pattern='vpn_remove_service_ask__(.*)'))
+    application.add_handler(CallbackQueryHandler(my_service_detail.remove_service_for_user, pattern='vpn_remove_service__(.*)'))
+    application.add_handler(CallbackQueryHandler(my_service_detail.service_advanced_options, pattern='vpn_advanced_options__(.*)'))
+    application.add_handler(CallbackQueryHandler(my_service_detail.get_configs_separately, pattern='vpn_get_configs_separately__(.*)'))
+    application.add_handler(CallbackQueryHandler(buy_and_upgrade_service.recive_test_service_info, pattern='vpn_recive_test_service'))
+    application.add_handler(CallbackQueryHandler(buy_and_upgrade_service.recive_test_service, pattern='vpn_recive_test__(.*)'))
+    application.add_handler(CallbackQueryHandler(statistics.report_section, pattern='statistics_(.*)'))
+    application.add_handler(my_service_detail.change_ownership_conversation)
 
-    application.job_queue.run_repeating(vpn_service.vpn_notification.notification_timer, interval=1 * 60, first=0)
-    application.job_queue.run_repeating(vpn_service.statistics.statistics_timer, interval=180 * 60, first=0)
-    application.job_queue.run_repeating(vpn_service.panel_api.marzban_api.refresh_connection_schedule, interval=720 * 60, first=0)
+    application.job_queue.run_repeating(vpn_notification.notification_timer, interval=1 * 60, first=0)
+    application.job_queue.run_repeating(statistics.statistics_timer, interval=180 * 60, first=0)
+    application.job_queue.run_repeating(panel_api.marzban_api.refresh_connection_schedule, interval=720 * 60, first=0)
 
     # Admin
     application.add_handler(CallbackQueryHandler(admin_page.admin_page, pattern='admin_page'))
