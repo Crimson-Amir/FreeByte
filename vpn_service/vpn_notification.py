@@ -4,10 +4,18 @@ import pytz
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
 import sys, os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from vpn_service import panel_api, vpn_utilities
+from vpn_service import panel_api
 from crud import vpn_crud
 from utilities_reFactore import FindText, report_to_admin, human_readable
 from database_sqlalchemy import SessionLocal
+
+async def format_traffic_from_megabyte(ft_instance, traffic_in_megabyte, chat_id):
+    if traffic_in_megabyte == 0:
+        return await ft_instance.find_from_database(chat_id, 'without_usage')
+    elif int(traffic_in_megabyte) < 1000:
+        return f"{int(traffic_in_megabyte)} {await ft_instance.find_from_database(chat_id, 'megabyte')}"
+    else:
+        return f"{round(traffic_in_megabyte / 1000, 2)} {await ft_instance.find_from_database(chat_id,'gigabyte')}"
 
 async def report_service_termination_to_user(context, purchase, ft_instance):
     text = await ft_instance.find_from_database(purchase.chat_id, 'vpn_service_termination_notification')
@@ -30,7 +38,7 @@ async def report_service_expired_in_days(context, purchase, ft_instance, days_le
 
 
 async def report_service_expired_in_gigabyte(context, purchase, ft_instance, percentage_traffic_consumed, left_traffic_in_gigabyte):
-    left_traffic = await vpn_utilities.format_traffic_from_megabyte(ft_instance, int(left_traffic_in_gigabyte * 1024))
+    left_traffic = await format_traffic_from_megabyte(ft_instance, int(left_traffic_in_gigabyte * 1024), purchase.chat_id)
     text = await ft_instance.find_from_database(purchase.chat_id, 'vpn_service_gigabyte_percent_notification')
     text = text.format(percentage_traffic_consumed, f"<code>{purchase.username}</code>", left_traffic)
     keyboard = [
