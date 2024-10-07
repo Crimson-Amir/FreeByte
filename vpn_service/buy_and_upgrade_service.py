@@ -266,7 +266,7 @@ async def recive_test_service(update, context):
 
             purchase = crud.create_purchase(session, product_id, user.id, traffic, period)
             service_id = purchase.purchase_id
-            await create_service_for_user(update, context, session, service_id)
+            await create_service_for_user(context, session, service_id)
             crud.update_user_config(session, user.id, get_vpn_free_service=True)
 
             admin_msg = ('User Recived Test Service.'
