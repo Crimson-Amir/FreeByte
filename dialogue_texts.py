@@ -307,10 +307,6 @@ keyboard_transaction = {
         'en': 'Help & Support 📚',
         'fa': 'راهنما و پشتیبانی 📚'
     },
-    'guide_label': {
-        'en': 'Help 📚',
-        'fa': 'راهنما 📚'
-    },
     'cancel_button': {
         'en': 'Cancel ✘',
         'fa': 'انصراف ✘'

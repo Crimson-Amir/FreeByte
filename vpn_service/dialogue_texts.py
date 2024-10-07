@@ -378,4 +378,8 @@ keyboard_transaction = {
         'en': 'Check Service Detail',
         'fa': 'مشاهده جزئیات سرویس'
     },
+    'vpn_guide_button_label': {
+        'en': 'How to Connect 📚',
+        'fa': 'راهنمای اتصال 📚'
+    },
 }
