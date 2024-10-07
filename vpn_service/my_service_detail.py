@@ -98,7 +98,6 @@ async def service_info(update, context):
                     'active': await ft_instance.find_text('vpn_service_active'),
                     'limited': await ft_instance.find_text('vpn_service_limited'),
                     'expired': await ft_instance.find_text('vpn_service_expired')
-
                 }
 
                 text = (
