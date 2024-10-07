@@ -90,6 +90,7 @@ class Purchase(Base):
     purchase_id = Column(Integer, primary_key=True)
     username = Column(String)
     active = Column(Boolean)
+    status = Column(String, default='active')
     traffic = Column(Integer)
     period = Column(Integer)
     day_notification_stats = Column(Boolean, default=False)

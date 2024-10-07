@@ -116,7 +116,7 @@ async def create_service_in_servers(session, purchase_id: int):
     json_config = await create_json_config(username, date_in_timestamp, traffic_to_byte)
     create_user = await panel_api.marzban_api.add_user(get_purchase.product.main_server.server_ip, json_config)
 
-    vpn_crud.update_purchase(session, purchase_id, username=username, subscription_url=create_user['subscription_url'])
+    vpn_crud.update_purchase(session, purchase_id, username=username, subscription_url=create_user['subscription_url'], status='active')
     session.refresh(get_purchase)
     return get_purchase
 
@@ -179,7 +179,8 @@ async def upgrade_service_for_user(update, context, session, purchase_id: int):
             traffic=purchase.upgrade_traffic,
             period=purchase.upgrade_period,
             upgrade_traffic=0,
-            upgrade_period=0
+            upgrade_period=0,
+            status='active'
         )
 
         session.refresh(purchase)

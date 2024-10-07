@@ -266,6 +266,35 @@ text_transaction = {
         'en': 'Usage Report',
         'fa': 'گزارش مصرف'
     },
+    'vpn_service_termination_notification': {
+        'en': "🟡 Your service named {0} has ended!"
+              "\nIf you want to check or renew the service.",
+        'fa':"🟡 سرویس شما با نام {0} به پایان رسید!"
+             "\nدر صورتی که تمایل دارید نسبت به بررسی و یا تمدید سرویس اقدام کنید."
+
+    },
+    'vpn_service_days_notification': {
+        'en': "🔵 Service Expiration Date Notification"
+              "\nYour service named {0} has less than {1} days left."
+              "\nIf you want to check or renew the service.",
+        'fa': "🔵 اطلاع رسانی تاریخ انقضا سرویس"
+              "\nاز سرویس شما با نام {0} کمتر از {1} روز باقی مانده."
+              "\nدر صورتی که تمایل دارید نسبت به بررسی و یا تمدید سرویس اقدام کنید."
+    },
+    'vpn_service_gigabyte_percent_notification': {
+        'en': "🔵 Service Traffic Notification"
+              "\nYou have consumed {0} percent of the traffic volume of {1}."
+              "\nThe remaining volume of the service is {2}."
+              "\nIf you want to check or renew the service.",
+        'fa': "🔵 اطلاع رسانی حجم سرویس"
+              "\nشما {0} درصد حجم ترافیک سرویس {1} رو مصرف کردید."
+              "\nحجم باقی مانده از سرویس {2} است."
+              "\nدر صورتی که تمایل دارید نسبت به بررسی و یا تمدید سرویس اقدام کنید."
+    },
+    'check_service_detail': {
+        'en': 'Check Service Detail',
+        'fa': 'مشاهده جزئیات سرویس'
+    },
 }
 
 keyboard_transaction = {
@@ -307,7 +336,7 @@ keyboard_transaction = {
     },
     'vpn_upgrade_service': {
         'en': '↟ Upgrade Service',
-        'fa': '↟ تمدید و ارتقا'
+        'fa': '↟ تمدید یا ارتقا'
     },
     'vpn_remove_service': {
         'en': '⇣ Remove Service',
@@ -340,5 +369,9 @@ keyboard_transaction = {
     'vpn_change_service_ownership': {
         'en': 'Change Service Ownership',
         'fa': 'تغییر مالکیت سرویس'
+    },
+    'vpn_view_service_detail': {
+        'en': 'Check Service Detail',
+        'fa': 'مشاهده جزئیات سرویس'
     },
 }

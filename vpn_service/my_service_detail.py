@@ -58,11 +58,8 @@ async def service_info(update, context):
                     return await query.answer(await ft_instance.find_text('no_service_available'), show_alert=True)
 
                 main_server = purchase.product.main_server
-
                 get_from_server = await vpn_utilities.get_purchase_info_from_server(context, purchase)
-
                 expire_date = human_readable(datetime.fromtimestamp(get_from_server.get('expire')), await ft_instance.find_user_language())
-
                 onlien_at = human_readable(get_from_server.get('online_at'), await ft_instance.find_user_language()) \
                 if get_from_server.get('online_at') else await ft_instance.find_text('not_connected_yet')
 
@@ -195,7 +192,7 @@ async def service_advanced_options(update, context):
                 f"<b>{await ft_instance.find_text('vpn_selected_service_advanced_info')}</b>"
                 f"\n\n{await ft_instance.find_text('vpn_service_name')} {purchase.username}"
                 f"\n\n{await ft_instance.find_text('online_at')} {get_from_server.get('online_at') or await ft_instance.find_text('not_connected_yet')}"
-                f"\n{await ft_instance.find_text('vpn_service_status')} {service_status.get(get_from_server.get('status'))}"
+                f"\n{await ft_instance.find_text('vpn_service_status')} {service_status.get(get_from_server.get('status'), get_from_server.get('status'))}"
                 f"\n{await ft_instance.find_text('vpn_used_traffic')} {used_traffic}GB"
                 f"\n{await ft_instance.find_text('vpn_total_traffic')} {data_limit}GB"
                 f"\n{await ft_instance.find_text('vpn_lifetime_used_traffic')} {lifetime_used_traffic}GB"

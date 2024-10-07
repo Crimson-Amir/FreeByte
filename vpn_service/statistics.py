@@ -1,13 +1,12 @@
-import asyncio
-import json
+import json, traceback
 from datetime import datetime, timedelta
 import telegram.error, pytz
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
 import sys, os, logging
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from vpn_service import panel_api, plot
+from vpn_service import panel_api, plot, vpn_utilities
 from crud import vpn_crud
-from utilities_reFactore import FindText, handle_error
+from utilities_reFactore import FindText, handle_error, report_to_admin
 from database_sqlalchemy import SessionLocal
 
 STATISTICS_TIMER_HORSE = 3
@@ -26,45 +25,43 @@ async def make_day_name_farsi(ft_instance, day):
     return days_mapping[day]
 
 
-async def format_traffic_from_megabyte(ft_instance, traffic_in_begabyte):
-    if traffic_in_begabyte == 0:
-        return await ft_instance.find_text('without_usage')
-    elif int(traffic_in_begabyte) < 1000:
-        return f"{int(traffic_in_begabyte)} {await ft_instance.find_text('megabyte')}"
-    else:
-        return f"{round(traffic_in_begabyte / 1000, 2)} {await ft_instance.find_text('gigabyte')}"
-
-
 async def statistics_timer(context):
-    with SessionLocal() as session:
-        with session.begin():
-            users_last_usage = vpn_crud.get_users_last_usage(session)
+    try:
+        with SessionLocal() as session:
+            with session.begin():
+                users_last_usage = vpn_crud.get_users_last_usage(session)
 
-            if not users_last_usage:
-                users_last_usage = {}
-            else:
-                users_last_usage = json.loads(users_last_usage.last_usage)
+                if not users_last_usage:
+                    users_last_usage = {}
+                else:
+                    users_last_usage = json.loads(users_last_usage.last_usage)
 
-            all_product = vpn_crud.get_all_product(session)
-            last_usage_dict, statistics_usage_traffic = {}, {}
-            for product in all_product:
-                get_users_usage = await panel_api.marzban_api.get_users(product.main_server.server_ip)
-                for purchase in product.purchase:
-                    for user in get_users_usage['users']:
-                        if user['username'] == purchase.username:
+                all_product = vpn_crud.get_all_product(session)
+                last_usage_dict, statistics_usage_traffic = {}, {}
+                for product in all_product:
+                    get_users_usage = await panel_api.marzban_api.get_users(product.main_server.server_ip)
+                    for purchase in product.purchase:
+                        for user in get_users_usage['users']:
+                            if user['username'] == purchase.username:
 
-                            last_traffic_usage = users_last_usage.get(purchase.username)
-                            usage_traffic_in_megabyte = round(user['used_traffic'] / (1024 ** 2), 2)
-                            print(user['used_traffic'], usage_traffic_in_megabyte)
-                            last_usage_dict[purchase.username] = usage_traffic_in_megabyte
+                                last_traffic_usage = users_last_usage.get(purchase.username)
+                                usage_traffic_in_megabyte = round(user['used_traffic'] / (1024 ** 2), 2)
+                                print(user['used_traffic'], usage_traffic_in_megabyte)
+                                last_usage_dict[purchase.username] = usage_traffic_in_megabyte
 
-                            if not last_traffic_usage: continue
-                            traffic_use = max(int((usage_traffic_in_megabyte - last_traffic_usage)), 0)
-                            statistics_usage_traffic[purchase.username] = traffic_use
-                            break
+                                if not last_traffic_usage: continue
+                                traffic_use = max(int((usage_traffic_in_megabyte - last_traffic_usage)), 0)
+                                statistics_usage_traffic[purchase.username] = traffic_use
+                                break
 
-            vpn_crud.create_new_last_usage(session, json.dumps(last_usage_dict))
-            vpn_crud.create_new_statistics(session, json.dumps(statistics_usage_traffic))
+                vpn_crud.create_new_last_usage(session, json.dumps(last_usage_dict))
+                vpn_crud.create_new_statistics(session, json.dumps(statistics_usage_traffic))
+    except Exception as e:
+        tb = traceback.format_exc()
+        msg = ('error in statistics-timer!'
+               f'\n\nerror type: {type(e)}'
+               f'\nTraceBack:\n{tb}')
+        await report_to_admin('error', 'statistics_timer', msg)
 
 def datetime_range(start, end, delta):
     current = start
@@ -115,10 +112,10 @@ async def reports_func(session, ft_instance, chat_id, get_purchased, period):
                         usage_traffic = next(iter(usage.values()))
 
                         usage_detail.append(
-                            f'\n- {await ft_instance.find_text("vpn_service_with_number")} {usage_name} = {await format_traffic_from_megabyte(ft_instance, usage_traffic)}' if usage_traffic else '')
+                            f'\n- {await ft_instance.find_text("vpn_service_with_number")} {usage_name} = {await vpn_utilities.format_traffic_from_megabyte(ft_instance, usage_traffic)}' if usage_traffic else '')
                         get_traffic += usage_traffic
 
-                    detail_text += f'\n\n• {await ft_instance.find_text("vpn_from_clock")} {first_time.strftime("%H:%M")} {await ft_instance.find_text("to")} {time.strftime("%H:%M")} = {await format_traffic_from_megabyte(ft_instance,get_traffic)}'
+                    detail_text += f'\n\n• {await ft_instance.find_text("vpn_from_clock")} {first_time.strftime("%H:%M")} {await ft_instance.find_text("to")} {time.strftime("%H:%M")} = {await vpn_utilities.format_traffic_from_megabyte(ft_instance,get_traffic)}'
                     detail_text += ''.join(usage_detail[:5]) if get_purchased[0] == 'all' else ''
 
                     final_traffic += get_traffic
@@ -143,8 +140,8 @@ async def reports_func(session, ft_instance, chat_id, get_purchased, period):
                                 get_traff += usage_traffic
                                 get_usage[usage_name] = get_usage.get(usage_name, 0) + usage_traffic
 
-                    usage_detail = [f'\n- {await ft_instance.find_text("vpn_service_with_number")} {get_name} = {await format_traffic_from_megabyte(ft_instance,get_traffic)}' for get_name, get_traffic in get_usage.items() if get_traffic]
-                    detail_text += f"\n\n• {await ft_instance.find_text('in')} {make_day_name_farsi(ft_instance, our_date.strftime('%A'))} {date_} = {await format_traffic_from_megabyte(ft_instance,get_traff)}"
+                    usage_detail = [f'\n- {await ft_instance.find_text("vpn_service_with_number")} {get_name} = {await vpn_utilities.format_traffic_from_megabyte(ft_instance,get_traffic)}' for get_name, get_traffic in get_usage.items() if get_traffic]
+                    detail_text += f"\n\n• {await ft_instance.find_text('in')} {make_day_name_farsi(ft_instance, our_date.strftime('%A'))} {date_} = {await vpn_utilities.format_traffic_from_megabyte(ft_instance,get_traff)}"
                     detail_text += ''.join(usage_detail[:5]) if get_purchased[0] == 'all' else ''
 
                     final_traffic += get_traff
@@ -171,10 +168,10 @@ async def reports_func(session, ft_instance, chat_id, get_purchased, period):
                                     get_usage[usage_name] = get_usage.get(usage_name, 0) + usage_traffic
 
 
-                        detail_text += f'\n\n• {await ft_instance.find_text("in")} {our_date.strftime("%Y-%m-%d")} = {await format_traffic_from_megabyte(ft_instance,get_traff)}'
+                        detail_text += f'\n\n• {await ft_instance.find_text("in")} {our_date.strftime("%Y-%m-%d")} = {await vpn_utilities.format_traffic_from_megabyte(ft_instance,get_traff)}'
 
                         if period_key != 'month':
-                            usage_detail = [f'\n- {await ft_instance.find_text("vpn_service_with_number")} {get_name} = {await format_traffic_from_megabyte(ft_instance,get_traffic)}' for get_name, get_traffic
+                            usage_detail = [f'\n- {await ft_instance.find_text("vpn_service_with_number")} {get_name} = {await vpn_utilities.format_traffic_from_megabyte(ft_instance,get_traffic)}' for get_name, get_traffic
                                             in get_usage.items() if get_traffic]
                             detail_text += ''.join(usage_detail[:5]) if get_purchased[0] == 'all' else ''
 
@@ -236,8 +233,8 @@ async def report_section(update, context):
         get_plot_image = plot.get_plot(get_data[1], period)
 
         text = (f'<b>{await ft_instance.find_text("usage_report")} {button_name}:</b>'
-                f'\n\n<b>• {await ft_instance.find_text("vpn_traffic_use")} {button_name}: {await format_traffic_from_megabyte(ft_instance, purchase_id)}</b>'
-                f'\n<b>• {await ft_instance.find_text("avreage_usage_in")} {constituent_name}: {await format_traffic_from_megabyte(ft_instance, get_data[3])}</b>')
+                f'\n\n<b>• {await ft_instance.find_text("vpn_traffic_use")} {button_name}: {await vpn_utilities.format_traffic_from_megabyte(ft_instance, purchase_id)}</b>'
+                f'\n<b>• {await ft_instance.find_text("avreage_usage_in")} {constituent_name}: {await vpn_utilities.format_traffic_from_megabyte(ft_instance, get_data[3])}</b>')
         text += f'\n{detail_text}'
 
         if query.message.photo:

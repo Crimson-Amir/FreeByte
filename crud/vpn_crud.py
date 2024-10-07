@@ -60,11 +60,17 @@ def get_users_last_usage(session):
 
 
 def create_new_last_usage(session, last_usage_dict):
-    last_usage = model.LastUsage(last_usage=last_usage_dict)
+    last_usage = model.LastUsage(
+        last_usage=last_usage_dict,
+        register_date=datetime.now(pytz.timezone('Asia/Tehran')),
+    )
     session.add(last_usage)
 
 def create_new_statistics(session, statistics_usage_traffic):
-    statistics = model.Statistics(traffic_usage=statistics_usage_traffic)
+    statistics = model.Statistics(
+        traffic_usage=statistics_usage_traffic,
+        register_date=datetime.now(pytz.timezone('Asia/Tehran')),
+    )
     session.add(statistics)
 
 def get_specific_time_statistics(session, date):

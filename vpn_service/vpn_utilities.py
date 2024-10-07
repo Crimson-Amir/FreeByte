@@ -23,3 +23,12 @@ async def get_purchase_info_from_server(context, purchase):
         context.user_data[key] = {'info_from_server': get_from_server, 'exp': exp}
 
     return context.user_data[key]['info_from_server']
+
+
+async def format_traffic_from_megabyte(ft_instance, traffic_in_megabyte):
+    if traffic_in_megabyte == 0:
+        return await ft_instance.find_text('without_usage')
+    elif int(traffic_in_megabyte) < 1000:
+        return f"{int(traffic_in_megabyte)} {await ft_instance.find_text('megabyte')}"
+    else:
+        return f"{round(traffic_in_megabyte / 1000, 2)} {await ft_instance.find_text('gigabyte')}"
