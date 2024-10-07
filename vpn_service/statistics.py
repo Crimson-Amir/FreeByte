@@ -192,7 +192,7 @@ async def reports_func(session, ft_instance, chat_id, get_purchased, period):
 @handle_error.handle_functions_error
 async def report_section(update, context):
     query = update.callback_query
-    period, purchase_id, button_status = query.data.remove('statistics', '').split('_')
+    period, purchase_id, button_status = query.data.replace('statistics', '').split('_')
 
     chat_id = query.message.chat_id
     ft_instance = FindText(update, context)
