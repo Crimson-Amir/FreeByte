@@ -144,8 +144,8 @@ with SessionLocal() as session:
             session.add(user_config)
             user_id.append(chat_id)
 
-            sqlite_manager.custom(f'update UserDetail set wallet = 0 where chat_id = {chat_id}')
-#
+            sqlite_manager.custom(f'update User set wallet = 0 where chat_id = {chat_id}')
+
 
 with SessionLocal() as session:
     with session.begin():
