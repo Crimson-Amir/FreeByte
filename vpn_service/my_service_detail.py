@@ -54,7 +54,7 @@ async def my_services(update, context):
 
             keyboard.append([InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='my_services_new')])
 
-            if update.callback_query and update.callback_query.data != 'vpn_my_services_new':
+            if update.callback_query and 'vpn_my_services_new' not in update.callback_query.data:
                 return await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
             if query:
