@@ -140,12 +140,24 @@ async def ask_remove_service_for_user(update, context):
     with SessionLocal() as session:
         with session.begin():
             purchase = vpn_crud.get_purchase(session, purchase_id)
-            returnable_amount = await vpn_utilities.calculate_price(purchase.traffic, purchase.period)
+            main_server_ip = purchase.product.main_server.server_ip
+
+            user = await panel_api.marzban_api.get_user(main_server_ip, purchase.username)
+
+            usage_traffic_in_gigabyte = round(user['used_traffic'] / (1024 ** 3), 2)
+            data_limit_in_gigabyte = round(user['data_limit'] / (1024 ** 3), 2)
+            traffic_left_in_gigabyte = data_limit_in_gigabyte - usage_traffic_in_gigabyte
+
+            expiry = datetime.fromtimestamp(user['expire'])
+            now = datetime.now(pytz.timezone('Asia/Tehran')).replace(tzinfo=None)
+            days_left = (expiry - now).days
+            returnable_amount = await vpn_utilities.calculate_price(traffic_left_in_gigabyte, days_left)
+
             text = f"<b>{await ft_instance.find_text('vpn_ask_user_for_removing_service')}</b>"
             text = text.format(f"{returnable_amount:,}")
 
             keyboard = [
-                [InlineKeyboardButton(await ft_instance.find_keyboard('yes_im_sure'), callback_data=f'vpn_remove_service__{purchase_id}'),
+                [InlineKeyboardButton(await ft_instance.find_keyboard('yes_im_sure'), callback_data=f'vpn_remove_service__{purchase_id}__{returnable_amount}'),
                  InlineKeyboardButton(await ft_instance.find_keyboard('no'), callback_data=f'vpn_my_service_detail__{purchase_id}')],
                 [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=f'vpn_my_service_detail__{purchase_id}')]
             ]
@@ -158,28 +170,17 @@ async def ask_remove_service_for_user(update, context):
 async def remove_service_for_user(update, context):
     query = update.callback_query
     ft_instance = FindText(update, context)
-    purchase_id = int(query.data.replace('vpn_remove_service__', ''))
+    purchase_id, returnable_amount = query.data.replace('vpn_remove_service__', '').split('_')
 
     with SessionLocal() as session:
         with session.begin():
-            purchase = vpn_crud.remove_purchase(session, purchase_id)
+            purchase = vpn_crud.remove_purchase(session, int(purchase_id))
             main_server_ip = purchase.product.main_server.server_ip
 
-            user = await panel_api.marzban_api.get_user(main_server_ip, purchase.username)
-
-            usage_traffic_in_gigabyte = round(user['used_traffic'] / (1024 ** 3), 2)
-            data_limit_in_gigabyte = round(user['data_limit'] / (1024 ** 3), 2)
-            traffic_left_in_gigabyte = data_limit_in_gigabyte - usage_traffic_in_gigabyte
-
-            expiry = datetime.fromtimestamp(user['expire'])
-            now = datetime.now(pytz.timezone('Asia/Tehran')).replace(tzinfo=None)
-            days_left = (expiry - now).days
-
-            returnable_amount = await vpn_utilities.calculate_price(traffic_left_in_gigabyte, days_left)
             finacial_report = crud.create_financial_report(
                 session, 'recive',
                 chat_id=purchase.chat_id,
-                amount=returnable_amount,
+                amount=int(returnable_amount),
                 action='remove_vpn_service',
                 service_id=purchase.purchase_id,
                 payment_status='not paid',
