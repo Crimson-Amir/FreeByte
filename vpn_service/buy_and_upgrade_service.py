@@ -126,7 +126,7 @@ async def create_service_for_user(context, session, purchase_id: int):
     main_server = get_purchase.product.main_server
 
     server_port = f":{main_server.server_port}" if main_server.server_port != 443 else ""
-    sub_link = f"<code>{main_server.server_protocol}{main_server.server_ip}{server_port}{get_purchase.subscription_url}</code>"
+    sub_link = f"{main_server.server_protocol}{main_server.server_ip}{server_port}{get_purchase.subscription_url}"
 
     qr_code = qrcode.QRCode(version=1,error_correction=qrcode.constants.ERROR_CORRECT_L,box_size=10,border=4)
     qr_code.add_data(sub_link)
@@ -141,7 +141,7 @@ async def create_service_for_user(context, session, purchase_id: int):
                 [InlineKeyboardButton(await ft_instance.find_from_database(get_purchase.chat_id,'bot_main_menu', 'keyboard'), callback_data=f"start_in_new_message")]]
 
     await context.bot.send_photo(photo=binary_data,
-                                 caption=await ft_instance.find_from_database(get_purchase.chat_id, 'vpn_service_activated') + f'\n\n{sub_link}',
+                                 caption=await ft_instance.find_from_database(get_purchase.chat_id, 'vpn_service_activated') + f'\n\n<code>{sub_link}</code>',
                                  chat_id=get_purchase.chat_id, reply_markup=InlineKeyboardMarkup(keyboard),
                                  parse_mode='html')
     return get_purchase
