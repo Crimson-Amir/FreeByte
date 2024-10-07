@@ -26,8 +26,9 @@ async def my_services(update, context):
                 return await query.answer(await ft_instance.find_text('no_service_available'), show_alert=True)
 
             service_status = {
-                True: '✅',
-                False: '🔴'
+                'active': '✅',
+                'limited': '🔴',
+                'expired': '🔴'
             }
 
             text = f"<b>{await ft_instance.find_text('vpn_select_service_for_info')}</b>"

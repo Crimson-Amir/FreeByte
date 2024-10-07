@@ -50,7 +50,7 @@ async def report_service_expired_in_gigabyte(context, purchase, ft_instance, per
 
 async def report_service_termination_to_admin(purchase):
     text = ('User service has been terminated'
-            f'\nservice iD: {purchase.purchase_id}'
+            f'\n\nservice iD: {purchase.purchase_id}'
             f'\nService Username: {purchase.username}'
             f'\nService Product Name: {purchase.purchase_id}'
             f'\nService Traffic: {purchase.traffic}'
@@ -61,44 +61,46 @@ async def report_service_termination_to_admin(purchase):
 async def notification_timer(context):
     try:
         with SessionLocal() as session:
-            with session.begin():
-                all_product = vpn_crud.get_all_product(session)
-                ft_instanc = FindText(None, None)
+            all_product = vpn_crud.get_all_product(session)
+            ft_instanc = FindText(None, None)
 
-                for product in all_product:
-                    get_users_usage = await panel_api.marzban_api.get_users(product.main_server.server_ip)
-                    for purchase in product.purchase:
-                        if purchase.status != 'active': continue
-                        for user in get_users_usage['users']:
-                            if user['username'] == purchase.username:
-                                usage_traffic_in_gigabyte = round(user['used_traffic'] / (1024 ** 3), 2)
-                                data_limit_in_gigabyte = round(user['data_limit'] / (1024 ** 3), 2)
-                                traffic_left_in_gigabyte = data_limit_in_gigabyte - usage_traffic_in_gigabyte
-                                traffic_percent = int((usage_traffic_in_gigabyte / data_limit_in_gigabyte) * 100)
-                                service_stauts = user['status']
+            for product in all_product:
+                get_users_usage = await panel_api.marzban_api.get_users(product.main_server.server_ip)
+                for purchase in product.purchase:
+                    if purchase.status != 'active': continue
+                    for user in get_users_usage['users']:
+                        if user['username'] == purchase.username:
+                            usage_traffic_in_gigabyte = round(user['used_traffic'] / (1024 ** 3), 2)
+                            data_limit_in_gigabyte = round(user['data_limit'] / (1024 ** 3), 2)
+                            traffic_left_in_gigabyte = data_limit_in_gigabyte - usage_traffic_in_gigabyte
+                            traffic_percent = int((usage_traffic_in_gigabyte / data_limit_in_gigabyte) * 100)
+                            service_stauts = user['status']
 
-                                expiry = datetime.fromtimestamp(user['expire'])
-                                now = datetime.now(pytz.timezone('Asia/Tehran')).replace(tzinfo=None)
-                                days_left = (expiry - now).days
+                            expiry = datetime.fromtimestamp(user['expire'])
+                            now = datetime.now(pytz.timezone('Asia/Tehran')).replace(tzinfo=None)
+                            days_left = (expiry - now).days
 
-                                if service_stauts in ['limited', 'expired'] and purchase.status == 'active':
-                                    vpn_crud.update_purchase(session, purchase.purchase_id, status='limited')
-                                    await report_service_termination_to_user(context, purchase, ft_instanc)
-                                    await report_service_termination_to_admin(purchase)
+                            if service_stauts in ['limited', 'expired'] and purchase.status == 'active':
+                                vpn_crud.update_purchase(session, purchase.purchase_id, status='limited')
+                                session.commit()
+                                await report_service_termination_to_user(context, purchase, ft_instanc)
+                                await report_service_termination_to_admin(purchase)
 
-                                elif days_left <= purchase.owner.config.period_notification_day and not purchase.day_notification_status:
-                                    vpn_crud.update_purchase(session, purchase.purchase_id, day_notification_status=True)
-                                    await report_service_expired_in_days(context, purchase, ft_instanc, days_left)
+                            elif days_left <= purchase.owner.config.period_notification_day and not purchase.day_notification_status:
+                                vpn_crud.update_purchase(session, purchase.purchase_id, day_notification_status=True)
+                                session.commit()
+                                await report_service_expired_in_days(context, purchase, ft_instanc, days_left)
 
-                                elif traffic_percent >= purchase.owner.config.traffic_notification_percent and not purchase.traffic_notification_status:
-                                    vpn_crud.update_purchase(session, purchase.purchase_id, traffic_notification_status=True)
-                                    await report_service_expired_in_gigabyte(
-                                        context,
-                                        purchase,
-                                        ft_instanc,
-                                        traffic_percent,
-                                        traffic_left_in_gigabyte
-                                    )
+                            elif traffic_percent >= purchase.owner.config.traffic_notification_percent and not purchase.traffic_notification_status:
+                                vpn_crud.update_purchase(session, purchase.purchase_id, traffic_notification_status=True)
+                                session.commit()
+                                await report_service_expired_in_gigabyte(
+                                    context,
+                                    purchase,
+                                    ft_instanc,
+                                    traffic_percent,
+                                    traffic_left_in_gigabyte
+                                )
 
 
     except Exception as e:
