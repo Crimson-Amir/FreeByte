@@ -104,10 +104,10 @@ async def reports_func(session, ft_instance, chat_id, get_purchased, period):
             detail_text, final_dict, final_traffic, avreage_traffic, index = '', {}, 0, 0, 1
 
             if period == 'day':
-                for index, (timestamp, usage_list) in enumerate(user_usage_dict.items()):
-                    time = datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S')
+                for index, (timedate, usage_list) in enumerate(user_usage_dict.items()):
+                    # time = timedate.strftime('%Y-%m-%d')
 
-                    first_time = time - timedelta(hours=STATISTICS_TIMER_HORSE)
+                    first_time = timedate - timedelta(hours=STATISTICS_TIMER_HORSE)
 
                     usage_detail, get_traffic = [], 0
 
