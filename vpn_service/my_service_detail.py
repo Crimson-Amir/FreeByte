@@ -71,14 +71,16 @@ async def service_info(update, context):
 
                 service_status = {
                     'active': await ft_instance.find_text('vpn_service_active'),
-                    'inactive': await ft_instance.find_text('vpn_service_inactive')
+                    'limited': await ft_instance.find_text('vpn_service_limited'),
+                    'expired': await ft_instance.find_text('vpn_service_expired')
+
                 }
 
                 text = (
                     f"<b>{await ft_instance.find_text('vpn_selected_service_info')}</b>"
                     f"\n\n{await ft_instance.find_text('vpn_service_name')} <code>{purchase.username}</code>"
                     f"\n\n{await ft_instance.find_text('online_at')} {onlien_at}"
-                    f"\n{await ft_instance.find_text('vpn_service_status')} {service_status.get(get_from_server.get('status'))}"
+                    f"\n{await ft_instance.find_text('vpn_service_status')} {service_status.get(get_from_server.get('status'), get_from_server.get('status'))}"
                     f"\n{await ft_instance.find_text('vpn_expire_date')} {expire_date}"
                     f"\n{await ft_instance.find_text('vpn_traffic_use')} {used_traffic}/{data_limit}GB"
                     f"\n\n{await ft_instance.find_text('vpn_subsrciption_address')}"
@@ -185,7 +187,9 @@ async def service_advanced_options(update, context):
 
             service_status = {
                 'active': await ft_instance.find_text('vpn_service_active'),
-                'inactive': await ft_instance.find_text('vpn_service_inactive')
+                'limited': await ft_instance.find_text('vpn_service_limited'),
+                'expired': await ft_instance.find_text('vpn_service_expired')
+
             }
 
             text = (

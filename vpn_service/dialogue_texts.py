@@ -55,9 +55,13 @@ text_transaction = {
         'en': '✅ Active',
         'fa': '✅ فعال'
     },
-    'vpn_service_inactive': {
-        'en': '🔴 Inactive',
-        'fa': '🔴 غیرفعال'
+    'vpn_service_limited': {
+        'en': '🔴 End of Traffic',
+        'fa': '🔴 اتمام ترافیک'
+    },
+    'vpn_service_expired': {
+        'en': '🔴 Expired',
+        'fa': '🔴 منقضی شده'
     },
     'vpn_service_not_exit_in_db': {
         'en': '❌ Service not found in the database!',

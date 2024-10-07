@@ -21,8 +21,8 @@ async def report_service_termination_to_user(context, purchase, ft_instance):
     text = await ft_instance.find_from_database(purchase.chat_id, 'vpn_service_termination_notification')
     text = text.format(f"<code>{purchase.username}</code>")
     keyboard = [
-        [InlineKeyboardButton(await ft_instance.find_keyboard('vpn_upgrade_service'), callback_data=f'vpn_upgrade_service__30__40__{purchase.purchase_id}'),
-         InlineKeyboardButton(await ft_instance.find_keyboard('vpn_buy_vpn'), callback_data='vpn_set_period_traffic__30_40')]
+        [InlineKeyboardButton(await ft_instance.find_from_database(purchase.chat_id, 'vpn_upgrade_service', 'keyboard'), callback_data=f'vpn_upgrade_service__30__40__{purchase.purchase_id}'),
+         InlineKeyboardButton(await ft_instance.find_from_database(purchase.chat_id, 'vpn_buy_vpn', 'keyboard'), callback_data='vpn_set_period_traffic__30_40')]
     ]
     await context.bot.send_message(purchase.chat_id, text=text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
 
