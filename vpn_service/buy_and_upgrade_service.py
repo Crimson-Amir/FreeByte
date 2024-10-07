@@ -119,10 +119,10 @@ async def create_service_in_servers(session, purchase_id: int):
     return get_purchase
 
 
-async def create_service_for_user(update, context, session, purchase_id: int):
+async def create_service_for_user(context, session, purchase_id: int):
     get_purchase = await create_service_in_servers(session, purchase_id)
 
-    ft_instance = FindText(update, context)
+    ft_instance = FindText(None)
     main_server = get_purchase.product.main_server
 
     server_port = f":{main_server.server_port}" if main_server.server_port != 443 else ""
@@ -136,9 +136,9 @@ async def create_service_for_user(update, context, session, purchase_id: int):
     qr_image.save(buffer)
     binary_data = buffer.getvalue()
 
-    keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('vpn_guide_button_label'), callback_data=f"vpn_guide_menu_in_new_message"),
-                 InlineKeyboardButton(await ft_instance.find_keyboard('my_services'), callback_data=f"vpn_my_services_new__1")],
-                [InlineKeyboardButton(await ft_instance.find_keyboard('bot_main_menu'), callback_data=f"start_in_new_message")]]
+    keyboard = [[InlineKeyboardButton(await ft_instance.find_from_database(get_purchase.chat_id, 'vpn_guide_button_label', 'keyboard'), callback_data=f"vpn_guide_menu_in_new_message"),
+                 InlineKeyboardButton(await ft_instance.find_from_database(get_purchase.chat_id, 'my_services', 'keyboard'), callback_data=f"vpn_my_services_new__1")],
+                [InlineKeyboardButton(await ft_instance.find_from_database(get_purchase.chat_id,'bot_main_menu', 'keyboard'), callback_data=f"start_in_new_message")]]
 
     await context.bot.send_photo(photo=binary_data,
                                  caption=await ft_instance.find_text('vpn_service_activated') + f'\n\n{sub_link}',
@@ -146,7 +146,7 @@ async def create_service_for_user(update, context, session, purchase_id: int):
                                  parse_mode='html')
     return get_purchase
 
-async def upgrade_service_for_user(update, context, session, purchase_id: int):
+async def upgrade_service_for_user(context, session, purchase_id: int):
     purchase = vpn_crud.get_purchase(session, purchase_id)
     traffic_for_upgrade = copy.deepcopy(purchase.upgrade_traffic)
     period_for_upgrade = copy.deepcopy(purchase.upgrade_period)
@@ -154,7 +154,7 @@ async def upgrade_service_for_user(update, context, session, purchase_id: int):
     if not purchase.upgrade_traffic or not purchase.upgrade_period:
         raise ValueError('upgrade_traffic or upgrade_period is empty')
 
-    ft_instance = FindText(update, context)
+    ft_instance = FindText(None, None)
     main_server_ip = purchase.product.main_server.server_ip
     try:
         user = await panel_api.marzban_api.get_user(main_server_ip, purchase.username)
@@ -175,7 +175,7 @@ async def upgrade_service_for_user(update, context, session, purchase_id: int):
         json_config = await create_json_config(purchase.username, date_in_timestamp, traffic_to_byte)
         await panel_api.marzban_api.modify_user(main_server_ip, purchase.username, json_config)
 
-        success_text = await ft_instance.find_text('upgrade_service_successfuly')
+        success_text = await ft_instance.find_from_database(purchase.chat_id, 'upgrade_service_successfuly')
         success_text = success_text.format(purchase.username, purchase.upgrade_traffic, purchase.upgrade_period)
 
         vpn_crud.update_purchase(

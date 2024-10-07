@@ -302,12 +302,12 @@ text_transaction = {
     'upgrade_service_successfuly': {
         'en': 'Your service named {0} has been upgraded successfully.'
               '\nDetails added to the service:'
-              '\nTraffic: {1}'
-              '\nPeriod Time: {2}',
+              '\nTraffic: {1} GB'
+              '\nPeriod Time: {2} Day',
         'fa': '🟢 سرویس شما با نام {0} با موفقیت ارتقاء یافت.'
               '\nمشصخات اضافه شده به سرویس:'
-              '\nترافیک: {1}'
-              '\nدوره زمانی: {2}'
+              '\nترافیک: {1} گیگابایت'
+              '\nدوره زمانی: {2} روز'
     },
 }
 
