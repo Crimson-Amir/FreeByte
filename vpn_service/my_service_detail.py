@@ -112,7 +112,7 @@ async def service_info(update, context):
                     [InlineKeyboardButton(await ft_instance.find_keyboard('refresh'), callback_data=f'vpn_my_service_detail__{purchase_id}'),
                      InlineKeyboardButton(await ft_instance.find_keyboard('vpn_remove_service'), callback_data=f'vpn_remove_service_ask__{purchase_id}')],
                     [InlineKeyboardButton(await ft_instance.find_keyboard('vpn_advanced_options'),callback_data=f'vpn_advanced_options__{purchase_id}')],
-                    [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='vpn_my_services')]
+                    [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='vpn_my_services__1')]
                 ]
 
                 await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
@@ -164,7 +164,7 @@ async def remove_service_for_user(update, context):
 
             text = await ft_instance.find_text('vpn_service_deleted_successfully')
 
-            keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=f'vpn_my_services')]]
+            keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=f'vpn_my_services__1')]]
             admin_msg = (
                 f'The user deleted the service.'
                 f'\n\nService username: {purchase.username}'
