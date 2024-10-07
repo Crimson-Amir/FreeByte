@@ -252,7 +252,7 @@ text_transaction = {
     },
     'vpn_no_usage_recored': {
         'en': 'No Usage Recorded',
-        'fa': 'مصرقی برای شما ثبت نشده است.',
+        'fa': 'مصرفی برای شما ثبت نشده است.',
     },
     'hour': {
         'en': 'Hour',
