@@ -125,7 +125,7 @@ async def add_credit_for_user(update, context):
 
                 finacial_report = crud.create_financial_report(
                     session, 'recive',
-                    chat_id=user_detail.id,
+                    chat_id=user_chat_id,
                     amount=int(amount),
                     action='increase_balance_by_admin',
                     service_id=None,
