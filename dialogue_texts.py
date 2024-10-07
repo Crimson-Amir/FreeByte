@@ -90,6 +90,10 @@ text_transaction = {
         'en': 'Data Traffic:',
         'fa': '• ترافیک (حجم):'
     },
+    'wallet_credit_label': {
+        'en': 'Wallet Balance:',
+        'fa': 'اعتبار کیف پول:'
+    },
     'period': {
         'en': 'Duration:',
         'fa': '• دوره زمانی:'
