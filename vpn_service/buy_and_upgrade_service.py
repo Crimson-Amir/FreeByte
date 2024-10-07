@@ -157,7 +157,7 @@ async def upgrade_service_for_user(update, context, session, purchase_id: int):
 
     ft_instance = FindText(update, context)
     main_server_ip = purchase.product.main_server.server_ip
-
+    print('asdsad')
     try:
         user = await panel_api.marzban_api.get_user(main_server_ip, purchase.username)
 
@@ -188,13 +188,13 @@ async def upgrade_service_for_user(update, context, session, purchase_id: int):
             day_notification_status=False,
             traffic_notification_status=False
         )
-
+        print('saddsa')
         session.refresh(purchase)
         success_text = await ft_instance.find_text('upgrade_service_successfuly')
         message_text = success_text.format(purchase.username, purchase.upgrade_traffic, purchase.upgrade_period)
         await context.bot.send_message(text=message_text, chat_id=purchase.chat_id)
-        await context.bot.send_message(text=message_text, chat_id=setting.ADMIN_CHAT_IDs[0])
-
+        await context.bot.send_message(text='stfu', chat_id=setting.ADMIN_CHAT_IDs[0])
+        print('sdfsfdfsd')
         return purchase
 
     except requests.exceptions.HTTPError as http_error:
