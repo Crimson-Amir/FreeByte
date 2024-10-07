@@ -199,7 +199,7 @@ async def report_section(update, context):
 
         if sum(get_data[1].values()) == 0 and not query.message.photo:
             keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='main_menu')]]
-            query.edit_message_text(text=await ft_instance.find_text('vpn_no_usage_recored'), reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
+            await query.edit_message_text(text=await ft_instance.find_text('vpn_no_usage_recored'), reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
             return
 
         mapping = {
