@@ -140,7 +140,7 @@ async def add_credit_for_user(update, context):
                 text = text.format(f"{int(amount):,}")
 
                 await context.bot.send_message(chat_id=user_chat_id, text=text)
-                await context.bot.send_message(chat_id=user_detail.id, text=f'+ successfully Add {amount:,} IRT to user wallet.')
+                await context.bot.send_message(chat_id=user_detail.id, text=f'+ successfully Add {int(amount):,} IRT to user wallet.')
 
     except Exception as e:
                 await context.bot.send_message(chat_id=user_detail.id, text=f'- failed to add credit to user wallet.\n{str(e)}')
