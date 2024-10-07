@@ -39,13 +39,11 @@ async def statistics_timer(context):
     with SessionLocal() as session:
         with session.begin():
             users_last_usage = vpn_crud.get_users_last_usage(session)
-            print(users_last_usage)
 
             if not users_last_usage:
                 users_last_usage = {}
             else:
                 users_last_usage = json.loads(users_last_usage.last_usage)
-                print(users_last_usage, type(users_last_usage))
 
             all_product = vpn_crud.get_all_product(session)
             last_usage_dict, statistics_usage_traffic = {}, {}
@@ -57,6 +55,7 @@ async def statistics_timer(context):
 
                             last_traffic_usage = users_last_usage.get(purchase.username)
                             usage_traffic_in_megabyte = user['used_traffic'] / (1024 ** 2)
+                            print(user['used_traffic'], usage_traffic_in_megabyte)
                             last_usage_dict[purchase.username] = usage_traffic_in_megabyte
 
                             if not last_traffic_usage: continue
