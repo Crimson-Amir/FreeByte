@@ -39,9 +39,11 @@ async def statistics_timer(context):
     with SessionLocal() as session:
         with session.begin():
             users_last_usage = vpn_crud.get_users_last_usage(session)
+            print(users_last_usage.last_usage)
             if not users_last_usage:
                 users_last_usage = {}
             else:
+                print(users_last_usage.last_usage)
                 users_last_usage = json.load(users_last_usage.last_usage)
 
             all_product = vpn_crud.get_all_product(session)
