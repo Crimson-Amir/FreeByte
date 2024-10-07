@@ -1,5 +1,5 @@
 from _datetime import datetime
-import sys, os, logging
+import sys, os, logging, math
 import requests.exceptions
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -11,12 +11,12 @@ from vpn_service import panel_api, vpn_utilities
 
 GET_NEW_USER_CHAT_ID, GET_ASSURNACE = range(2)
 
-@handle_error.handle_functions_error
-@message_token.check_token
 async def my_services(update, context):
     query = update.callback_query
     ft_instance = FindText(update, context)
     user_detail = update.effective_chat
+    item_per_page = 10
+    page = int(query.data.split('__')[1]) if query and query.data.startswith('vpn_my_services') else 1
 
     with SessionLocal() as session:
         with session.begin():
@@ -25,6 +25,11 @@ async def my_services(update, context):
             if not purchases:
                 return await query.answer(await ft_instance.find_text('no_service_available'), show_alert=True)
 
+            total_pages = math.ceil(len(purchases) / item_per_page)
+            start = (page - 1) * item_per_page
+            end = start + item_per_page
+            current_services = purchases[start:end]
+
             service_status = {
                 'active': '✅',
                 'limited': '🔴',
@@ -32,15 +37,28 @@ async def my_services(update, context):
             }
 
             text = f"<b>{await ft_instance.find_text('vpn_select_service_for_info')}</b>"
-            keyboard = [[InlineKeyboardButton(f"{service.username} {service_status.get(service.status)}",
-                                              callback_data=f'vpn_my_service_detail__{service.purchase_id}')]
-                        for service in purchases]
+            keyboard = [[InlineKeyboardButton(f"{service.username} {service_status.get(service.status)}", callback_data=f'vpn_my_service_detail__{service.purchase_id}')]
+
+                        for service in current_services]
+
+            # دکمه‌های جابجایی بین صفحات
+            nav_buttons = []
+            if page > 1:
+                nav_buttons.append(InlineKeyboardButton(await ft_instance.find_keyboard('previous'), callback_data=f'vpn_my_services__{page - 1}'))
+            if page < total_pages:
+                nav_buttons.append(InlineKeyboardButton(await ft_instance.find_keyboard('next'), callback_data=f'vpn_my_services__{page + 1}'))
+
+            if nav_buttons:
+                keyboard.append(nav_buttons)
+
             keyboard.append([InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='my_services_new')])
 
             if update.callback_query and update.callback_query.data != 'vpn_my_services_new':
                 return await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
-            if query: await query.answer()
+            if query:
+                await query.answer()
+
             return await context.bot.send_message(chat_id=user_detail.id, text=text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
 
 
