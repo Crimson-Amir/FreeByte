@@ -209,7 +209,7 @@ async def service_advanced_options(update, context):
                 [InlineKeyboardButton(await ft_instance.find_keyboard('vpn_get_configs'), callback_data=f'vpn_get_configs_separately__{purchase_id}__no')],
                 [InlineKeyboardButton(await ft_instance.find_keyboard('usage_report'), callback_data=f'statistics_week_{purchase_id}_hide'),
                  InlineKeyboardButton(await ft_instance.find_keyboard('refresh'), callback_data=f'vpn_advanced_options__{purchase_id}')],
-                [InlineKeyboardButton(await ft_instance.find_keyboard('vpn_change_service_ownership'), callback_data=f'vpn_change_service_ownership__{purchase_id}')]
+                [InlineKeyboardButton(await ft_instance.find_keyboard('vpn_change_service_ownership'), callback_data=f'vpn_change_service_ownership__{purchase_id}')],
                 [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=f'vpn_my_service_detail__{purchase.purchase_id}')]
             ]
 
