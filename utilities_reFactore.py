@@ -48,7 +48,10 @@ async def start(update, context, in_new_message=False, raise_error=False):
 
         if update.callback_query and "start_in_new_message" not in update.callback_query.data and not in_new_message:
             return await query.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(main_keyboard), parse_mode='html')
-        if query: await query.answer()
+        if query:
+            if 'start_in_new_message_delete_previos' in query.data:
+                await query.delete_message()
+            await query.answer()
         return await context.bot.send_message(chat_id=user_detail.id, text=text, reply_markup=InlineKeyboardMarkup(main_keyboard), parse_mode='html')
 
     except Exception as e:

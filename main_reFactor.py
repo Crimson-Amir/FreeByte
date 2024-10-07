@@ -53,8 +53,7 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler('admin', admin_page.admin_page))
 
     # Bot Main Menu
-    application.add_handler(CallbackQueryHandler(start_reFactore.start, pattern='start'))
-    application.add_handler(CallbackQueryHandler(start_reFactore.start, pattern='start_in_new_message'))
+    application.add_handler(CallbackQueryHandler(start_reFactore.start, pattern='start(.*)'))
     application.add_handler(CallbackQueryHandler(start_reFactore.register_user, pattern='register_user_(.*)'))
     application.add_handler(CallbackQueryHandler(services, pattern='menu_services'))
     application.add_handler(CallbackQueryHandler(start_reFactore.just_for_show, pattern='just_for_show'))

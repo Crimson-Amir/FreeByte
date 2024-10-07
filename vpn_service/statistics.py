@@ -198,7 +198,7 @@ async def report_section(update, context):
         get_data = await reports_func(session, ft_instance, chat_id, get_purchased=purchase_id, period=period)
 
         if sum(get_data[1].values()) == 0 and not query.message.photo:
-            keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='start_in_new_message')]]
+            keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='start_in_new_message_delete_previos')]]
             await query.edit_message_text(text=await ft_instance.find_text('vpn_no_usage_recored'), reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
             return
 
