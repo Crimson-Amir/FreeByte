@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 
 async def calculate_price(traffic, period):
     price = (traffic * setting.PRICE_PER_GB) + (period * setting.PRICE_PER_DAY)
-    return price
+    return int(price)
 
 
 async def format_traffic_from_megabyte(ft_instance, traffic_in_megabyte):
