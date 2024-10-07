@@ -299,6 +299,16 @@ text_transaction = {
         'en': 'Check Service Detail',
         'fa': 'مشاهده جزئیات سرویس'
     },
+    'upgrade_service_successfuly': {
+        'en': 'Your service named {0} has been upgraded successfully.'
+              '\nDetails added to the service:'
+              '\nTraffic: {1}'
+              '\nDuration: {2}',
+        'fa': '🟢 سرویس شما با نام {0} با موفقیت ارتقاء یافت.'
+              '\nمشصخات اضافه شده به سرویس:'
+              '\nترافیک: {1}'
+              '\nدوره زمانی: {2}'
+    },
 }
 
 keyboard_transaction = {
