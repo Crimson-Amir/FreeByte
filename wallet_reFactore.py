@@ -188,7 +188,7 @@ async def create_invoice(update, context):
             ]
             keyboard = [list(filter(None, row)) for row in keyboard]
 
-            text = (f"<b>{await ft_instance.find_text('invoice_title')}"
+            text = (f"<b>{await ft_instance.find_text('invoice_title')}</b>"
                     f"\n\n<b>{await ft_instance.find_text('wallet_credit_label')} {finacial_report.owner.wallet:,} {await ft_instance.find_text('irt')}</b>"
                     f"\n\n{await ft_instance.find_text('invoice_extra_data')}\n{invoice_extra_data}"
                     f"\n\n<b>{await ft_instance.find_text('wallet_credit_label')} {finacial_report.owner.wallet:,} {await ft_instance.find_text('irt')}</b>"
