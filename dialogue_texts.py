@@ -268,6 +268,10 @@ text_transaction = {
         'en': '✅ Service with ID {0} was successfully transferred to user with chatID {1}',
         'fa': '✅ سرویس شماره {0} با موفقیت به یوزر با آیدی {1} انتقال یافت.'
     },
+    'unknown_input': {
+        'en': 'message is invalid ❌',
+        'fa': 'پیام شما نامعتبر است❌'
+    },
 }
 
 keyboard_transaction = {
