@@ -123,7 +123,7 @@ async def add_credit_for_user(update, context):
             with session.begin():
 
                 amount, user_chat_id = context.args
-
+                print(context.args, amount)
                 finacial_report = crud.create_financial_report(
                     session, 'recive',
                     chat_id=user_detail.id,
