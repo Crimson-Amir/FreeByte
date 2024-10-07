@@ -1,5 +1,5 @@
 from _datetime import datetime
-import sys, os, logging, math
+import sys, os, logging, math, pytz
 import requests.exceptions
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -164,8 +164,18 @@ async def remove_service_for_user(update, context):
         with session.begin():
             purchase = vpn_crud.remove_purchase(session, purchase_id)
             main_server_ip = purchase.product.main_server.server_ip
-            await panel_api.marzban_api.remove_user(main_server_ip, purchase.username)
-            returnable_amount = await vpn_utilities.calculate_price(purchase.traffic, purchase.period)
+
+            user = await panel_api.marzban_api.get_user(main_server_ip, purchase.username)
+
+            usage_traffic_in_gigabyte = round(user['used_traffic'] / (1024 ** 3), 2)
+            data_limit_in_gigabyte = round(user['data_limit'] / (1024 ** 3), 2)
+            traffic_left_in_gigabyte = data_limit_in_gigabyte - usage_traffic_in_gigabyte
+
+            expiry = datetime.fromtimestamp(user['expire'])
+            now = datetime.now(pytz.timezone('Asia/Tehran')).replace(tzinfo=None)
+            days_left = (expiry - now).days
+
+            returnable_amount = await vpn_utilities.calculate_price(traffic_left_in_gigabyte, days_left)
             finacial_report = crud.create_financial_report(
                 session, 'recive',
                 chat_id=purchase.chat_id,
@@ -177,6 +187,8 @@ async def remove_service_for_user(update, context):
                 currency='IRT'
             )
             crud.add_credit_to_wallet(session, finacial_report)
+
+            await panel_api.marzban_api.remove_user(main_server_ip, purchase.username)
 
             text = await ft_instance.find_text('vpn_service_deleted_successfully')
 

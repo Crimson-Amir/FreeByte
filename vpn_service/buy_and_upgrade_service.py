@@ -164,10 +164,13 @@ async def upgrade_service_for_user(update, context, session, purchase_id: int):
         if user['status'] == 'active':
             traffic_to_byte = int((purchase.upgrade_traffic * (1024 ** 3)) + user['data_limit'])
             expire_date = datetime.fromtimestamp(user['expire'])
+            new_traffic = purchase.traffic + purchase.upgrade_traffic
+            new_period = purchase.upgrade_period + purchase.upgrade_period
         else:
             await panel_api.marzban_api.reset_user_data_usage(main_server_ip, purchase.username)
             traffic_to_byte = int(purchase.upgrade_traffic * (1024 ** 3))
             expire_date = datetime.now(pytz.timezone('Asia/Tehran'))
+            new_period, new_traffic = purchase.upgrade_period, purchase.upgrade_traffic
 
         date_in_timestamp = (expire_date + timedelta(days=purchase.upgrade_period)).timestamp()
 
@@ -177,8 +180,8 @@ async def upgrade_service_for_user(update, context, session, purchase_id: int):
         vpn_crud.update_purchase(
             session,
             purchase_id,
-            traffic=purchase.upgrade_traffic,
-            period=purchase.upgrade_period,
+            traffic=new_traffic,
+            period=new_period,
             upgrade_traffic=0,
             upgrade_period=0,
             status='active',
