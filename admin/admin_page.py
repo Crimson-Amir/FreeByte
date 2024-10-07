@@ -116,9 +116,9 @@ admin_ticket_reply_conversation = ConversationHandler(
 
 
 async def add_credit_for_user(update, context):
-        user_detail = update.effective_chat
-        ft_instance = FindText(None, None)
-    # try:
+    user_detail = update.effective_chat
+    ft_instance = FindText(None, None)
+    try:
         with SessionLocal() as session:
             with session.begin():
 
@@ -137,10 +137,10 @@ async def add_credit_for_user(update, context):
 
                 crud.add_credit_to_wallet(session, finacial_report)
                 text = await ft_instance.find_from_database(user_chat_id, 'amount_added_to_wallet_successfully')
-                text = text.format(f"{amount:,}")
+                text = text.format(f"{int(amount):,}")
 
                 await context.bot.send_message(chat_id=user_chat_id, text=text)
                 await context.bot.send_message(chat_id=user_detail.id, text=f'+ successfully Add {amount:,} IRT to user wallet.')
 
-    # except Exception as e:
-    #             await context.bot.send_message(chat_id=user_detail.id, text=f'- failed to add credit to user wallet.\n{str(e)}')
+    except Exception as e:
+                await context.bot.send_message(chat_id=user_detail.id, text=f'- failed to add credit to user wallet.\n{str(e)}')
