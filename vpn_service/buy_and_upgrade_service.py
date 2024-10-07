@@ -141,7 +141,7 @@ async def create_service_for_user(context, session, purchase_id: int):
                 [InlineKeyboardButton(await ft_instance.find_from_database(get_purchase.chat_id,'bot_main_menu', 'keyboard'), callback_data=f"start_in_new_message")]]
 
     await context.bot.send_photo(photo=binary_data,
-                                 caption=await ft_instance.find_text('vpn_service_activated') + f'\n\n{sub_link}',
+                                 caption=await ft_instance.find_from_database(get_purchase.chat_id, 'vpn_service_activated') + f'\n\n{sub_link}',
                                  chat_id=get_purchase.chat_id, reply_markup=InlineKeyboardMarkup(keyboard),
                                  parse_mode='html')
     return get_purchase
