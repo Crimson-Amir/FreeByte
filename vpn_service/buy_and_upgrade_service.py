@@ -190,7 +190,9 @@ async def upgrade_service_for_user(update, context, session, purchase_id: int):
 
         success_text = await ft_instance.find_text('upgrade_service_successfuly')
         message_text = success_text.format(purchase.username, purchase.upgrade_traffic, purchase.upgrade_period)
-        await context.bot.send_message(text=message_text, chat_id=purchase.chat_id)
+        print(purchase.chat_id)
+        a = await context.bot.send_message(text=message_text, chat_id=purchase.chat_id)
+        print(a)
 
         return purchase
 

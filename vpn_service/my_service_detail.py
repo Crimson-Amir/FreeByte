@@ -78,11 +78,11 @@ async def service_info(update, context):
                     return await query.answer(await ft_instance.find_text('no_service_available'), show_alert=True)
 
                 main_server = purchase.product.main_server
-                get_from_server = await vpn_utilities.get_purchase_info_from_server(context, purchase)
+                get_from_server = await panel_api.marzban_api.get_user(purchase.product.main_server.server_ip, purchase.username)
                 service_stauts_server = get_from_server['status']
 
-                # if service_stauts_server in ['limited', 'expired'] and purchase.status == 'active':
-                #     vpn_crud.update_purchase(session, purchase.purchase_id, status=service_stauts_server)
+                if service_stauts_server in ['limited', 'expired'] and purchase.status == 'active':
+                    vpn_crud.update_purchase(session, purchase.purchase_id, status=service_stauts_server)
 
                 expire_date = human_readable(datetime.fromtimestamp(get_from_server.get('expire')), await ft_instance.find_user_language())
                 onlien_at = human_readable(get_from_server.get('online_at'), await ft_instance.find_user_language()) \
@@ -212,7 +212,7 @@ async def service_advanced_options(update, context):
                 return await query.answer(await ft_instance.find_text('no_service_available'), show_alert=True)
 
             main_server = purchase.product.main_server
-            get_from_server = await vpn_utilities.get_purchase_info_from_server(context, purchase)
+            get_from_server = await panel_api.marzban_api.get_user(purchase.product.main_server.server_ip, purchase.username)
 
             used_traffic = round(get_from_server.get('used_traffic') / (1024 ** 3), 3)
             data_limit = round(get_from_server.get('data_limit') / (1024 ** 3), 3)
@@ -225,7 +225,6 @@ async def service_advanced_options(update, context):
                 'active': await ft_instance.find_text('vpn_service_active'),
                 'limited': await ft_instance.find_text('vpn_service_limited'),
                 'expired': await ft_instance.find_text('vpn_service_expired')
-
             }
 
             text = (
