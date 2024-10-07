@@ -29,8 +29,6 @@ def update_purchase(session, purchase_id:int, **kwargs):
         .where(model.Purchase.purchase_id == purchase_id)
         .values(
             register_date=datetime.now(pytz.timezone('Asia/Tehran')),
-            day_notification_stats=False,
-            traffic_notification_stats=False,
             active=True,
             **kwargs
         )

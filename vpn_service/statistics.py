@@ -41,6 +41,7 @@ async def statistics_timer(context):
                 for product in all_product:
                     get_users_usage = await panel_api.marzban_api.get_users(product.main_server.server_ip)
                     for purchase in product.purchase:
+                        if purchase.status != 'active': continue
                         for user in get_users_usage['users']:
                             if user['username'] == purchase.username:
 

@@ -5,7 +5,7 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
 import sys, os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from vpn_service import panel_api, vpn_utilities
-from crud import vpn_crud, crud
+from crud import vpn_crud
 from utilities_reFactore import FindText, report_to_admin, human_readable
 from database_sqlalchemy import SessionLocal
 
@@ -60,6 +60,7 @@ async def notification_timer(context):
                 for product in all_product:
                     get_users_usage = await panel_api.marzban_api.get_users(product.main_server.server_ip)
                     for purchase in product.purchase:
+                        if purchase.status != 'active': continue
                         for user in get_users_usage['users']:
                             if user['username'] == purchase.username:
                                 usage_traffic_in_gigabyte = round(user['used_traffic'] / (1024 ** 3), 2)
@@ -77,12 +78,11 @@ async def notification_timer(context):
                                     await report_service_termination_to_admin(purchase)
                                     vpn_crud.update_purchase(session, purchase.purchase_id, active='limited')
 
-                                elif days_left <= purchase.owner.config.period_notification_day:
+                                elif days_left <= purchase.owner.config.period_notification_day and not purchase.day_notification_status:
                                     await report_service_expired_in_days(context, purchase, ft_instanc, days_left)
-                                    crud.update_user_config(session, purchase.chat_id, period_notification_day=True)
+                                    vpn_crud.update_purchase(session, purchase.purchase_id, day_notification_status=True)
 
-
-                                elif traffic_percent >= purchase.owner.config.traffic_notification_percent:
+                                elif traffic_percent >= purchase.owner.config.traffic_notification_percent and not purchase.traffic_notification_status:
                                     await report_service_expired_in_gigabyte(
                                         context,
                                         purchase,
@@ -90,7 +90,7 @@ async def notification_timer(context):
                                         traffic_percent,
                                         traffic_left_in_gigabyte
                                     )
-                                    crud.update_user_config(session, purchase.chat_id, traffic_notification_percent=True)
+                                    vpn_crud.update_purchase(session, purchase.purchase_id, traffic_notification_status=True)
 
 
     except Exception as e:

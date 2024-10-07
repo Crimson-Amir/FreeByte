@@ -93,8 +93,8 @@ class Purchase(Base):
     status = Column(String, default='active')
     traffic = Column(Integer)
     period = Column(Integer)
-    day_notification_stats = Column(Boolean, default=False)
-    traffic_notification_stats = Column(Boolean, default=False)
+    day_notification_status = Column(Boolean, default=False)
+    traffic_notification_status = Column(Boolean, default=False)
     subscription_url = Column(String)
 
     upgrade_traffic = Column(Integer, default=0)

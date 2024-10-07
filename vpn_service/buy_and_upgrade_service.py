@@ -180,7 +180,9 @@ async def upgrade_service_for_user(update, context, session, purchase_id: int):
             period=purchase.upgrade_period,
             upgrade_traffic=0,
             upgrade_period=0,
-            status='active'
+            status='active',
+            day_notification_status=False,
+            traffic_notification_status=False
         )
 
         session.refresh(purchase)
