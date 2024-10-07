@@ -190,6 +190,7 @@ async def create_invoice(update, context):
 
             text = (f"<b>{await ft_instance.find_text('invoice_title')}"
                     f"\n\n{await ft_instance.find_text('price')} {amount:,} {await ft_instance.find_text('irt')}"
+                    f"\n\n{finacial_report.owner.wallet}"
                     f"\n\n{await ft_instance.find_text('invoice_extra_data')}\n{invoice_extra_data}"
                     f"\n\n{await ft_instance.find_text('payment_option_title')}</b>")
 
