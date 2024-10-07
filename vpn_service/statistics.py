@@ -54,7 +54,7 @@ async def statistics_timer(context):
                         if user['username'] == purchase.username:
 
                             last_traffic_usage = users_last_usage.get(purchase.username)
-                            usage_traffic_in_megabyte = user['used_traffic'] / (1024 ** 2)
+                            usage_traffic_in_megabyte = round(user['used_traffic'] / (1024 ** 2), 2)
                             print(user['used_traffic'], usage_traffic_in_megabyte)
                             last_usage_dict[purchase.username] = usage_traffic_in_megabyte
 
