@@ -202,6 +202,10 @@ text_transaction = {
         'en': 'Increase Wallet Balance With ID',
         'fa': 'افزایش اعتبار کیف پول با شماره'
     },
+    'remove_vpn_sevice_and_recive_payback': {
+        'en': 'Remove VPN Service Number',
+        'fa': 'حذف سرویس VPN با شماره'
+    },
     'payment_authority': {
         'en': 'Payment Authority:',
         'fa': 'شناسه پرداخت:'

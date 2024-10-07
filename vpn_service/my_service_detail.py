@@ -161,6 +161,9 @@ async def remove_service_for_user(update, context):
             purchase = vpn_crud.remove_purchase(session, purchase_id)
             main_server_ip = purchase.product.main_server.server_ip
             await panel_api.marzban_api.remove_user(main_server_ip, purchase.username)
+            returnable_amount = await vpn_utilities.calculate_price(purchase.traffic, purchase.period)
+            finacial_report = crud.create_financial_report(session, 'recive', purchase.chat_id, returnable_amount, 'remove_vpn_service', purchase.purchase_id, 'not paid')
+            crud.add_credit_to_wallet(session, finacial_report)
 
             text = await ft_instance.find_text('vpn_service_deleted_successfully')
 

@@ -77,7 +77,8 @@ async def financial_transactions_wallet(update, context):
                     payment_action = {
                         'upgrade_vpn_service': await ft_instance.find_text('upgrade_vpn_service_action'),
                         'buy_vpn_service': await ft_instance.find_text('buy_vpn_service_action'),
-                        'increase_wallet_balance': await ft_instance.find_text('increase_wallet_balance_action')
+                        'increase_wallet_balance': await ft_instance.find_text('increase_wallet_balance_action'),
+                        'remove_vpn_service': await ft_instance.find_text('remove_vpn_sevice_and_recive_payback')
                     }
                     payment_gateway = {
                         'zarinpal': await ft_instance.find_text('zarinpal_label'),
@@ -119,7 +120,7 @@ async def buy_credit_volume(update, context):
         text = await ft_instance.find_text('add_crredit_to_wallet_title')
 
         keyboard = [
-            [InlineKeyboardButton(f"50,000 {await ft_instance.find_text('irt')}", callback_data="create_invoice__increase_wallet_balance__1000"),
+            [InlineKeyboardButton(f"50,000 {await ft_instance.find_text('irt')}", callback_data="create_invoice__increase_wallet_balance__50000"),
              InlineKeyboardButton(f"100,000 {await ft_instance.find_text('irt')}", callback_data="create_invoice__increase_wallet_balance__100000")],
             [InlineKeyboardButton(f"200,000 {await ft_instance.find_text('irt')}", callback_data="create_invoice__increase_wallet_balance__200000"),
              InlineKeyboardButton(f"500,000 {await ft_instance.find_text('irt')}", callback_data="create_invoice__increase_wallet_balance__500000")],
