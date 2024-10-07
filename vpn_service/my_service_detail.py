@@ -11,6 +11,7 @@ from vpn_service import panel_api, vpn_utilities
 
 GET_NEW_USER_CHAT_ID, GET_ASSURNACE = range(2)
 
+@handle_error.handle_functions_error
 async def my_services(update, context):
     query = update.callback_query
     ft_instance = FindText(update, context)
