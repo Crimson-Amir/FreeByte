@@ -129,14 +129,12 @@ async def reports_func(session, ft_instance, chat_id, get_purchased, period):
 
                 avreage_traffic = (final_traffic / 3) / index if final_traffic and index else 0
 
-
-
             elif period == 'week':
                 for index, our_date in enumerate(datetime_range(date, date_now, timedelta(days=1))):
                     date_ = our_date.strftime('%Y-%m-%d')
                     get_usage, get_traff = {}, 0
                     for _ in user_usage_dict.items():
-                        time = datetime.strptime(_[0], '%Y-%m-%d %H:%M:%S').strftime('%Y-%m-%d')
+                        time = _[0].strftime('%Y-%m-%d')
                         if time == date_:
                             for usage in _[1]:
                                 usage_name, usage_traffic = next(iter(usage.items()))
