@@ -63,7 +63,6 @@ async def notification_timer(context):
                     for purchase in product.purchase:
                         for user in get_users_usage['users']:
                             if user['username'] == purchase.username:
-                                context.user_data[f'service_detail_{purchase.username}'] = user
                                 usage_traffic_in_gigabyte = round(user['used_traffic'] / (1024 ** 3), 2)
                                 data_limit_in_gigabyte = round(user['data_limit'] / (1024 ** 3), 2)
                                 traffic_left_in_gigabyte = data_limit_in_gigabyte - usage_traffic_in_gigabyte
