@@ -15,7 +15,7 @@ async def my_services(update, context):
     query = update.callback_query
     ft_instance = FindText(update, context)
     user_detail = update.effective_chat
-    item_per_page = 2
+    item_per_page = 10
     page = int(query.data.split('__')[1]) if query and query.data.startswith('vpn_my_services') else 1
 
     with SessionLocal() as session:
