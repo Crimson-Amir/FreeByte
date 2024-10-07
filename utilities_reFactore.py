@@ -271,8 +271,9 @@ class FakeContext:
         @staticmethod
         async def send_message(chat_id, text, parse_mode=None):
             url = f"https://api.telegram.org/bot{setting.telegram_bot_token}/sendMessage"
-            json_data = {'chat_id': chat_id, 'text': text, 'parse_mode':parse_mode}
-            requests.post(url=url, json=json_data)
+            json_data = {'chat_id': chat_id, 'text': text, 'parse_mode':parse_mode or 'html'}
+            a = requests.post(url=url, json=json_data)
+            print(a, chat_id, text)
         @staticmethod
         async def send_photo(photo, chat_id, caption, reply_markup, parse_mode):
             url = f"https://api.telegram.org/bot{setting.telegram_bot_token}/sendPhoto"
