@@ -198,8 +198,8 @@ async def upgrade_service_for_user(update, context, session, purchase_id: int):
         await context.bot.send_message(text='stfu', chat_id=setting.ADMIN_CHAT_IDs[0])
         return purchase
 
-    except requests.exceptions.HTTPError as http_error:
-        await handle_http_error(purchase, main_server_ip, purchase_id, http_error)
+    except Exception as e:
+        await handle_http_error(purchase, main_server_ip, purchase_id, e)
 
 
 async def handle_http_error(purchase, main_server_ip, purchase_id, original_error: requests.exceptions.HTTPError):
