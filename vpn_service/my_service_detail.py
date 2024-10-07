@@ -84,7 +84,7 @@ async def service_info(update, context):
                     if get_from_server.get('online_at') else await ft_instance.find_text('not_connected_yet')
 
                 used_traffic = round(get_from_server.get('used_traffic') / (1024 ** 3), 2)
-                data_limit = int(get_from_server.get('data_limit') / (1024 ** 3))
+                data_limit = round(get_from_server.get('data_limit') / (1024 ** 3), 2)
 
                 server_port = f":{main_server.server_port}" if main_server.server_port != 443 else ""
                 subscribe_link = f"{main_server.server_protocol}{main_server.server_ip}{server_port}{get_from_server.get('subscription_url')}"
