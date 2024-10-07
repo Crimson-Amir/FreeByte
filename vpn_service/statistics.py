@@ -257,4 +257,3 @@ async def report_section(update, context):
             await context.bot.send_photo(photo=get_plot_image, chat_id=chat_id, caption=text[:1024], reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
 
 
-asyncio.run(statistics_timer(None))
