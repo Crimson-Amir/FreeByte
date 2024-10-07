@@ -325,6 +325,7 @@ async def pay_by_wallet(update, context):
                 currency='IRT',
                 url_callback=None
             )
+            crud.less_from_wallet(session, financial)
             await WebAppUtilities.handle_successful_payment(session, financial, financial_id, 'WalletPayment')
             session.commit()
         except Exception as e:

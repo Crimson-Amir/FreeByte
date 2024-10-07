@@ -87,7 +87,7 @@ def add_credit_to_wallet(session, financial_db, payment_status='paid'):
         update(model.UserDetail)
         .where(model.UserDetail.chat_id == user_id)
         .values(
-            wallet=func.coalesce(model.UserDetail.wallet, 0) + financial_db.amount
+            wallet=model.UserDetail.wallet + financial_db.amount
         )
     )
     session.execute(stmt)
@@ -108,19 +108,32 @@ def add_credit_to_wallet(session, financial_db, payment_status='paid'):
         logging.error(f'error in update financial_report in refund section! {e}')
 
 
-def less_from_wallet(user_id: int, credit, operation, action, service_id=None):
-    with SessionLocal() as session:
-        with session.begin():
-            stmt = (
-                update(model.UserDetail)
-                .where(model.UserDetail.chat_id == user_id)
-                .values(
-                    wallet=func.coalesce(model.UserDetail.wallet, 0) - credit
-                )
+def less_from_wallet(session, financial_db, payment_status='paid'):
+    user_id: int = financial_db.owner.chat_id
+
+    stmt = (
+        update(model.UserDetail)
+        .where(model.UserDetail.chat_id == user_id)
+        .values(
+            wallet=model.UserDetail.wallet - financial_db.amount
+        )
+    )
+    session.execute(stmt)
+
+    try:
+        financial_id: int = financial_db.financial_id
+        stmt_2 = (
+            update(model.FinancialReport)
+            .where(model.FinancialReport.financial_id == financial_id)
+            .values(
+                payment_status=payment_status,
+                operation='paid'
             )
-            record = model.FinancialReport(operation=operation, value=credit, chat_id=user_id, action=action, service_id=service_id)
-            session.add(record)
-            session.execute(stmt)
+        )
+        session.execute(stmt_2)
+
+    except Exception as e:
+        logging.error(f'error in update financial_report in refund section! {e}')
 
 
 def update_financial_report(session, financial_id: int, payment_getway, authority, currency, url_callback, additional_data=None):
