@@ -38,11 +38,7 @@ def verify_payment_zarinpal(authority: str, amount: int):
 
 async def handle_successful_payment(session, financial, authority, payment_getway):
     """Processes the successful payment."""
-    class Update:
-        class effective_chat:
-            id = financial.owner.chat_id
 
-    update = Update()
     context = utilities_reFactore.FakeContext()
 
     extra_data = ""

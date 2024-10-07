@@ -122,7 +122,7 @@ async def create_service_in_servers(session, purchase_id: int):
 async def create_service_for_user(context, session, purchase_id: int):
     get_purchase = await create_service_in_servers(session, purchase_id)
 
-    ft_instance = FindText(None)
+    ft_instance = FindText(None, None)
     main_server = get_purchase.product.main_server
 
     server_port = f":{main_server.server_port}" if main_server.server_port != 443 else ""
