@@ -44,7 +44,8 @@ async def statistics_timer(context):
             if not users_last_usage:
                 users_last_usage = {}
             else:
-                users_last_usage = json.dumps(users_last_usage.last_usage)
+                users_last_usage = json.loads(users_last_usage.last_usage)
+                print(users_last_usage, type(users_last_usage))
 
             all_product = vpn_crud.get_all_product(session)
             last_usage_dict, statistics_usage_traffic = {}, {}
