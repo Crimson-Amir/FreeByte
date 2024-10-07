@@ -81,7 +81,7 @@ async def service_info(update, context):
                 get_from_server = await vpn_utilities.get_purchase_info_from_server(context, purchase)
                 expire_date = human_readable(datetime.fromtimestamp(get_from_server.get('expire')), await ft_instance.find_user_language())
                 onlien_at = human_readable(get_from_server.get('online_at'), await ft_instance.find_user_language()) \
-                if get_from_server.get('online_at') else await ft_instance.find_text('not_connected_yet')
+                    if get_from_server.get('online_at') else await ft_instance.find_text('not_connected_yet')
 
                 used_traffic = round(get_from_server.get('used_traffic') / (1024 ** 3), 2)
                 data_limit = int(get_from_server.get('data_limit') / (1024 ** 3))
@@ -162,7 +162,16 @@ async def remove_service_for_user(update, context):
             main_server_ip = purchase.product.main_server.server_ip
             await panel_api.marzban_api.remove_user(main_server_ip, purchase.username)
             returnable_amount = await vpn_utilities.calculate_price(purchase.traffic, purchase.period)
-            finacial_report = crud.create_financial_report(session, 'recive', purchase.chat_id, returnable_amount, 'remove_vpn_service', purchase.purchase_id, 'not paid')
+            finacial_report = crud.create_financial_report(
+                session, 'recive',
+                chat_id=purchase.chat_id,
+                amount=returnable_amount,
+                action='remove_vpn_service',
+                service_id=purchase.purchase_id,
+                payment_status='not paid',
+                payment_getway='wallet',
+                currency='IRT'
+            )
             crud.add_credit_to_wallet(session, finacial_report)
 
             text = await ft_instance.find_text('vpn_service_deleted_successfully')

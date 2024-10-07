@@ -103,6 +103,7 @@ def add_credit_to_wallet(session, financial_db, payment_status='paid'):
             )
         )
         session.execute(stmt_2)
+
     except Exception as e:
         logging.error(f'error in update financial_report in refund section! {e}')
 
@@ -190,14 +191,15 @@ def chane_purchase_ownership(purchas_id: int, new_ownership_id):
             session.execute(stmt)
             session.commit()
 
-def create_financial_report(session, operation, chat_id, amount, action, service_id, payment_status):
+def create_financial_report(session, operation, chat_id, amount, action, service_id, payment_status, **kwargs):
     financial = model.FinancialReport(
         operation=operation,
         amount=amount,
         chat_id=chat_id,
         action=action,
         id_holder=service_id,
-        payment_status=payment_status
+        payment_status=payment_status,
+        **kwargs
     )
 
     session.add(financial)
