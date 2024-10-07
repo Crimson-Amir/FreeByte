@@ -192,8 +192,6 @@ async def upgrade_service_for_user(update, context, session, purchase_id: int):
         )
         session.refresh(purchase)
 
-        await update.message.reply(text='hola')
-
         await context.bot.send_message(text=success_text, chat_id=purchase.chat_id)
         await context.bot.send_message(text='stfu', chat_id=setting.ADMIN_CHAT_IDs[0])
         return purchase
