@@ -1,13 +1,12 @@
-import asyncio
-import json, traceback
-from datetime import datetime, timedelta
-import telegram.error, pytz
+import traceback
+from datetime import datetime
+import pytz
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
-import sys, os, logging
+import sys, os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from vpn_service import panel_api, plot, vpn_utilities
+from vpn_service import panel_api, vpn_utilities
 from crud import vpn_crud
-from utilities_reFactore import FindText, handle_error, report_to_admin, report_to_user, human_readable
+from utilities_reFactore import FindText, report_to_admin, human_readable
 from database_sqlalchemy import SessionLocal
 
 async def report_service_termination_to_user(context, purchase, ft_instance):
@@ -24,8 +23,8 @@ async def report_service_expired_in_days(context, purchase, ft_instance, days_le
     text = await ft_instance.find_from_database(purchase.chat_id, 'vpn_service_days_notification')
     text = text.format(purchase.purchase_id, days_left)
     keyboard = [
-        [InlineKeyboardButton(await ft_instance.find_keyboard('vpn_upgrade_service'), callback_data=f'vpn_upgrade_service__30__40__{purchase.purchase_id}'),
-         InlineKeyboardButton(await ft_instance.find_keyboard('vpn_view_service_detail'), callback_data=f'vpn_my_service_detail__{purchase.purchase_id}')]
+        [InlineKeyboardButton(await ft_instance.find_from_database(purchase.chat_id,'vpn_upgrade_service','keyboard'), callback_data=f'vpn_upgrade_service__30__40__{purchase.purchase_id}'),
+         InlineKeyboardButton(await ft_instance.find_from_database(purchase.chat_id,'vpn_view_service_detail','keyboard'), callback_data=f'vpn_my_service_detail__{purchase.purchase_id}')]
     ]
     await context.bot.send_message(purchase.chat_id, text=text, reply_markup=InlineKeyboardMarkup(keyboard))
 
@@ -35,8 +34,8 @@ async def report_service_expired_in_gigabyte(context, purchase, ft_instance, per
     text = await ft_instance.find_from_database(purchase.chat_id, 'vpn_service_gigabyte_percent_notification')
     text = text.format(percentage_traffic_consumed, purchase.purchase_id, left_traffic)
     keyboard = [
-        [InlineKeyboardButton(await ft_instance.find_keyboard('vpn_upgrade_service'), callback_data=f'vpn_upgrade_service__30__40__{purchase.purchase_id}'),
-         InlineKeyboardButton(await ft_instance.find_keyboard('vpn_view_service_detail'), callback_data=f'vpn_my_service_detail__{purchase.purchase_id}')]
+        [InlineKeyboardButton(await ft_instance.find_from_database(purchase.chat_id,'vpn_upgrade_service','keyboard'), callback_data=f'vpn_upgrade_service__30__40__{purchase.purchase_id}'),
+         InlineKeyboardButton(await ft_instance.find_from_database(purchase.chat_id,'vpn_view_service_detail','keyboard'), callback_data=f'vpn_my_service_detail__{purchase.purchase_id}')]
     ]
     await context.bot.send_message(purchase.chat_id, text=text, reply_markup=InlineKeyboardMarkup(keyboard))
 
