@@ -235,10 +235,10 @@ async def admin_change_wallet_balance(update, context):
                     crud.less_from_wallet(session, finacial_report)
 
                 msg = (
-                    f'Action: {finacial_report.action.replace("_", " ")}\n'
-                    f'\nAuthority: {finacial_report.financial_id}\n'
-                    f'\nAmount: {finacial_report.amount:,}\n'
-                    f'\nService ID: {finacial_report.id_holder}\n'
+                    f'Action: {finacial_report.action.replace("_", " ")}'
+                    f'\nAuthority: {finacial_report.financial_id}'
+                    f'\nAmount: {finacial_report.amount:,}'
+                    f'\nService ID: {finacial_report.id_holder}'
                     f'\nUser chat id: {finacial_report.chat_id}'
                     f'\nAdmin chat ID: {user_detail.id} ({user_detail.first_name})'
                 )
@@ -306,7 +306,7 @@ async def admin_user_services(update, context):
 @handle_functions_error
 async def admin_buy_service_for_user(update, context):
     query = update.callback_query
-    chat_id, page, user_info_page, period_callback, traffic_callback = query.data.replace('admin_buy_service_for_user__', '').split('_')
+    chat_id, page, user_info_page, period_callback, traffic_callback = query.data.replace('admin_buy_service_for_user__', '').split('__')
     user_detail = update.effective_chat
 
     traffic = max(min(int(traffic_callback), 150), 1) or 40
@@ -336,7 +336,7 @@ async def admin_buy_service_for_user(update, context):
 @handle_functions_error
 async def admin_assurance_buy_vpn_service(update, context):
     query = update.callback_query
-    chat_id, page, user_info_page, period, traffic = query.data.replace('admin_assurance_buy_vpn_service__', '').split('_')
+    chat_id, page, user_info_page, period, traffic = query.data.replace('admin_assurance_buy_vpn_service__', '').split('__')
     with SessionLocal() as session:
         price = await vpn_utilities.calculate_price(traffic, period, chat_id)
         get_user = crud.get_user(session, chat_id)
@@ -361,7 +361,7 @@ async def admin_assurance_buy_vpn_service(update, context):
 @handle_functions_error
 async def admin_confirm_buy_vpn_service(update, context):
     query = update.callback_query
-    payment_status, chat_id, page, user_info_page, period, traffic = query.data.replace('admin_confirm_buy_vpn_service__', '').split('_')
+    payment_status, chat_id, page, user_info_page, period, traffic = query.data.replace('admin_confirm_buy_vpn_service__', '').split('__')
 
     with SessionLocal() as session:
         with session.begin():
