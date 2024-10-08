@@ -5,6 +5,7 @@ from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 from crud import admin_crud, crud
 from database_sqlalchemy import SessionLocal
 from telegram.ext import ConversationHandler, filters, MessageHandler, CallbackQueryHandler, CommandHandler
+import utilities_reFactore
 
 ADD_CREDIT_BAlANCE = 0
 
@@ -74,14 +75,14 @@ async def view_user_info(update, context, chat_id=None):
                     f'\nEmail: {user.email}'
                     f'\nPhone Number: {user.phone_number}'
                     f'\nLanguage: {user.language}'
-                    f'\nWallet Balance: {user.wallet}'
+                    f'\nWallet Balance: {user.wallet:,} IRT'
                     f'\nInvited By: {user.invited_by} {f"({user.invited_by.first_name} {user.invited_by.last_name})" if user.invited_by else ""}'
-                    f'\nRegister Date: {user.register_date}'
+                    f'\nRegister Date: {user.register_date.replce(microsecond=0)} {utilities_reFactore.human_readable(user.register_date, "en")}'
                     f'\n\nLevel: {user.config.user_level}'
                     f'\nStatus: {user.config.user_status}'
                     f'\nTraffic Notification: {user.config.traffic_notification_percent}%'
-                    f'\nPeriod Time Notification: {user.config.period_notification_day}%'
-                    f'\nRecive FreeService: {user.config.get_vpn_free_service}%'
+                    f'\nPeriod Time Notification: {user.config.period_notification_day}'
+                    f'\nRecive FreeService: {user.config.get_vpn_free_service}'
                     )
 
             keyboard = [
