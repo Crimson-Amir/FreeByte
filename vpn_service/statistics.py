@@ -249,7 +249,7 @@ async def report_section(update, context):
 
         else:
             try:
-                query.delete_message()
+                await query.delete_message()
             except telegram.error.BadRequest as e:
                 if "Message can't be deleted for everyone" in str(e):
                     await query.answer()

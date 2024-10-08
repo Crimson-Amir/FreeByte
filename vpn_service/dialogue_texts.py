@@ -270,6 +270,10 @@ text_transaction = {
         'en': 'Hour',
         'fa': 'ساعت',
     },
+    'report_detail': {
+        'en': 'Report Detail',
+        'fa': 'جزئیات گزارش',
+    },
     'avreage_usage_in': {
         'en': 'Avreage Usage In',
         'fa': 'میانگین مصرف در'
