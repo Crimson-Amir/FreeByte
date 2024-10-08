@@ -22,13 +22,11 @@ async def all_users_list(update, context):
     with SessionLocal() as session:
         with session.begin():
             users = admin_crud.get_all_users(session)
-            print(users)
             total_pages = math.ceil(len(users) / item_per_page)
             start = (page - 1) * item_per_page
             end = start + item_per_page
             current_users = users[start:end]
-            print(current_users)
-            text = ''
+            text = 'select user to manage:'
             keyboard = [[InlineKeyboardButton(f"{user.first_name} {user.chat_id} {service_status.get(user.config.user_status)}", callback_data=f'admin_view_user__{user.chat_id}__{page}')] for user in current_users]
             nav_buttons = []
             if page > 1:
