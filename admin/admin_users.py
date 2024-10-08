@@ -29,7 +29,7 @@ async def all_users_list(update, context):
             current_users = users[start:end]
             print(current_users)
             text = ''
-            keyboard = [[InlineKeyboardButton(f"{user.first_name[:7]} {user.chat_id} {service_status.get(user.config.user_status)}", callback_data=f'admin_view_user__{user.chat_id}__{page}')] for user in current_users]
+            keyboard = [[InlineKeyboardButton(f"{user.first_name} {user.chat_id} {service_status.get(user.config.user_status)}", callback_data=f'admin_view_user__{user.chat_id}__{page}')] for user in current_users]
             nav_buttons = []
             if page > 1:
                 nav_buttons.append(InlineKeyboardButton('Previous', callback_data=f'vpn_my_services__{page - 1}'))
