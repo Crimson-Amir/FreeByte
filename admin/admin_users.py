@@ -117,7 +117,6 @@ async def admin_change_wallet_balance(update, context):
     user_detail = update.effective_chat
     query = update.callback_query
     try:
-        await query.delete_message()
         with SessionLocal() as session:
             with session.begin():
 
