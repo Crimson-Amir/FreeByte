@@ -204,6 +204,7 @@ async def service_advanced_options(update, context):
     query = update.callback_query
     ft_instance = FindText(update, context)
     data = query.data
+    user_detail = update.effective_chat
 
     if 'remove_this_message__' in data:
         data = data.replace('remove_this_message__', '')
@@ -258,6 +259,8 @@ async def service_advanced_options(update, context):
                 [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=f'vpn_my_service_detail__{purchase.purchase_id}')]
             ]
 
+            if update.callback_query and 'remove_this_message__' in update.callback_query.data:
+                return await context.bot.send_message(chat_id=user_detail.id, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
             await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
     except requests.exceptions.HTTPError as e:
