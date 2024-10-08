@@ -24,11 +24,13 @@ class UserDetail(Base):
     services = relationship("Purchase", back_populates="owner", cascade="all, delete-orphan")
     config = relationship("UserConfig", back_populates="owner", cascade="all, delete-orphan", uselist=False)
 
+
 class UserConfig(Base):
     __tablename__ = 'user_config'
 
     config_id = Column(Integer, primary_key=True)
     user_level = Column(Integer, default=1)
+    user_status = Column(String, default='active')
     traffic_notification_percent = Column(Integer, default=85)
     period_notification_day = Column(Integer, default=3)
     get_vpn_free_service = Column(Boolean, default=False)

@@ -5,7 +5,7 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, CallbackQueryHandler, MessageHandler, filters
 import setting, wallet_reFactore, my_service, setting_menu, guidnes_and_support
 from vpn_service import buy_and_upgrade_service, my_service_detail, vpn_setting_menu, vpn_guid, panel_api, statistics, vpn_notification
-from admin import admin_page, vpn_admin
+from admin import admin_page, vpn_admin, admin_ticket, admin_users
 from database_sqlalchemy import SessionLocal
 from crud import crud
 
@@ -97,7 +97,13 @@ if __name__ == '__main__':
     application.add_handler(CallbackQueryHandler(vpn_admin.admin_page, pattern='admin_vpn'))
     application.add_handler(vpn_admin.admin_add_product_conversation)
     application.add_handler(vpn_admin.admin_add_mainserver_conversation)
-    application.add_handler(admin_page.admin_ticket_reply_conversation)
+    application.add_handler(admin_ticket.admin_ticket_reply_conversation)
+
+    application.add_handler(CallbackQueryHandler(admin_users.all_users_list, pattern='admin_manage_users__(.*)'))
+    application.add_handler(CallbackQueryHandler(admin_users.view_user_info, pattern='admin_view_user__(.*)'))
+    application.add_handler(CallbackQueryHandler(admin_users.admin_change_user_status, pattern='admin_set_user_status__(.*)'))
+    application.add_handler(admin_users.admin_change_wallet_balance_conversation)
+
 
     # Setting
     application.add_handler(CallbackQueryHandler(setting_menu.setting_menu, pattern='setting_menu'))

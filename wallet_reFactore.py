@@ -80,6 +80,7 @@ async def financial_transactions_wallet(update, context):
                         'increase_wallet_balance': await ft_instance.find_text('increase_wallet_balance_action'),
                         'remove_vpn_service': await ft_instance.find_text('remove_vpn_sevice_and_recive_payback'),
                         'increase_balance_by_admin': await ft_instance.find_text('increase_balance_by_admin'),
+                        'reduction_balance_by_admin': await ft_instance.find_text('reduction_balance_by_admin'),
 
                     }
                     payment_gateway = {
