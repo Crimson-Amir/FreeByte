@@ -44,7 +44,7 @@ async def services(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def unknown_message(update, context):
     ft_instance = FindText(update, context)
-    text = await ft_instance.find_text('unknown_message')
+    text = await ft_instance.find_text('unknown_input')
     await update.message.reply_text(text)
 
 

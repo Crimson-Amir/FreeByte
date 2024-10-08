@@ -118,7 +118,7 @@ async def buy_credit_volume(update, context):
     ft_instance = FindText(update, context)
 
     try:
-        text = await ft_instance.find_text('add_crredit_to_wallet_title')
+        text = await ft_instance.find_text('add_credit_to_wallet_title')
 
         keyboard = [
             [InlineKeyboardButton(f"50,000 {await ft_instance.find_text('irt')}", callback_data="create_invoice__increase_wallet_balance__50000"),
