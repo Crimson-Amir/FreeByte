@@ -48,11 +48,11 @@ async def statistics_timer(context):
                                 last_traffic_usage = users_last_usage.get(purchase.username)
                                 usage_traffic_in_megabyte = round(user['used_traffic'] / (1024 ** 2), 2)
                                 print(user['used_traffic'], usage_traffic_in_megabyte)
-                                last_usage_dict[purchase.username] = usage_traffic_in_megabyte
+                                last_usage_dict[purchase.purchase_id] = usage_traffic_in_megabyte
 
                                 if not last_traffic_usage: continue
                                 traffic_use = max(int((usage_traffic_in_megabyte - last_traffic_usage)), 0)
-                                statistics_usage_traffic[purchase.username] = traffic_use
+                                statistics_usage_traffic[purchase.purchase_id] = traffic_use
                                 break
 
                 vpn_crud.create_new_last_usage(session, json.dumps(last_usage_dict))
@@ -95,11 +95,8 @@ async def reports_func(session, ft_instance, chat_id, get_purchased, period):
         user_usage_dict = {}
 
         for get_date in get_statistics:
-            print(purchased)
             get_user_usage = [{purchase_id: usage} for purchase_id, usage in json.loads(get_date.traffic_usage).items() if purchase_id == purchased[0]]
             user_usage_dict[get_date.register_date] = get_user_usage
-
-        print(user_usage_dict)
 
         detail_text, final_dict, final_traffic, avreage_traffic, index = '', {}, 0, 0, 1
 
