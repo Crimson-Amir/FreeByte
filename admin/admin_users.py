@@ -67,8 +67,18 @@ async def view_user_info(update, context, chat_id=None):
         with session.begin():
             user = crud.get_user(session, int(chat_id))
 
-            text = f'{chat_id}'
-            print(chat_id)
+            text = (f'Full Name: {user.first_name} {user.last_name}'
+                    f'\nUsername: {user.username}'
+                    f'\nID: {user.user_id}'
+                    f'\nChatID: {user.chat_id}'
+                    f'\nEmail: {user.email}'
+                    f'\nPhone Number: {user.phone_number}'
+                    f'\nLanguage: {user.language}'
+                    f'\nWallet Balance: {user.wallet}'
+                    f'\nInvited By: {user.invited_by} ({user.invited_by.first_name} {user.invited_by.last_name})'
+                    f'\nRegister Date: {user.register_date}'
+                    )
+
             keyboard = [
                 [InlineKeyboardButton('Set User Status:', callback_data=f'just_for_show')],
                 [InlineKeyboardButton(f"Active", callback_data=f'admin_set_user_status__{chat_id}__active'),
@@ -115,7 +125,6 @@ async def get_new_balance(update, context):
 @admin_access
 async def admin_change_wallet_balance(update, context):
     user_detail = update.effective_chat
-    query = update.callback_query
     try:
         with SessionLocal() as session:
             with session.begin():
@@ -135,7 +144,7 @@ async def admin_change_wallet_balance(update, context):
                     currency='IRT'
                 )
 
-                text = f'+ Operation Successfull.\namoutn: {amount}\nchat id: {chat_id}\naction: {action}'
+                text = f'+ Operation Successfull.\namoutn: {amount:,} IRT\nchat id: {chat_id}\naction: {action}'
 
                 if action == 'increase_balance_by_admin':
                     crud.add_credit_to_wallet(session, finacial_report)
