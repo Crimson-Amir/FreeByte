@@ -106,7 +106,7 @@ async def view_user_info(update, context, chat_id=None):
                     f'\nTraffic Notification: {user.config.traffic_notification_percent}%'
                     f'\nPeriod Time Notification: {user.config.period_notification_day} Day'
                     f'\nRecive FreeService: {user.config.get_vpn_free_service}'
-                    f'\nVpn Service count: {user.services.count}'
+                    f'\nVpn Service count: {len(user.services)}'
                     )
 
             keyboard = [
