@@ -77,7 +77,7 @@ async def view_user_info(update, context, chat_id=None):
                     f'\nLanguage: {user.language}'
                     f'\nWallet Balance: {user.wallet:,} IRT'
                     f'\nInvited By: {user.invited_by} {f"({user.invited_by.first_name} {user.invited_by.last_name})" if user.invited_by else ""}'
-                    f'\nRegister Date: {user.register_date.replce(microsecond=0)} {utilities_reFactore.human_readable(user.register_date, "en")}'
+                    f'\nRegister Date: {user.register_date.replace(microsecond=0)} {utilities_reFactore.human_readable(user.register_date, "en")}'
                     f'\n\nLevel: {user.config.user_level}'
                     f'\nStatus: {user.config.user_status}'
                     f'\nTraffic Notification: {user.config.traffic_notification_percent}%'
