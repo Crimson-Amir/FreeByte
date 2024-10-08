@@ -268,6 +268,7 @@ admin_change_wallet_balance_conversation = ConversationHandler(
 )
 
 @handle_functions_error
+@admin_access
 async def admin_user_services(update, context):
     query = update.callback_query
     item_per_page = 10
@@ -306,6 +307,7 @@ async def admin_user_services(update, context):
 
 
 @handle_functions_error
+@admin_access
 async def admin_buy_service_for_user(update, context):
     query = update.callback_query
     chat_id, page, user_info_page, period_callback, traffic_callback = query.data.replace('admin_bv_for_user__', '').split('__')
@@ -336,6 +338,7 @@ async def admin_buy_service_for_user(update, context):
 
 
 @handle_functions_error
+@admin_access
 async def admin_assurance_buy_vpn_service(update, context):
     query = update.callback_query
     chat_id, page, user_info_page, period, traffic = query.data.replace('admin_assurance_bv__', '').split('__')
@@ -361,6 +364,7 @@ async def admin_assurance_buy_vpn_service(update, context):
 
 
 @handle_functions_error
+@admin_access
 async def admin_confirm_buy_vpn_service(update, context):
     query = update.callback_query
     payment_status, chat_id, page, user_info_page, period, traffic = query.data.replace('admin_confirm_bv__', '').split('__')
@@ -410,6 +414,7 @@ async def admin_confirm_buy_vpn_service(update, context):
 
 
 @handle_functions_error
+@admin_access
 async def admin_user_service_detail(update, context):
     query = update.callback_query
     data = query.data
@@ -471,6 +476,7 @@ async def admin_user_service_detail(update, context):
 
 
 @handle_functions_error
+@admin_access
 async def admin_upgrade_service_for_user(update, context):
     query = update.callback_query
     purchase_id, page, user_info_page, period_callback, traffic_callback = query.data.replace('admin_upgrade_user_vpn_service__', '').split('__')
@@ -501,6 +507,7 @@ async def admin_upgrade_service_for_user(update, context):
 
 
 @handle_functions_error
+@admin_access
 async def admin_assurance_upgrade_vpn_service(update, context):
     query = update.callback_query
     purchase_id, page, user_info_page, period, traffic = query.data.replace('admin_assurance_upgrade_vpn__', '').split('__')
@@ -527,6 +534,7 @@ async def admin_assurance_upgrade_vpn_service(update, context):
 
 
 @handle_functions_error
+@admin_access
 async def admin_confirm_upgrade_vpn_service(update, context):
     query = update.callback_query
     payment_status, purchase_id, page, user_info_page, period, traffic = query.data.replace('admin_confirm_upvpn__', '').split('__')
@@ -559,13 +567,13 @@ async def admin_confirm_upgrade_vpn_service(update, context):
             msg = (
                 f'admin Upgrade Service For User'
                 f'\npayment_status: {payment_status}'
-                f'\nAmount: {amount:,}'
+                f'\nAmount: {amount:,} IRT'
                 f'\nService ID: {purchase.purchase_id}'
                 f'\nService username: {purchase.username}'
-                f'\nService Traffic Now: {purchase.traffic}'
-                f'\nService Period Now: {purchase.period}'
-                f'\nService Upgrade Traffic: {traffic_for_upgrade}'
-                f'\nService Upgrade Period: {period_for_upgrade}'
+                f'\nService Traffic Now: {purchase.traffic} GB'
+                f'\nService Period Now: {purchase.period} GB'
+                f'\nService Upgrade Traffic: {traffic_for_upgrade} GB'
+                f'\nService Upgrade Period: {period_for_upgrade} GB'
                 f'\nProduct Name: {purchase.product.product_name}'
                 f'\nUser chat id: {purchase.chat_id}'
                 f'\nAdmin chat ID: {user_detail.id} ({user_detail.first_name})'
@@ -582,6 +590,7 @@ async def admin_confirm_upgrade_vpn_service(update, context):
 
 
 @handle_functions_error
+@admin_access
 async def admin_assurance_remove_vpn_service(update, context):
     query = update.callback_query
     purchase_id, page, user_info_page = query.data.replace('admin_assurance_remove_vpn__', '').split('__')
@@ -621,6 +630,7 @@ async def admin_assurance_remove_vpn_service(update, context):
 
 
 @handle_functions_error
+@admin_access
 async def admin_confirm_remove_vpn_service(update, context):
     query = update.callback_query
     payment_status, purchase_id, page, user_info_page = query.data.replace('admin_confirm_remove_vpn__', '').split('__')
@@ -639,11 +649,11 @@ async def admin_confirm_remove_vpn_service(update, context):
             msg = (
                 f'admin Remove Service For User'
                 f'\npayment_status: {payment_status}'
-                f'\nReturned Amount: {returnable_amount:,}'
+                f'\nReturned Amount: {returnable_amount:,} IRT'
                 f'\nService ID: {purchase.purchase_id}'
                 f'\nService username: {purchase.username}'
-                f'\nService Traffic: {purchase.traffic}'
-                f'\nService Period: {purchase.period}'
+                f'\nService Traffic: {purchase.traffic} GB'
+                f'\nService Period: {purchase.period} Day'
                 f'\nProduct Name: {purchase.product.product_name}'
                 f'\nUser chat id: {purchase.chat_id}'
                 f'\nAdmin chat ID: {user_detail.id} ({user_detail.first_name})'
@@ -652,8 +662,25 @@ async def admin_confirm_remove_vpn_service(update, context):
             await utilities_reFactore.report_to_admin('info', 'admin_confirm_remove_vpn_service', msg)
 
             keyboard = [
-                [InlineKeyboardButton("Back", callback_data=f'admin_user_service_detail__{purchase_id}__{page}__{user_info_page}')]
+                [InlineKeyboardButton("Back", callback_data=f'admin_user_services__{purchase.chat_id}__{page}__{user_info_page}')]
             ]
 
             text = 'Remove Service For User Successful'
             await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+
+@handle_functions_error
+@admin_access
+async def find_service(update, context):
+    service_id = context.args
+    user_detail = update.effective_chat
+
+    with SessionLocal() as session:
+        with session.begin():
+            service = vpn_crud.get_purchase(session, service_id)
+            if not service: return await context.bot.send_message(chat_id=user_detail.id, text='there is no service with this chat id')
+            text = 'select service to manage:'
+
+            keyboard = [[InlineKeyboardButton(f"{service.username} {service_status.get(service.status)}", callback_data=f'admin_user_service_detail__{service.purchase_id}__1__1')],
+                        [InlineKeyboardButton('Back', callback_data='admin_page')]]
+
+            return await context.bot.send_message(chat_id=user_detail.id, text=text, reply_markup=InlineKeyboardMarkup(keyboard))
