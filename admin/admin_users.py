@@ -134,7 +134,7 @@ async def admin_change_user_status(update, context):
         with session.begin():
             crud.update_user_config(session, int(chat_id), user_status=status)
             await query.answer('+ Changes Saved!')
-            return await view_user_info(update, context, chat_id)
+            return await view_user_info(update, context, chat_id=chat_id)
 
 
 @admin_access
