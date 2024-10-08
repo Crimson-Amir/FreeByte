@@ -76,11 +76,10 @@ async def reports_func(session, ft_instance, chat_id, get_purchased, period):
         date_now = datetime.now(pytz.timezone('Asia/Tehran'))
         purchased = [get_purchased]
         period = period
-        print(purchased)
         if purchased[0] == 'all':
             all_user_purchases = vpn_crud.get_purchase_by_chat_id(session, chat_id)
             purchased = [purchase.purchase_id for purchase in all_user_purchases]
-
+        print(purchased)
         period_mapping = {
             'day': (1, await ft_instance.find_text('day')),
             'week': (7, await ft_instance.find_text('week')),
