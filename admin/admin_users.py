@@ -676,7 +676,7 @@ async def find_service(update, context):
 
     with SessionLocal() as session:
         with session.begin():
-            service = vpn_crud.get_purchase(session, int(service_id))
+            service = vpn_crud.get_purchase(session, int(service_id[0]))
             if not service:
                 return await context.bot.send_message(chat_id=user_detail.id, text='there is no service with this chat id')
             text = 'select service to manage:'
