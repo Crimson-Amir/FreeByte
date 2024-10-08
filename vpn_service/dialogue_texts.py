@@ -63,6 +63,10 @@ text_transaction = {
         'en': '🔴 Expired',
         'fa': '🔴 منقضی شده'
     },
+    'vpn_expired_service_deleted': {
+        'en': '🔴 Service {0}, which had already expired, was removed!',
+        'fa': '🔴 سرویس {0} که قبلا منقضی شده بود حذف شد!'
+    },
     'vpn_service_not_exit_in_db': {
         'en': '❌ Service not found in the database!',
         'fa': '❌ سرویس مورد نظر در دیتابیس وجود ندارد!'
@@ -76,8 +80,12 @@ text_transaction = {
         'fa': '❌ سرویس مورد نظر در سرور وجود ندارد!'
     },
     'vpn_ask_user_for_removing_service': {
-        'en': '❓ Are you sure you want to remove this service?\n\nRefundable amount: {0}',
-        'fa': '❓ آیا اطمینان دارید که می‌خواهید این سرویس را حذف کنید؟\nمبلغ قابل بازگشت: {0}'
+        'en': '❓ Are you sure you want to remove this service?',
+        'fa': '❓ آیا از حذف این سرویس اطمینان دارید؟'
+    },
+    'returnable_amount': {
+        'en': 'Refundable amount: {0}',
+        'fa': 'مبلغ قابل بازگشت: {0}'
     },
     'vpn_service_deleted_successfully': {
         'en': '✅ Service successfully deleted!',

@@ -2,7 +2,7 @@ import traceback, pytz, sys, os
 from datetime import datetime, timedelta
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from vpn_service import panel_api
+from vpn_service import panel_api, vpn_utilities
 from crud import vpn_crud
 from utilities_reFactore import FindText, report_to_admin, human_readable
 from database_sqlalchemy import SessionLocal
@@ -79,8 +79,6 @@ async def notification_timer(context):
                             now = datetime.now(pytz.timezone('Asia/Tehran')).replace(tzinfo=None)
                             days_left = (expiry - now).days
 
-                            print(purchase.purchase_id, purchase.day_notification_status, days_left, purchase.owner.config.period_notification_day)
-
                             if service_stauts in ['limited', 'expired'] and purchase.status == 'active':
                                 vpn_crud.update_purchase(session, purchase.purchase_id, status=service_stauts)
                                 session.commit()
@@ -115,10 +113,23 @@ async def notification_timer(context):
 async def tasks_schedule(context):
     panel_api.marzban_api.refresh_connection()
     with SessionLocal() as session:
-        with session.begin():
-            inactive_purchases = vpn_crud.get_all_inactive_purchase(session)
-            for purchase in inactive_purchases:
-                print(type((purchase.register_date + timedelta(days=purchase.period))))
-                days_past_after_expired = (purchase.register_date + timedelta(days=purchase.period)).days
-                if days_past_after_expired > setting.delete_purchase_after_days:
-                    print('s')
+        inactive_purchases = vpn_crud.get_all_inactive_purchase(session)
+        for purchase in inactive_purchases:
+            try:
+                days_past_after_expired = (datetime.now() - (purchase.register_date + timedelta(days=purchase.period))).days
+                if days_past_after_expired >= setting.delete_purchase_after_days:
+                    remove_purchase = vpn_crud.remove_purchase(session, purchase.purchase_id)
+                    session.commit()
+                    await vpn_utilities.remove_service_in_server(session, remove_purchase)
+                    ft_instance = FindText(None, None)
+                    text = await ft_instance.find_from_database(purchase.chat_id, 'vpn_expired_service_deleted')
+                    text = text.format(purchase.purchase_id)
+                    await context.bot.send_message(chat_id=purchase.chat_id, text=text)
+            except Exception as e:
+                tb = traceback.format_exc()
+                msg = ('Failed to remove user expired service!'
+                       f'\nService ID: {purchase.purchase_id}'
+                       f'\nService username: {purchase.username}'
+                       f'\n\nerror:\n{str(e)}'
+                       f'\nTraceBack:\n{tb}')
+                await report_to_admin('error', 'tasks_schedule', msg, purchase.owner)

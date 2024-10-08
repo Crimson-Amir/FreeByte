@@ -1,11 +1,11 @@
 import logging, copy
+import random
 from _datetime import datetime, timedelta
-import pytz, uuid, sys, os, hashlib, qrcode
+import pytz, sys, os, qrcode, string
 from io import BytesIO
 import requests.exceptions
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-import setting
 from utilities_reFactore import FindText, message_token, handle_error, report_to_admin
 from crud import vpn_crud, crud
 from vpn_service import panel_api, vpn_utilities
@@ -104,7 +104,7 @@ async def create_service_in_servers(session, purchase_id: int):
 
     username = (
         f"{get_purchase.purchase_id}_"
-        f"{hashlib.sha256(f'{get_purchase.chat_id}.{uuid.uuid4().hex}'.encode()).hexdigest()[:5]}"
+        f"{''.join(random.choices(string.ascii_lowercase, k=3))}"
     )
 
     traffic_to_byte = int(get_purchase.traffic * (1024 ** 3))

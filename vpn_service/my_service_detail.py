@@ -142,19 +142,24 @@ async def ask_remove_service_for_user(update, context):
             main_server_ip = purchase.product.main_server.server_ip
 
             user = await panel_api.marzban_api.get_user(main_server_ip, purchase.username)
+            returnable_amount = 0
 
-            usage_traffic_in_gigabyte = round(user['used_traffic'] / (1024 ** 3), 2)
-            data_limit_in_gigabyte = round(user['data_limit'] / (1024 ** 3), 2)
-            traffic_left_in_gigabyte = data_limit_in_gigabyte - usage_traffic_in_gigabyte
+            if user['status'] == 'active':
+                usage_traffic_in_gigabyte = round(user['used_traffic'] / (1024 ** 3), 2)
+                data_limit_in_gigabyte = round(user['data_limit'] / (1024 ** 3), 2)
+                traffic_left_in_gigabyte = data_limit_in_gigabyte - usage_traffic_in_gigabyte
 
-            expiry = datetime.fromtimestamp(user['expire'])
-            now = datetime.now(pytz.timezone('Asia/Tehran')).replace(tzinfo=None)
-            days_left = (expiry - now).days
+                expiry = datetime.fromtimestamp(user['expire'])
+                now = datetime.now(pytz.timezone('Asia/Tehran')).replace(tzinfo=None)
+                days_left = (expiry - now).days
 
-            returnable_amount = await vpn_utilities.calculate_price(traffic_left_in_gigabyte, days_left)
+                returnable_amount = await vpn_utilities.calculate_price(traffic_left_in_gigabyte, days_left)
 
             text = f"<b>{await ft_instance.find_text('vpn_ask_user_for_removing_service')}</b>"
-            text = text.format(f"{returnable_amount:,}")
+
+            if returnable_amount:
+                text += f"<b>\n{await ft_instance.find_text('returnable_amount')}</b>"
+                text = text.format(f"{returnable_amount:,}")
 
             keyboard = [
                 [InlineKeyboardButton(await ft_instance.find_keyboard('yes_im_sure'), callback_data=f'vpn_remove_service__{purchase_id}'),
@@ -175,33 +180,9 @@ async def remove_service_for_user(update, context):
     with SessionLocal() as session:
         with session.begin():
             purchase = vpn_crud.remove_purchase(session, purchase_id)
-            main_server_ip = purchase.product.main_server.server_ip
 
-            user = await panel_api.marzban_api.get_user(main_server_ip, purchase.username)
+            returnable_amount = await vpn_utilities.remove_service_in_server(session, purchase)
 
-            usage_traffic_in_gigabyte = round(user['used_traffic'] / (1024 ** 3), 2)
-            data_limit_in_gigabyte = round(user['data_limit'] / (1024 ** 3), 2)
-            traffic_left_in_gigabyte = data_limit_in_gigabyte - usage_traffic_in_gigabyte
-
-            expiry = datetime.fromtimestamp(user['expire'])
-            now = datetime.now(pytz.timezone('Asia/Tehran')).replace(tzinfo=None)
-            days_left = (expiry - now).days
-
-            returnable_amount = await vpn_utilities.calculate_price(traffic_left_in_gigabyte, days_left)
-
-            finacial_report = crud.create_financial_report(
-                session, 'recive',
-                chat_id=purchase.chat_id,
-                amount=returnable_amount,
-                action='remove_vpn_service',
-                service_id=purchase.purchase_id,
-                payment_status='not paid',
-                payment_getway='wallet',
-                currency='IRT'
-            )
-
-            crud.add_credit_to_wallet(session, finacial_report)
-            await panel_api.marzban_api.remove_user(main_server_ip, purchase.username)
             text = await ft_instance.find_text('vpn_service_deleted_successfully')
             keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=f'vpn_my_services__1')]]
 
@@ -213,9 +194,6 @@ async def remove_service_for_user(update, context):
                 f'\nService Product Name: {purchase.product.product_name}'
                 f'\nReturnable Amount: {returnable_amount:,}'
             )
-
-            if context.user_data.get(f'service_detail_{purchase_id}'):
-                del context.user_data[f'service_detail_{purchase_id}']
 
             await report_to_admin('info', 'remove_service_for_user', admin_msg, purchase.owner)
             await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
