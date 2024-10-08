@@ -1,4 +1,4 @@
-import sys, os, math, functools, logging, traceback, requests
+import sys, os, math, functools, logging, traceback, requests, pytz
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from admin.admin_utilities import admin_access, cancel_conversation as cancel
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
@@ -450,8 +450,8 @@ async def admin_user_service_detail(update, context):
             )
 
             keyboard = [
-                [InlineKeyboardButton("Remove", callback_data=f'admin_rm_user_service__{purchase_id}__{page}__{user_info_page}'),
-                 InlineKeyboardButton("Upgrade", callback_data=f'admin_upgrade_user_service__{purchase_id}__{page}__{user_info_page}__30__40')],
+                [InlineKeyboardButton("Remove", callback_data=f'admin_assurance_remove_vpn__{purchase_id}__{page}__{user_info_page}'),
+                 InlineKeyboardButton("Upgrade", callback_data=f'admin_upgrade_user_vpn_service__{purchase_id}__{page}__{user_info_page}__30__40')],
                 [InlineKeyboardButton("Statistics", callback_data=f'statistics_week_{purchase_id}_hide'),
                  InlineKeyboardButton("Refresh", callback_data=f'admin_user_service_detail__{purchase_id}__{page}__{user_info_page}')],
                 [InlineKeyboardButton("Back", callback_data=f'admin_user_services__{purchase.chat_id}__{page}__{user_info_page}')]
@@ -473,7 +473,7 @@ async def admin_user_service_detail(update, context):
 @handle_functions_error
 async def admin_upgrade_service_for_user(update, context):
     query = update.callback_query
-    purchase_id, page, user_info_page, period_callback, traffic_callback = query.data.replace('admin_upgrade_user_service__', '').split('__')
+    purchase_id, page, user_info_page, period_callback, traffic_callback = query.data.replace('admin_upgrade_user_vpn_service__', '').split('__')
     user_detail = update.effective_chat
 
     traffic = max(min(int(traffic_callback), 150), 1) or 40
@@ -486,15 +486,15 @@ async def admin_upgrade_service_for_user(update, context):
 
     keyboard = [
         [InlineKeyboardButton('Traffic', callback_data="just_for_show")],
-        [InlineKeyboardButton("➖", callback_data=f"admin_upgrade_user_service__{purchase_id}__{page}__{user_info_page}__{period}__{traffic - 1}"),
+        [InlineKeyboardButton("➖", callback_data=f"admin_upgrade_user_vpn_service__{purchase_id}__{page}__{user_info_page}__{period}__{traffic - 1}"),
          InlineKeyboardButton(f"{traffic} GB", callback_data="just_for_show"),
-         InlineKeyboardButton("➕", callback_data=f"admin_upgrade_user_service__{purchase_id}__{page}__{user_info_page}__{period}__{traffic + 10}")],
+         InlineKeyboardButton("➕", callback_data=f"admin_upgrade_user_vpn_service__{purchase_id}__{page}__{user_info_page}__{period}__{traffic + 10}")],
         [InlineKeyboardButton('Period Time', callback_data="just_for_show")],
-        [InlineKeyboardButton("➖", callback_data=f"admin_upgrade_user_service__{purchase_id}__{page}__{user_info_page}__{period - 1}__{traffic}"),
+        [InlineKeyboardButton("➖", callback_data=f"admin_upgrade_user_vpn_service__{purchase_id}__{page}__{user_info_page}__{period - 1}__{traffic}"),
          InlineKeyboardButton(f"{period} Days", callback_data="just_for_show"),
-         InlineKeyboardButton("➕", callback_data=f"admin_upgrade_user_service__{purchase_id}__{page}__{user_info_page}__{period + 10}__{traffic}")],
+         InlineKeyboardButton("➕", callback_data=f"admin_upgrade_user_vpn_service__{purchase_id}__{page}__{user_info_page}__{period + 10}__{traffic}")],
         [InlineKeyboardButton("Back", callback_data=f'admin_user_service_detail__{purchase_id}__{page}__{user_info_page}'),
-         InlineKeyboardButton("Confirm", callback_data=f"admin_assurance_upgrade__{purchase_id}__{page}__{user_info_page}__{period}__{traffic}")]
+         InlineKeyboardButton("Confirm", callback_data=f"admin_assurance_upgrade_vpn__{purchase_id}__{page}__{user_info_page}__{period}__{traffic}")]
     ]
 
     await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
@@ -503,7 +503,7 @@ async def admin_upgrade_service_for_user(update, context):
 @handle_functions_error
 async def admin_assurance_upgrade_vpn_service(update, context):
     query = update.callback_query
-    purchase_id, page, user_info_page, period, traffic = query.data.replace('admin_assurance_upgrade__', '').split('__')
+    purchase_id, page, user_info_page, period, traffic = query.data.replace('admin_assurance_upgrade_vpn__', '').split('__')
 
     with SessionLocal() as session:
         purchase = vpn_crud.get_purchase(session, purchase_id)
@@ -520,7 +520,7 @@ async def admin_assurance_upgrade_vpn_service(update, context):
         keyboard = [
             [InlineKeyboardButton("Upgrade And reduce credit from wallet", callback_data=f"admin_confirm_upvpn__reduce__{purchase_id}__{page}__{user_info_page}__{period}__{traffic}")],
             [InlineKeyboardButton("Upgrade without reduce", callback_data=f"admin_confirm_upvpn__noreduce__{purchase_id}__{page}__{user_info_page}__{period}__{traffic}")],
-            [InlineKeyboardButton("Back", callback_data=f'admin_upgrade_user_service__{purchase_id}__{page}__{user_info_page}__{period}__{traffic}')]
+            [InlineKeyboardButton("Back", callback_data=f'admin_upgrade_user_vpn_service__{purchase_id}__{page}__{user_info_page}__{period}__{traffic}')]
         ]
 
         await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
@@ -574,8 +574,86 @@ async def admin_confirm_upgrade_vpn_service(update, context):
             await utilities_reFactore.report_to_admin('purchase', 'admin_confirm_upgrade_vpn_service', msg)
 
             keyboard = [
-                [InlineKeyboardButton("Back", callback_data=f'admin_assurance_upgrade__{purchase_id}__{page}__{user_info_page}__{period}__{traffic}')]
+                [InlineKeyboardButton("Back", callback_data=f'admin_assurance_upgrade_vpn__{purchase_id}__{page}__{user_info_page}__{period}__{traffic}')]
             ]
 
             text = 'Upgrade Service For User Successful'
+            await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+
+
+@handle_functions_error
+async def admin_assurance_remove_vpn_service(update, context):
+    query = update.callback_query
+    purchase_id, page, user_info_page = query.data.replace('admin_assurance_remove_vpn__', '').split('__')
+
+    with SessionLocal() as session:
+        purchase = vpn_crud.get_purchase(session, purchase_id)
+        main_server_ip = purchase.product.main_server.server_ip
+        user = await panel_api.marzban_api.get_user(main_server_ip, purchase.username)
+        returnable_amount = 0
+
+        if user['status'] == 'active':
+            usage_traffic_in_gigabyte = round(user['used_traffic'] / (1024 ** 3), 2)
+            data_limit_in_gigabyte = round(user['data_limit'] / (1024 ** 3), 2)
+            traffic_left_in_gigabyte = data_limit_in_gigabyte - usage_traffic_in_gigabyte
+
+            expiry = datetime.fromtimestamp(user['expire'])
+            now = datetime.now(pytz.timezone('Asia/Tehran')).replace(tzinfo=None)
+            days_left = (expiry - now).days
+
+            returnable_amount = await vpn_utilities.calculate_price(traffic_left_in_gigabyte, days_left, purchase.chat_id)
+
+        text = (f"Are you sure you wanna Remove this service for user?"
+                f"\nSelect payment status."
+                f"\n\nPrice {returnable_amount:,} IRT"
+                f"\nUser Balance: {purchase.owner.wallet:,} IRT"
+                f"\n\nUser Name: {purchase.owner.first_name} {purchase.owner.last_name}"
+                f"\n\nUser chat id: {purchase.chat_id}")
+
+        keyboard = [
+            [InlineKeyboardButton("Remove and return credit to user wallet", callback_data=f"admin_confirm_remove_vpn__refund__{purchase_id}__{page}__{user_info_page}")] if returnable_amount else None,
+            [InlineKeyboardButton("Remove without return", callback_data=f"admin_confirm_remove_vpn__norefund__{purchase_id}__{page}__{user_info_page}")],
+            [InlineKeyboardButton("Back", callback_data=f'admin_user_service_detail__{purchase_id}__{page}__{user_info_page}')]
+        ]
+        keyboard = [list(filter(None, row)) for row in keyboard]
+
+        await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+
+
+@handle_functions_error
+async def admin_confirm_remove_vpn_service(update, context):
+    query = update.callback_query
+    payment_status, purchase_id, page, user_info_page = query.data.replace('admin_confirm_remove_vpn__', '').split('__')
+    user_detail = update.effective_chat
+
+    with SessionLocal() as session:
+        with session.begin():
+            purchase = vpn_crud.remove_purchase(session, purchase_id, user_detail.id)
+            main_server_ip = purchase.product.main_server.server_ip
+            returnable_amount = 0
+            if payment_status == 'refund':
+                returnable_amount = await vpn_utilities.remove_service_in_server(session, purchase)
+            else:
+                await panel_api.marzban_api.remove_user(main_server_ip, purchase.username)
+
+            msg = (
+                f'admin Remove Service For User'
+                f'\npayment_status: {payment_status}'
+                f'\nReturned Amount: {returnable_amount:,}'
+                f'\nService ID: {purchase.purchase_id}'
+                f'\nService username: {purchase.username}'
+                f'\nService Traffic: {purchase.traffic}'
+                f'\nService Period: {purchase.period}'
+                f'\nProduct Name: {purchase.product.product_name}'
+                f'\nUser chat id: {purchase.chat_id}'
+                f'\nAdmin chat ID: {user_detail.id} ({user_detail.first_name})'
+            )
+
+            await utilities_reFactore.report_to_admin('info', 'admin_confirm_remove_vpn_service', msg)
+
+            keyboard = [
+                [InlineKeyboardButton("Back", callback_data=f'admin_assurance_remove_vpn__{purchase_id}__{page}__{user_info_page}')]
+            ]
+
+            text = 'Remove Service For User Successful'
             await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
