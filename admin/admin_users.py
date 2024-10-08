@@ -144,7 +144,6 @@ async def admin_change_wallet_balance(update, context):
                 elif action == 'reduction_balance_by_admin':
                     crud.less_from_wallet(session, finacial_report)
 
-                await query.answer('+ Changes Saved!')
                 keyboard = [[InlineKeyboardButton('User Detail', callback_data=f"admin_view_user__{chat_id}__1")]]
                 await context.bot.send_message(text=text, chat_id=user_detail.id, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
 
