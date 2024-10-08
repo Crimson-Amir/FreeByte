@@ -75,9 +75,9 @@ async def view_user_info(update, context, chat_id=None):
                  InlineKeyboardButton(f"Ban", callback_data=f'admin_set_user_status__{chat_id}__ban')],
 
                 [InlineKeyboardButton('Change Wallet Balance:', callback_data=f'just_for_show')],
-                [InlineKeyboardButton(f"Add", callback_data=f'adlance__{chat_id}__increase_balance_by_admin'),
-                 InlineKeyboardButton(f"Set", callback_data=f'admin_change_user_wallet_balance__{chat_id}__set'),
-                 InlineKeyboardButton(f"Less", callback_data=f'admin_ce__{chat_id}__reduction_balance_by_admin')],
+                [InlineKeyboardButton(f"Add", callback_data=f'admin_cuwb__{chat_id}__increase_balance_by_admin'),
+                 InlineKeyboardButton(f"Set", callback_data=f'admin_cuwb__{chat_id}__set'),
+                 InlineKeyboardButton(f"Less", callback_data=f'admin_cuwb__{chat_id}__reduction_balance_by_admin')],
 
                 [InlineKeyboardButton('Back', callback_data=f'admin_manage_users__{page}')]
             ]
@@ -156,7 +156,7 @@ async def admin_change_wallet_balance(update, context):
 
 
 admin_change_wallet_balance_conversation = ConversationHandler(
-    entry_points=[CallbackQueryHandler(get_new_balance, pattern=r'admin_change_user_wallet_balance__(.*)')],
+    entry_points=[CallbackQueryHandler(get_new_balance, pattern=r'admin_cuwb__(.*)')],
     states={
         ADD_CREDIT_BAlANCE: [MessageHandler(filters.TEXT & ~filters.COMMAND, admin_change_wallet_balance)],
     },
