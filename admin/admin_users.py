@@ -518,8 +518,8 @@ async def admin_assurance_upgrade_vpn_service(update, context):
                 f"\n\nUser chat id: {purchase.chat_id}")
 
         keyboard = [
-            [InlineKeyboardButton("Upgrade And reduce credit from wallet", callback_data=f"admin_confirm_up__reduce__{chat_id}__{page}__{user_info_page}__{period}__{traffic}")],
-            [InlineKeyboardButton("Upgrade without reduce", callback_data=f"admin_confirm_upvpn__noreduce__{chat_id}__{page}__{user_info_page}__{period}__{traffic}")],
+            [InlineKeyboardButton("Upgrade And reduce credit from wallet", callback_data=f"admin_confirm_upvpn__reduce__{purchase_id}__{page}__{user_info_page}__{period}__{traffic}")],
+            [InlineKeyboardButton("Upgrade without reduce", callback_data=f"admin_confirm_upvpn__noreduce__{purchase_id}__{page}__{user_info_page}__{period}__{traffic}")],
             [InlineKeyboardButton("Back", callback_data=f'admin_upgrade_user_service__{purchase_id}__{page}__{user_info_page}__{period}__{traffic}')]
         ]
 
