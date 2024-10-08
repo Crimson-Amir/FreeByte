@@ -46,9 +46,10 @@ def update_purchase(session, purchase_id:int, **kwargs):
             register_date=datetime.now(pytz.timezone('Asia/Tehran')),
             active=True,
             **kwargs
-        )
+        ).returnin(model.Purchase)
     )
-    session.execute(stmt)
+    execute = session.execute(stmt)
+    return execute
 
 def remove_purchase(session, purchase_id:int, chat_id):
     stmt = (

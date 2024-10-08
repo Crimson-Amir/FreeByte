@@ -513,7 +513,7 @@ async def admin_assurance_upgrade_vpn_service(update, context):
                 f"\nSelect payment status."
                 f"\nimportant: if user does not have enough credit, wallet will be negative"
                 f"\n\nPrice {price:,} IRT"
-                f"\nUser Balance: {purchase.owner.wallet}"
+                f"\nUser Balance: {purchase.owner.wallet:,} IRT"
                 f"\n\nUser Name: {purchase.owner.first_name} {purchase.owner.last_name}"
                 f"\n\nUser chat id: {purchase.chat_id}")
 
@@ -534,7 +534,7 @@ async def admin_confirm_upgrade_vpn_service(update, context):
 
     with SessionLocal() as session:
         with session.begin():
-            purchase = vpn_crud.get_purchase(session, purchase_id)
+            purchase = vpn_crud.update_purchase(session, purchase_id, upgrade_traffic=traffic, upgrade_period=period)
             amount = await vpn_utilities.calculate_price(traffic, period, purchase.chat_id)
 
             if payment_status == 'reduce':
