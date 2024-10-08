@@ -90,7 +90,7 @@ async def view_user_info(update, context, chat_id=None):
     with SessionLocal() as session:
         with session.begin():
             user = crud.get_user(session, int(chat_id))
-
+            print(user.services.count)
             text = (f'Full Name: {user.first_name} {user.last_name}'
                     f'\nUsername: @{user.username}'
                     f'\nID: {user.user_id}'
@@ -135,7 +135,7 @@ async def view_user_info(update, context, chat_id=None):
                 [InlineKeyboardButton('Back', callback_data=f'admin_manage_users__{page}')]
             ]
 
-            return await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+            return await query.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(keyboard))
 
 
 @handle_functions_error
