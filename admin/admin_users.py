@@ -319,13 +319,13 @@ async def admin_buy_service_for_user(update, context):
 
     keyboard = [
         [InlineKeyboardButton('Traffic', callback_data="just_for_show")],
-        [InlineKeyboardButton("➖", callback_data=f"admin_buy_service_for_user__{chat_id}__{page}__{user_info_page}__{period}_{traffic - 1}"),
+        [InlineKeyboardButton("➖", callback_data=f"admin_buy_service_for_user__{chat_id}__{page}__{user_info_page}__{period}__{traffic - 1}"),
          InlineKeyboardButton(f"{traffic} GB", callback_data="just_for_show"),
-         InlineKeyboardButton("➕", callback_data=f"admin_buy_service_for_user__{chat_id}__{page}__{user_info_page}__{period}_{traffic + 10}")],
+         InlineKeyboardButton("➕", callback_data=f"admin_buy_service_for_user__{chat_id}__{page}__{user_info_page}__{period}__{traffic + 10}")],
         [InlineKeyboardButton('Period Time', callback_data="just_for_show")],
-        [InlineKeyboardButton("➖", callback_data=f"admin_buy_service_for_user__{chat_id}__{page}__{user_info_page}__{period - 1}_{traffic}"),
+        [InlineKeyboardButton("➖", callback_data=f"admin_buy_service_for_user__{chat_id}__{page}__{user_info_page}__{period - 1}__{traffic}"),
          InlineKeyboardButton(f"{period} Days", callback_data="just_for_show"),
-         InlineKeyboardButton("➕", callback_data=f"admin_buy_service_for_user__{chat_id}__{page}__{user_info_page}__{period + 10}_{traffic}")],
+         InlineKeyboardButton("➕", callback_data=f"admin_buy_service_for_user__{chat_id}__{page}__{user_info_page}__{period + 10}__{traffic}")],
         [InlineKeyboardButton("Back", callback_data=f'admin_user_services__{chat_id}__{page}__{user_info_page}'),
          InlineKeyboardButton("Confirm", callback_data=f"admin_assurance_buy_vpn_service__{chat_id}__{page}__{user_info_page}__{period}__{traffic}")]
     ]
@@ -350,8 +350,8 @@ async def admin_assurance_buy_vpn_service(update, context):
                 f"\n\nUser chat id: {chat_id}")
 
         keyboard = [
-            [InlineKeyboardButton("Create And reduce credit from wallet", callback_data=f"admin_confirm_buy_vpn_service__reduce__{chat_id}__{page}__{user_info_page}__{period}__{traffic}")],
-            [InlineKeyboardButton("Create without reduce",callback_data=f"admin_confirm_buy_vpn_service__noreduce__{chat_id}__{page}__{user_info_page}__{period}__{traffic}")],
+            [InlineKeyboardButton("Create And reduce credit from wallet", callback_data=f"admin_confirm_buy_vpn__reduce__{chat_id}__{page}__{user_info_page}__{period}__{traffic}")],
+            [InlineKeyboardButton("Create without reduce", callback_data=f"admin_confirm_buy_vpn__noreduce__{chat_id}__{page}__{user_info_page}__{period}__{traffic}")],
             [InlineKeyboardButton("Back", callback_data=f'vpn_set_period_traffic__{chat_id}__{page}__{user_info_page}__{period}_{traffic}')]
         ]
 
@@ -361,7 +361,7 @@ async def admin_assurance_buy_vpn_service(update, context):
 @handle_functions_error
 async def admin_confirm_buy_vpn_service(update, context):
     query = update.callback_query
-    payment_status, chat_id, page, user_info_page, period, traffic = query.data.replace('admin_confirm_buy_vpn_service__', '').split('__')
+    payment_status, chat_id, page, user_info_page, period, traffic = query.data.replace('admin_confirm_buy_vpn__', '').split('__')
 
     with SessionLocal() as session:
         with session.begin():
