@@ -261,7 +261,7 @@ admin_change_wallet_balance_conversation = ConversationHandler(
 async def admin_user_services(update, context):
     query = update.callback_query
     item_per_page = 10
-    chat_id, page, user_info_page = query.data('admin_user_services__').split('__')
+    chat_id, page, user_info_page = query.data.replace('admin_user_services__', '').split('__')
 
     with SessionLocal() as session:
         with session.begin():
