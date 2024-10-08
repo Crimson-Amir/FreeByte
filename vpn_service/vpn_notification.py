@@ -7,6 +7,7 @@ from crud import vpn_crud
 from utilities_reFactore import FindText, report_to_admin, human_readable
 from database_sqlalchemy import SessionLocal
 import setting
+from admin import partner
 
 async def format_traffic_from_megabyte(ft_instance, traffic_in_megabyte, chat_id):
     if traffic_in_megabyte == 0:
@@ -111,8 +112,11 @@ async def notification_timer(context):
 
 
 async def tasks_schedule(context):
-    panel_api.marzban_api.refresh_connection()
     with SessionLocal() as session:
+
+        panel_api.marzban_api.refresh_connection()
+        partner.partners.refresh_partner(session)
+
         inactive_purchases = vpn_crud.get_all_inactive_purchase(session)
         for purchase in inactive_purchases:
             try:

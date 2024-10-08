@@ -56,6 +56,8 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler('vpn_start', start_reFactore.start))
     application.add_handler(CommandHandler('admin', admin_page.admin_page))
     application.add_handler(CommandHandler('add_credit_to_user', admin_page.add_credit_for_user))
+    application.add_handler(CommandHandler('add_partner', admin_page.add_partner))
+
 
     # Bot Main Menu
     application.add_handler(CallbackQueryHandler(start_reFactore.start, pattern='start(.*)'))

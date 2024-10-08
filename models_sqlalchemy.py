@@ -23,6 +23,20 @@ class UserDetail(Base):
     financial_reports = relationship("FinancialReport", back_populates="owner", cascade="all, delete-orphan")
     services = relationship("Purchase", back_populates="owner", cascade="all, delete-orphan")
     config = relationship("UserConfig", back_populates="owner", cascade="all, delete-orphan", uselist=False)
+    partner = relationship("Partner", back_populates="owner", cascade="all, delete-orphan", uselist=False)
+
+
+class Partner(Base):
+    __tablename__ = 'partner'
+
+    partner_id = Column(Integer, primary_key=True)
+    active = Column(Boolean, default=True)
+
+    vpn_price_per_gigabyte_irt = Column(Integer, nullable=False)
+    vpn_price_per_period_time_irt = Column(Integer, nullable=False)
+
+    chat_id = Column(BigInteger, ForeignKey('user_detail.chat_id'), unique=True)
+    owner = relationship("UserDetail", back_populates="partner")
 
 
 class UserConfig(Base):
@@ -110,13 +124,13 @@ class Purchase(Base):
     register_date = Column(DateTime, default=datetime.now())
 
 
-
 class Statistics(Base):
     __tablename__ = 'statistics'
 
     statistics_id = Column(Integer, primary_key=True)
     traffic_usage = Column(String)
     register_date = Column(DateTime, default=datetime.now())
+
 
 class LastUsage(Base):
     __tablename__ = 'last_usage'

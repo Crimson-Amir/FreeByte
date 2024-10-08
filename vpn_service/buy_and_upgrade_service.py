@@ -18,11 +18,12 @@ async def buy_custom_service(update, context):
     query = update.callback_query
     ft_instance = FindText(update, context)
     period_callback, traffic_callback = query.data.replace('vpn_set_period_traffic__', '').split('_')
+    user_detail = update.effective_chat
 
     traffic = max(min(int(traffic_callback), 150), 5) or 40
     period = max(min(int(period_callback), 60), 5) or 30
 
-    price = await vpn_utilities.calculate_price(traffic, period)
+    price = await vpn_utilities.calculate_price(traffic, period, user_detail.id)
     text = (f"{await ft_instance.find_text('vpn_buy_service_title')}"
             f"\n\n{await ft_instance.find_text('price')} {price:,} {await ft_instance.find_text('irt')}")
 
@@ -48,6 +49,7 @@ async def upgrade_service(update, context):
     query = update.callback_query
     ft_instance = FindText(update, context)
     period_callback, traffic_callback, purchase_id = query.data.replace('vpn_upgrade_service__', '').split('__')
+    user_detail = update.effective_chat
 
     with SessionLocal() as session:
         with session.begin():
@@ -55,7 +57,7 @@ async def upgrade_service(update, context):
             traffic = max(min(int(traffic_callback), 150), 5) or 40
             period = max(min(int(period_callback), 60), 5) or 30
 
-            price = await vpn_utilities.calculate_price(traffic, period)
+            price = await vpn_utilities.calculate_price(traffic, period, user_detail.id)
 
             text = (f"{await ft_instance.find_text('vpn_upgrade_service_title')}"
                     f"\n\n{await ft_instance.find_text('price')} {price:,} {await ft_instance.find_text('irt')}")

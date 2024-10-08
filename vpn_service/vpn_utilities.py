@@ -4,9 +4,17 @@ import setting
 from vpn_service import panel_api
 from datetime import datetime, timedelta
 from crud import crud
+from admin import partner
 
-async def calculate_price(traffic, period):
-    price = (traffic * setting.PRICE_PER_GB) + (period * setting.PRICE_PER_DAY)
+async def calculate_price(traffic, period, chat_id):
+    price_per_gigabyte = setting.PRICE_PER_GB
+    price_per_day = setting.PRICE_PER_DAY
+
+    if chat_id in partner.partners.list_of_partner:
+        price_per_gigabyte = partner.partners.list_of_partner[chat_id].vpn_price_per_gigabyte_irt
+        price_per_day = partner.partners.list_of_partner[chat_id].vpn_price_per_period_time_irt
+
+    price = (traffic * price_per_gigabyte) + (period * price_per_day)
     return int(price)
 
 
@@ -34,7 +42,7 @@ async def remove_service_in_server(session, purchase):
         now = datetime.now(pytz.timezone('Asia/Tehran')).replace(tzinfo=None)
         days_left = (expiry - now).days
 
-        returnable_amount = await calculate_price(traffic_left_in_gigabyte, days_left)
+        returnable_amount = await calculate_price(traffic_left_in_gigabyte, days_left, purchase.chat_id)
 
         finacial_report = crud.create_financial_report(
             session, 'recive',

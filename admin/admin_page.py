@@ -3,8 +3,9 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from utilities_reFactore import FindText
 from admin.admin_utilities import admin_access
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
-from crud import crud
+from crud import crud, admin_crud
 from database_sqlalchemy import SessionLocal
+from admin import partner
 
 @admin_access
 async def admin_page(update, context):
@@ -51,3 +52,24 @@ async def add_credit_for_user(update, context):
 
     except Exception as e:
         await context.bot.send_message(chat_id=user_detail.id, text=f'- failed to add credit to user wallet.\n{str(e)}')
+
+
+@admin_access
+async def add_partner(update, context):
+    user_detail = update.effective_chat
+    try:
+        with SessionLocal() as session:
+            with session.begin():
+                chat_id, price_per_traffic, price_per_period = context.args
+
+                admin_crud.add_partner(
+                    session, True,
+                    chat_id,
+                    vpn_price_per_gigabyte_irt=price_per_traffic,
+                    vpn_price_per_period_time_irt=price_per_period
+                )
+                partner.partners.refresh_partner(session)
+                await context.bot.send_message(chat_id=user_detail.id, text=f'+ successfully Add Partner.')
+
+    except Exception as e:
+        await context.bot.send_message(chat_id=user_detail.id, text=f'- failed to add Partner.\n{str(e)}')

@@ -7,6 +7,10 @@ def get_admins(session):
 def get_all_users(session):
     return session.query(model.UserDetail).all()
 
+def get_all_active_partner(session):
+    return session.query(model.Partner).filter_by(model.Partner.active == True).all()
+
+
 def get_user_by_id(session, user_id: int):
     return session.query(model.UserDetail).filter(model.UserDetail.user_id == user_id).first()
 
@@ -45,3 +49,13 @@ def update_user_by_id(session, chat_id: int, **kwargs):
     )
     session.execute(stmt)
 
+def add_partner(session, active, chat_id, **kwargs):
+    partner = model.Partner(
+        active=active,
+        chat_id=chat_id,
+        **kwargs
+    )
+    session.add(partner)
+    session.flush()
+    session.refresh(partner)
+    return partner
