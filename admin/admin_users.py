@@ -415,7 +415,7 @@ async def admin_user_service_detail(update, context):
     data = query.data
     user_detail = update.effective_chat
 
-    purchase_id, page, user_info_page = data.replace('admin_user_service_detail__+', '')
+    purchase_id, page, user_info_page = data.replace('admin_user_service_detail__', '')
 
     try:
         with SessionLocal() as session:
