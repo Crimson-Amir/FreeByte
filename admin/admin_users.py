@@ -42,7 +42,7 @@ async def all_users_list(update, context):
 
 @admin_access
 async def find_user(update, context):
-    chat_id_substring = update.args
+    chat_id_substring = context.args
     user_detail = update.effective_chat
 
     with SessionLocal() as session:
