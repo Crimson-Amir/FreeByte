@@ -53,15 +53,15 @@ async def user_language_setting(update, context):
 @message_token.check_token
 async def change_user_language(update, context):
     query = update.callback_query
-    user_detail = update.effective_chat
-    ft_instance = FindText(update, context)
-    user_new_language = query.data.replace('set_user_language_on__', '')
-
     with SessionLocal() as session:
         with session.begin():
+            user_detail = update.effective_chat
+            ft_instance = FindText(update, context)
+            user_new_language = query.data.replace('set_user_language_on__', '')
+
             crud.update_user(session, user_detail.id, language=user_new_language)
             context.user_data['user_language'] = user_new_language
 
 
-    await query.answer(await ft_instance.find_text('config_applied_successfully'))
-    return await user_language_setting(update, context)
+            await query.answer(await ft_instance.find_text('config_applied_successfully'))
+            return await user_language_setting(update, context)
