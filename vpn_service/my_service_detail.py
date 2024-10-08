@@ -180,10 +180,11 @@ async def remove_service_for_user(update, context):
     query = update.callback_query
     ft_instance = FindText(update, context)
     purchase_id = int(query.data.replace('vpn_remove_service__', ''))
+    user_detail = update.effective_chat
 
     with SessionLocal() as session:
         with session.begin():
-            purchase = vpn_crud.remove_purchase(session, purchase_id)
+            purchase = vpn_crud.remove_purchase(session, purchase_id, user_detail.id)
 
             returnable_amount = await vpn_utilities.remove_service_in_server(session, purchase)
 

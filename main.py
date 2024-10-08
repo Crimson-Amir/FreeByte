@@ -114,9 +114,11 @@ if __name__ == '__main__':
     application.add_handler(CallbackQueryHandler(admin_users.admin_assurance_buy_vpn_service, pattern='admin_assurance_bv__(.*)'))
     application.add_handler(CallbackQueryHandler(admin_users.admin_confirm_buy_vpn_service, pattern='admin_confirm_bv__(.*)'))
 
+    application.add_handler(CallbackQueryHandler(admin_users.admin_upgrade_service_for_user, pattern='admin_upgrade_user_service__(.*)'))
+    application.add_handler(CallbackQueryHandler(admin_users.admin_assurance_upgrade_vpn_service, pattern='admin_assurance_upgrade__(.*)'))
+    application.add_handler(CallbackQueryHandler(admin_users.admin_confirm_upgrade_vpn_service, pattern='admin_confirm_upvpn__(.*)'))
 
     application.add_handler(admin_users.admin_change_wallet_balance_conversation)
-
 
     # Setting
     application.add_handler(CallbackQueryHandler(setting_menu.setting_menu, pattern='setting_menu'))

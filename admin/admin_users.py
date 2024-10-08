@@ -450,9 +450,10 @@ async def admin_user_service_detail(update, context):
             )
 
             keyboard = [
+                [InlineKeyboardButton("Remove", callback_data=f'admin_rm_user_service__{purchase_id}__{page}__{user_info_page}'),
+                 InlineKeyboardButton("Upgrade", callback_data=f'admin_upgrade_user_service__{purchase_id}__{page}__{user_info_page}__30__40')],
                 [InlineKeyboardButton("Statistics", callback_data=f'statistics_week_{purchase_id}_hide'),
-                 InlineKeyboardButton("Refresh", callback_data=f'vpn_advanced_options__{purchase_id}')],
-                [InlineKeyboardButton("Change OwnerShip", callback_data=f'vpn_change_service_ownership__{purchase_id}')],
+                 InlineKeyboardButton("Refresh", callback_data=f'admin_user_service_detail__{purchase_id}__{page}__{user_info_page}')],
                 [InlineKeyboardButton("Back", callback_data=f'admin_user_services__{purchase.chat_id}__{page}__{user_info_page}')]
             ]
 
@@ -467,3 +468,114 @@ async def admin_user_service_detail(update, context):
 
     except Exception as e:
         raise e
+
+
+@handle_functions_error
+async def admin_upgrade_service_for_user(update, context):
+    query = update.callback_query
+    purchase_id, page, user_info_page, period_callback, traffic_callback = query.data.replace('admin_upgrade_user_service__', '').split('__')
+    user_detail = update.effective_chat
+
+    traffic = max(min(int(traffic_callback), 150), 1) or 40
+    period = max(min(int(period_callback), 90), 1) or 30
+
+    price = await vpn_utilities.calculate_price(traffic, period, user_detail.id)
+
+    text = (f"Customize service for Upgrade:"
+            f"\n\nPrice {price:,} IRT")
+
+    keyboard = [
+        [InlineKeyboardButton('Traffic', callback_data="just_for_show")],
+        [InlineKeyboardButton("➖", callback_data=f"admin_upgrade_user_service__{purchase_id}__{page}__{user_info_page}__{period}__{traffic - 1}"),
+         InlineKeyboardButton(f"{traffic} GB", callback_data="just_for_show"),
+         InlineKeyboardButton("➕", callback_data=f"admin_upgrade_user_service__{purchase_id}__{page}__{user_info_page}__{period}__{traffic + 10}")],
+        [InlineKeyboardButton('Period Time', callback_data="just_for_show")],
+        [InlineKeyboardButton("➖", callback_data=f"admin_upgrade_user_service__{purchase_id}__{page}__{user_info_page}__{period - 1}__{traffic}"),
+         InlineKeyboardButton(f"{period} Days", callback_data="just_for_show"),
+         InlineKeyboardButton("➕", callback_data=f"admin_upgrade_user_service__{purchase_id}__{page}__{user_info_page}__{period + 10}__{traffic}")],
+        [InlineKeyboardButton("Back", callback_data=f'admin_user_service_detail__{purchase_id}__{page}__{user_info_page}'),
+         InlineKeyboardButton("Confirm", callback_data=f"admin_assurance_upgrade__{purchase_id}__{page}__{user_info_page}__{period}__{traffic}")]
+    ]
+
+    await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+
+
+@handle_functions_error
+async def admin_assurance_upgrade_vpn_service(update, context):
+    query = update.callback_query
+    purchase_id, page, user_info_page, period, traffic = query.data.replace('admin_assurance_upgrade__', '').split('__')
+
+    with SessionLocal() as session:
+        purchase = vpn_crud.get_purchase(session, purchase_id)
+        price = await vpn_utilities.calculate_price(traffic, period, purchase.chat_id)
+
+        text = (f"Are you sure you wanna Upgrade this service for user?"
+                f"\nSelect payment status."
+                f"\nimportant: if user does not have enough credit, wallet will be negative"
+                f"\n\nPrice {price:,} IRT"
+                f"\nUser Balance: {purchase.owner.wallet}"
+                f"\n\nUser Name: {purchase.owner.first_name} {purchase.owner.last_name}"
+                f"\n\nUser chat id: {purchase.chat_id}")
+
+        keyboard = [
+            [InlineKeyboardButton("Upgrade And reduce credit from wallet", callback_data=f"admin_confirm_up__reduce__{chat_id}__{page}__{user_info_page}__{period}__{traffic}")],
+            [InlineKeyboardButton("Upgrade without reduce", callback_data=f"admin_confirm_upvpn__noreduce__{chat_id}__{page}__{user_info_page}__{period}__{traffic}")],
+            [InlineKeyboardButton("Back", callback_data=f'admin_upgrade_user_service__{purchase_id}__{page}__{user_info_page}__{period}__{traffic}')]
+        ]
+
+        await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+
+
+@handle_functions_error
+async def admin_confirm_upgrade_vpn_service(update, context):
+    query = update.callback_query
+    payment_status, purchase_id, page, user_info_page, period, traffic = query.data.replace('admin_confirm_upvpn__', '').split('__')
+    user_detail = update.effective_chat
+
+    with SessionLocal() as session:
+        with session.begin():
+            purchase = vpn_crud.get_purchase(session, purchase_id)
+            amount = await vpn_utilities.calculate_price(traffic, period, purchase.chat_id)
+
+            if payment_status == 'reduce':
+                finacial_report = crud.create_financial_report(
+                    session, 'spend',
+                    chat_id=purchase.chat_id,
+                    amount=amount,
+                    action='upgrade_vpn_service',
+                    service_id=purchase.purchase_id,
+                    payment_status='not paid',
+                    payment_getway='wallet',
+                    currency='IRT'
+                )
+                crud.less_from_wallet(session, finacial_report)
+
+            purchase, traffic_for_upgrade, period_for_upgrade = await buy_and_upgrade_service.upgrade_service_for_user(
+                context,
+                session,
+                purchase_id=purchase_id
+            )
+
+            msg = (
+                f'admin Upgrade Service For User'
+                f'\npayment_status: {payment_status}'
+                f'\nAmount: {amount:,}'
+                f'\nService ID: {purchase.purchase_id}'
+                f'\nService username: {purchase.username}'
+                f'\nService Traffic Now: {purchase.traffic}'
+                f'\nService Period Now: {purchase.period}'
+                f'\nService Upgrade Traffic: {traffic_for_upgrade}'
+                f'\nService Upgrade Period: {period_for_upgrade}'
+                f'\nProduct Name: {purchase.product.product_name}'
+                f'\nUser chat id: {purchase.chat_id}'
+                f'\nAdmin chat ID: {user_detail.id} ({user_detail.first_name})'
+            )
+
+            await utilities_reFactore.report_to_admin('purchase', 'admin_confirm_upgrade_vpn_service', msg)
+
+            keyboard = [
+                [InlineKeyboardButton("Back", callback_data=f'admin_assurance_upgrade__{purchase_id}__{page}__{user_info_page}__{period}__{traffic}')]
+            ]
+
+            text = 'Upgrade Service For User Successful'
+            await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))

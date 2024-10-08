@@ -118,7 +118,7 @@ async def tasks_schedule(context):
             try:
                 days_past_after_expired = (datetime.now() - (purchase.register_date + timedelta(days=purchase.period))).days
                 if days_past_after_expired >= setting.delete_purchase_after_days:
-                    remove_purchase = vpn_crud.remove_purchase(session, purchase.purchase_id)
+                    remove_purchase = vpn_crud.remove_purchase(session, purchase.purchase_id, purchase.chat_id)
                     session.commit()
                     await vpn_utilities.remove_service_in_server(session, remove_purchase)
                     ft_instance = FindText(None, None)

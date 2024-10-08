@@ -50,11 +50,10 @@ def update_purchase(session, purchase_id:int, **kwargs):
     )
     session.execute(stmt)
 
-
-def remove_purchase(session, purchase_id:int):
+def remove_purchase(session, purchase_id:int, chat_id):
     stmt = (
         delete(model.Purchase)
-        .where(model.Purchase.purchase_id == purchase_id)
+        .where(model.Purchase.purchase_id == purchase_id, model.Purchase.chat_id == chat_id)
         .returning(model.Purchase)
     )
     result = session.execute(stmt)
