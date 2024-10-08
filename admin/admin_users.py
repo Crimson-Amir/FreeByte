@@ -1,4 +1,4 @@
-import sys, os, math
+import sys, os, math, functools, logging, traceback
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from admin.admin_utilities import admin_access, cancel_conversation as cancel
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
@@ -15,6 +15,28 @@ service_status = {
     'ban': '🔴'
 }
 
+
+def handle_functions_error(func):
+    @functools.wraps(func)
+    async def wrapper(update, context, **kwargs):
+        user_detail = update.effective_chat
+        try:
+            return await func(update, context, **kwargs)
+        except Exception as e:
+            if 'Message is not modified' in str(e): return await update.callback_query.answer()
+            logging.error(f'error in {func.__name__}: {str(e)}')
+            tb = traceback.format_exc()
+            err = (
+                f"🔴 An error occurred in {func.__name__}:"
+                f"\n\nerror type:{type(e)}"
+                f"\nerror reason: {str(e)}"
+                f"\n\nTraceback: \n{tb}"
+            )
+            await context.bot.send_message(chat_id=user_detail.id, text=err)
+
+    return wrapper
+
+@handle_functions_error
 @admin_access
 async def all_users_list(update, context):
     query = update.callback_query
@@ -41,6 +63,7 @@ async def all_users_list(update, context):
             return await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
 
+@handle_functions_error
 @admin_access
 async def find_user(update, context):
     chat_id_substring = context.args
@@ -56,7 +79,7 @@ async def find_user(update, context):
 
             return await context.bot.send_message(chat_id=user_detail.id, text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
-
+@handle_functions_error
 @admin_access
 async def view_user_info(update, context, chat_id=None):
     query = update.callback_query
@@ -77,7 +100,7 @@ async def view_user_info(update, context, chat_id=None):
                     f'\nLanguage: {user.language}'
                     f'\nWallet Balance: {user.wallet:,} IRT'
                     f'\nInvited By: {user.invited_by} {f"({user.invited_by.first_name} {user.invited_by.last_name})" if user.invited_by else ""}'
-                    f'\nRegister Date: {user.register_date.replace(microsecond=0)} {utilities_reFactore.human_readable(user.register_date, "en")}'
+                    f'\nRegister Date: {user.register_date.replace(microsecond=0)} ({utilities_reFactore.human_readable(user.register_date, "en")})'
                     f'\n\nLevel: {user.config.user_level}'
                     f'\nStatus: {user.config.user_status}'
                     f'\nTraffic Notification: {user.config.traffic_notification_percent}%'
@@ -86,11 +109,11 @@ async def view_user_info(update, context, chat_id=None):
                     )
 
             keyboard = [
-                [InlineKeyboardButton('Set User Status:', callback_data=f'just_for_show')],
+                [InlineKeyboardButton('🔰 Set User Status:', callback_data=f'just_for_show')],
                 [InlineKeyboardButton(f"Active", callback_data=f'admin_set_user_status__{chat_id}__active'),
                  InlineKeyboardButton(f"Ban", callback_data=f'admin_set_user_status__{chat_id}__ban')],
 
-                [InlineKeyboardButton('Change Wallet Balance:', callback_data=f'just_for_show')],
+                [InlineKeyboardButton('👝 Change Wallet Balance:', callback_data=f'just_for_show')],
                 [InlineKeyboardButton(f"Add", callback_data=f'admin_cuwb__{chat_id}__increase_balance_by_admin'),
                  InlineKeyboardButton(f"Set", callback_data=f'admin_cuwb__{chat_id}__set'),
                  InlineKeyboardButton(f"Less", callback_data=f'admin_cuwb__{chat_id}__reduction_balance_by_admin')],
@@ -98,10 +121,10 @@ async def view_user_info(update, context, chat_id=None):
                 [InlineKeyboardButton('Back', callback_data=f'admin_manage_users__{page}')]
             ]
 
-
             return await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
 
+@handle_functions_error
 @admin_access
 async def admin_change_user_status(update, context):
     query = update.callback_query
@@ -118,14 +141,18 @@ async def admin_change_user_status(update, context):
 async def get_new_balance(update, context):
     await update.callback_query.answer()
     user_detail = update.effective_chat
-    query = update.callback_query
-    chat_id, action = query.data.replace('admin_cuwb__', '').split('__')
-    context.user_data[f'admin_increase_user_balance_chat_id'] = chat_id
-    context.user_data[f'admin_increase_user_balance_action'] = action
-    keyboard = [[InlineKeyboardButton("Cancel", callback_data='cancel_increase_wallet_conversation')]]
-    text = 'send amount in IRT:'
-    await context.bot.send_message(text=text, chat_id=user_detail.id, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
-    return ADD_CREDIT_BAlANCE
+    try:
+        query = update.callback_query
+        chat_id, action = query.data.replace('admin_cuwb__', '').split('__')
+        context.user_data[f'admin_increase_user_balance_chat_id'] = chat_id
+        context.user_data[f'admin_increase_user_balance_action'] = action
+        keyboard = [[InlineKeyboardButton("Cancel", callback_data='cancel_increase_wallet_conversation')]]
+        text = 'send amount in IRT:'
+        await context.bot.send_message(text=text, chat_id=user_detail.id, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+        return ADD_CREDIT_BAlANCE
+    except Exception as e:
+        await context.bot.send_message(chat_id=user_detail.id, text=f'error:\n{e}')
+        return ConversationHandler.END
 
 
 @admin_access
@@ -166,6 +193,7 @@ async def admin_change_wallet_balance(update, context):
 
     except Exception as e:
         await context.bot.send_message(text=f'Error in add amount: {e}', chat_id=user_detail.id, parse_mode='html')
+        return ConversationHandler.END
 
 
 admin_change_wallet_balance_conversation = ConversationHandler(
