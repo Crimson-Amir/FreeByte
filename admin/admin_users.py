@@ -30,9 +30,9 @@ async def all_users_list(update, context):
             keyboard = [[InlineKeyboardButton(f"{user.first_name} {user.chat_id} {service_status.get(user.config.user_status)}", callback_data=f'admin_view_user__{user.chat_id}__{page}')] for user in current_users]
             nav_buttons = []
             if page > 1:
-                nav_buttons.append(InlineKeyboardButton('Previous', callback_data=f'vpn_my_services__{page - 1}'))
+                nav_buttons.append(InlineKeyboardButton('Previous', callback_data=f'admin_manage_users__{page - 1}'))
             if page < total_pages:
-                nav_buttons.append(InlineKeyboardButton('Next', callback_data=f'vpn_my_services__{page + 1}'))
+                nav_buttons.append(InlineKeyboardButton('Next', callback_data=f'admin_manage_users__{page + 1}'))
             if nav_buttons: keyboard.append(nav_buttons)
             keyboard.append([InlineKeyboardButton('Back', callback_data='admin_page')])
             return await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
