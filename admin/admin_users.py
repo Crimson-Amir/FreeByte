@@ -2,7 +2,7 @@ import sys, os, math, functools, logging, traceback
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from admin.admin_utilities import admin_access, cancel_conversation as cancel
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
-from crud import admin_crud, crud
+from crud import admin_crud, crud, vpn_crud
 from database_sqlalchemy import SessionLocal
 from telegram.ext import ConversationHandler, filters, MessageHandler, CallbackQueryHandler, CommandHandler
 import utilities_reFactore
@@ -54,9 +54,9 @@ async def all_users_list(update, context):
             keyboard = [[InlineKeyboardButton(f"{user.first_name} {user.chat_id} {service_status.get(user.config.user_status)}", callback_data=f'admin_view_user__{user.chat_id}__{page}')] for user in current_users]
             nav_buttons = []
             if page > 1:
-                nav_buttons.append(InlineKeyboardButton('Previous', callback_data=f'admin_manage_users__{page - 1}'))
+                nav_buttons.append(InlineKeyboardButton('<- previous', callback_data=f'admin_manage_users__{page - 1}'))
             if page < total_pages:
-                nav_buttons.append(InlineKeyboardButton('Next', callback_data=f'admin_manage_users__{page + 1}'))
+                nav_buttons.append(InlineKeyboardButton('next ->', callback_data=f'admin_manage_users__{page + 1}'))
             if nav_buttons: keyboard.append(nav_buttons)
             keyboard.append([InlineKeyboardButton('Back', callback_data='admin_page')])
 
@@ -92,7 +92,7 @@ async def view_user_info(update, context, chat_id=None):
             user = crud.get_user(session, int(chat_id))
 
             text = (f'Full Name: {user.first_name} {user.last_name}'
-                    f'\nUsername: {user.username}'
+                    f'\nUsername: @{user.username}'
                     f'\nID: {user.user_id}'
                     f'\nChatID: {user.chat_id}'
                     f'\nEmail: {user.email}'
@@ -104,7 +104,7 @@ async def view_user_info(update, context, chat_id=None):
                     f'\n\nLevel: {user.config.user_level}'
                     f'\nStatus: {user.config.user_status}'
                     f'\nTraffic Notification: {user.config.traffic_notification_percent}%'
-                    f'\nPeriod Time Notification: {user.config.period_notification_day}'
+                    f'\nPeriod Time Notification: {user.config.period_notification_day} Day'
                     f'\nRecive FreeService: {user.config.get_vpn_free_service}'
                     )
 
@@ -129,7 +129,7 @@ async def view_user_info(update, context, chat_id=None):
                 [InlineKeyboardButton(f"True (received)", callback_data=f'admin_set_vpn_free_test__{chat_id}__true'),
                  InlineKeyboardButton(f"False", callback_data=f'admin_set_vpn_free_test__{chat_id}__false')],
 
-                [InlineKeyboardButton('🎛️ User Services', callback_data=f'just_for_show')],
+                [InlineKeyboardButton('🎛️ User Services', callback_data=f'admin_user_services__{chat_id}__1__{page}')],
 
                 [InlineKeyboardButton('Back', callback_data=f'admin_manage_users__{page}')]
             ]
@@ -162,6 +162,7 @@ async def admin_set_user_level(update, context):
             await query.answer('+ Changes Saved!')
             return await view_user_info(update, context, chat_id=chat_id)
 
+
 @handle_functions_error
 @admin_access
 async def admin_set_free_vpn_test(update, context):
@@ -173,6 +174,7 @@ async def admin_set_free_vpn_test(update, context):
             crud.update_user_config(session, int(chat_id), get_vpn_free_service=status)
             await query.answer('+ Changes Saved!')
             return await view_user_info(update, context, chat_id=chat_id)
+
 
 @admin_access
 async def get_new_balance(update, context):
@@ -223,6 +225,17 @@ async def admin_change_wallet_balance(update, context):
                 elif action == 'reduction_balance_by_admin':
                     crud.less_from_wallet(session, finacial_report)
 
+                msg = (
+                    f'Action: {finacial_report.action.replace("_", " ")}\n'
+                    f'\nAuthority: {finacial_report.financial_id}\n'
+                    f'\nAmount: {finacial_report.amount:,}\n'
+                    f'\nService ID: {finacial_report.id_holder}\n'
+                    f'\nUser chat id: {finacial_report.chat_id}'
+                    f'\nAdmin chat ID: {user_detail.id} ({user_detail.first_name})'
+                )
+
+                await utilities_reFactore.report_to_admin('purchase', 'admin_change_wallet_balance', msg)
+
                 keyboard = [[InlineKeyboardButton('User Detail', callback_data=f"admin_view_user__{chat_id}__1")]]
                 await context.bot.send_message(text=text, chat_id=user_detail.id, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
 
@@ -243,6 +256,37 @@ admin_change_wallet_balance_conversation = ConversationHandler(
 
 )
 
+@handle_functions_error
+async def admin_user_services(update, context):
+    query = update.callback_query
+    item_per_page = 10
+    chat_id, page, user_info_page = query.data.startswith('admin_user_services__').split('__')
 
+    with SessionLocal() as session:
+        with session.begin():
+            purchases = vpn_crud.get_purchase_by_chat_id(session, chat_id)
 
+            if not purchases:
+                return await query.answer('there is no service for this user')
 
+            total_pages = math.ceil(len(purchases) / item_per_page)
+            start = (page - 1) * item_per_page
+            end = start + item_per_page
+            current_services = purchases[start:end]
+
+            text = 'Select the service to view info:'
+            keyboard = [[InlineKeyboardButton(f"{service.username} {service_status.get(service.status)}", callback_data=f'admin_user_service_detail__{service.purchase_id}')]
+                        for service in current_services]
+
+            nav_buttons = []
+            if page > 1:
+                nav_buttons.append(InlineKeyboardButton('<- previous', callback_data=f'admin_user_services__{page - 1}__{user_info_page}'))
+            if page < total_pages:
+                nav_buttons.append(InlineKeyboardButton('next ->', callback_data=f'admin_user_services__{page + 1}__{user_info_page}'))
+
+            if nav_buttons:
+                keyboard.append(nav_buttons)
+
+            keyboard.append([InlineKeyboardButton('Back', callback_data=f'admin_view_user__{chat_id}__{user_info_page}')])
+
+            return await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
