@@ -260,6 +260,7 @@ async def service_advanced_options(update, context):
             ]
 
             if update.callback_query and 'remove_this_message__' in update.callback_query.data:
+                await query.delete_message()
                 return await context.bot.send_message(chat_id=user_detail.id, text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
             await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
