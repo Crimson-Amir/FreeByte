@@ -156,7 +156,7 @@ async def admin_change_wallet_balance(update, context):
 
 
 admin_change_wallet_balance_conversation = ConversationHandler(
-    entry_points=[CallbackQueryHandler(get_new_balance, pattern=r'admin_cuwb__(.*)')],
+    entry_points=[CallbackQueryHandler(get_new_balance, pattern='admin_cuwb__(.*)')],
     states={
         ADD_CREDIT_BAlANCE: [MessageHandler(filters.TEXT & ~filters.COMMAND, admin_change_wallet_balance)],
     },
