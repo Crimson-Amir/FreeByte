@@ -47,7 +47,7 @@ async def view_user_info(update, context, chat_id=None):
         with session.begin():
             user = crud.get_user(session, int(chat_id))
 
-            text = ''
+            text = f'{chat_id}'
 
             keyboard = [
                 [InlineKeyboardButton('Set User Status:', callback_data=f'')],
