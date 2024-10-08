@@ -7,6 +7,12 @@ import models_sqlalchemy as model
 def get_purchase(session, purchase_id):
     return session.query(model.Purchase).filter_by(purchase_id=purchase_id).first()
 
+def get_purchase_with_chat_id(session, purchase_id, chat_id):
+    return session.query(model.Purchase).filter(
+        model.Purchase.purchase_id==purchase_id,
+        model.Purchase.chat_id==chat_id
+    ).first()
+
 def get_all_inactive_purchase(session):
     return session.query(model.Purchase).filter(
         or_(

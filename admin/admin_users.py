@@ -450,7 +450,6 @@ async def admin_user_service_detail(update, context):
             )
 
             keyboard = [
-                [InlineKeyboardButton("Get Configs", callback_data=f'vpn_get_configs_separately__{purchase_id}__no')],
                 [InlineKeyboardButton("Statistics", callback_data=f'statistics_week_{purchase_id}_hide'),
                  InlineKeyboardButton("Refresh", callback_data=f'vpn_advanced_options__{purchase_id}')],
                 [InlineKeyboardButton("Change OwnerShip", callback_data=f'vpn_change_service_ownership__{purchase_id}')],

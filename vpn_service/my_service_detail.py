@@ -134,11 +134,16 @@ async def service_info(update, context):
 async def ask_remove_service_for_user(update, context):
     query = update.callback_query
     ft_instance = FindText(update, context)
+    user_detail = update.effective_chat
     purchase_id = int(query.data.replace('vpn_remove_service_ask__', ''))
 
     with SessionLocal() as session:
         with session.begin():
-            purchase = vpn_crud.get_purchase(session, purchase_id)
+            purchase = vpn_crud.get_purchase_with_chat_id(session, purchase_id, user_detail.id)
+
+            if not purchase:
+                return await query.answer(await ft_instance.find_text('no_service_available'), show_alert=True)
+
             main_server_ip = purchase.product.main_server.server_ip
 
             user = await panel_api.marzban_api.get_user(main_server_ip, purchase.username)
@@ -341,7 +346,7 @@ async def change_ownership(update, context):
         await context.bot.send_message(chat_id=user_detail.id, text=await ft_instance.find_text('action_canceled'))
         return ConversationHandler.END
 
-    crud.chane_purchase_ownership(purchase_id, new_user_id)
+    crud.change_purchase_ownership(purchase_id, new_user_id, user_detail.id)
     text = await ft_instance.find_text('change_ownership_was_successfull')
     text = text.format(purchase_id, new_user_id)
     keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='start_in_new_message')]]

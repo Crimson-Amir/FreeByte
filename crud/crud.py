@@ -193,16 +193,15 @@ def update_purchase(session, purchase_id: int, upgrade_traffic, upgrade_period):
     return updated_purchase_id
 
 
-def chane_purchase_ownership(purchas_id: int, new_ownership_id):
+def change_purchase_ownership(purchas_id: int, new_ownership_id: int, chat_id: int):
     with SessionLocal() as session:
         with session.begin():
             stmt = (
                 update(model.Purchase)
-                .where(model.Purchase.purchase_id == purchas_id)
+                .where(model.Purchase.purchase_id == purchas_id, model.Purchase.chat_id == chat_id)
                 .values(chat_id=new_ownership_id)
             )
             session.execute(stmt)
-            session.commit()
 
 def create_financial_report(session, operation, chat_id, amount, action, service_id, payment_status, **kwargs):
     financial = model.FinancialReport(
