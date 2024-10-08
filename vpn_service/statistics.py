@@ -74,8 +74,7 @@ def datetime_range(start, end, delta):
 async def reports_func(session, ft_instance, chat_id, get_purchased, period):
     with session.begin():
         date_now = datetime.now(pytz.timezone('Asia/Tehran'))
-        get_purchased = [get_purchased]
-        purchased = get_purchased
+        purchased = [get_purchased]
         period = period
 
         if purchased[0] == 'all':
@@ -96,11 +95,11 @@ async def reports_func(session, ft_instance, chat_id, get_purchased, period):
         user_usage_dict = {}
 
         for get_date in get_statistics:
-            print(json.loads(get_date.traffic_usage))
+            print(purchased)
             get_user_usage = [{purchase_id: usage} for purchase_id, usage in json.loads(get_date.traffic_usage).items() if purchase_id in purchased]
             user_usage_dict[get_date.register_date] = get_user_usage
 
-        # print(user_usage_dict)
+        print(user_usage_dict)
 
         detail_text, final_dict, final_traffic, avreage_traffic, index = '', {}, 0, 0, 1
 
@@ -120,7 +119,7 @@ async def reports_func(session, ft_instance, chat_id, get_purchased, period):
                     get_traffic += usage_traffic
 
                 detail_text += f'\n\n• {await ft_instance.find_text("vpn_from_clock")} {first_time.strftime("%H:%M")} {await ft_instance.find_text("to")} {time.strftime("%H:%M")} = {await vpn_utilities.format_traffic_from_megabyte(ft_instance,get_traffic)}'
-                detail_text += ''.join(usage_detail[:5]) if get_purchased[0] == 'all' else ''
+                detail_text += ''.join(usage_detail[:5]) if purchased[0] == 'all' else ''
 
                 final_traffic += get_traffic
 
@@ -146,7 +145,7 @@ async def reports_func(session, ft_instance, chat_id, get_purchased, period):
 
                 usage_detail = [f'\n- {await ft_instance.find_text("vpn_service_with_number")} {get_name} = {await vpn_utilities.format_traffic_from_megabyte(ft_instance,get_traffic)}' for get_name, get_traffic in get_usage.items() if get_traffic]
                 detail_text += f"\n\n• {await ft_instance.find_text('in')} {await make_day_name_farsi(ft_instance, our_date.strftime('%A'))} {date_} = {await vpn_utilities.format_traffic_from_megabyte(ft_instance,get_traff)}"
-                detail_text += ''.join(usage_detail[:5]) if get_purchased[0] == 'all' else ''
+                detail_text += ''.join(usage_detail[:5]) if purchased[0] == 'all' else ''
 
                 final_traffic += get_traff
                 final_dict[f"{our_date.strftime('%d')}"] = get_traff
@@ -177,7 +176,7 @@ async def reports_func(session, ft_instance, chat_id, get_purchased, period):
                     if period_key != 'month':
                         usage_detail = [f'\n- {await ft_instance.find_text("vpn_service_with_number")} {get_name} = {await vpn_utilities.format_traffic_from_megabyte(ft_instance,get_traffic)}' for get_name, get_traffic
                                         in get_usage.items() if get_traffic]
-                        detail_text += ''.join(usage_detail[:5]) if get_purchased[0] == 'all' else ''
+                        detail_text += ''.join(usage_detail[:5]) if purchased[0] == 'all' else ''
 
                     final_traffic += get_traff
                     if not index:
