@@ -77,6 +77,11 @@ async def view_user_info(update, context, chat_id=None):
                     f'\nWallet Balance: {user.wallet}'
                     f'\nInvited By: {user.invited_by} ({user.invited_by.first_name} {user.invited_by.last_name})'
                     f'\nRegister Date: {user.register_date}'
+                    f'\n\nLevel: {user.config.user_level}'
+                    f'\nStatus: {user.config.user_status}'
+                    f'\nTraffic Notification: {user.config.traffic_notification_percent}%'
+                    f'\nPeriod Time Notification: {user.config.period_notification_day}%'
+                    f'\nRecive FreeService: {user.config.get_vpn_free_service}%'
                     )
 
             keyboard = [

@@ -68,7 +68,7 @@ async def add_partner(update, context):
                     vpn_price_per_gigabyte_irt=price_per_traffic,
                     vpn_price_per_period_time_irt=price_per_period
                 )
-                partner.partners.refresh_partner(session)
+                partner.partners.refresh_partner()
                 await context.bot.send_message(chat_id=user_detail.id, text=f'+ successfully Add Partner.')
 
     except Exception as e:

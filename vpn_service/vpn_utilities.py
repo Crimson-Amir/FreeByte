@@ -14,7 +14,7 @@ async def calculate_price(traffic, period, chat_id):
         price_per_gigabyte = partner.partners.list_of_partner[chat_id].vpn_price_per_gigabyte_irt
         price_per_day = partner.partners.list_of_partner[chat_id].vpn_price_per_period_time_irt
 
-    price = (traffic * price_per_gigabyte) + (period * price_per_day)
+    price = (int(traffic) * price_per_gigabyte) + (int(period) * price_per_day)
     return int(price)
 
 
