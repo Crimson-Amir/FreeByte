@@ -48,8 +48,9 @@ def update_purchase(session, purchase_id:int, **kwargs):
             **kwargs
         ).returning(model.Purchase)
     )
-    execute = session.execute(stmt)
-    return execute
+    result = session.execute(stmt)
+    updated_purchase_id = result.scalar()
+    return updated_purchase_id
 
 def remove_purchase(session, purchase_id:int, chat_id):
     stmt = (
