@@ -1,13 +1,12 @@
-import traceback
-from datetime import datetime
-import pytz
+import traceback, pytz, sys, os
+from datetime import datetime, timedelta
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
-import sys, os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from vpn_service import panel_api
 from crud import vpn_crud
 from utilities_reFactore import FindText, report_to_admin, human_readable
 from database_sqlalchemy import SessionLocal
+import setting
 
 async def format_traffic_from_megabyte(ft_instance, traffic_in_megabyte, chat_id):
     if traffic_in_megabyte == 0:
@@ -109,3 +108,15 @@ async def notification_timer(context):
                f'\n\nerror type: {type(e)}'
                f'\nTraceBack:\n{tb}')
         await report_to_admin('error', 'statistics_timer', msg)
+
+
+async def tasks_schedule(context):
+    panel_api.marzban_api.refresh_connection()
+    with SessionLocal() as session:
+        with session.begin():
+            inactive_purchases = vpn_crud.get_all_inactive_purchase(session)
+            for purchase in inactive_purchases:
+                print(type((purchase.register_date + timedelta(days=purchase.period))))
+                days_past_after_expired = (purchase.register_date + timedelta(days=purchase.period)).days
+                if days_past_after_expired > setting.delete_purchase_after_days:
+                    print('s')

@@ -90,7 +90,7 @@ if __name__ == '__main__':
 
     application.job_queue.run_repeating(vpn_notification.notification_timer, interval=10 * 60, first=0)
     application.job_queue.run_repeating(statistics.statistics_timer, interval=60 * 60, first=0)
-    application.job_queue.run_repeating(panel_api.marzban_api.refresh_connection_schedule, interval=720 * 60, first=0)
+    application.job_queue.run_repeating(vpn_notification.tasks_schedule, interval=720 * 60, first=0)
 
     # Admin
     application.add_handler(CallbackQueryHandler(admin_page.admin_page, pattern='admin_page'))

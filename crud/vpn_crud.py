@@ -1,11 +1,20 @@
 import sys, os, pytz
 from datetime import datetime
-from sqlalchemy import update, delete
+from sqlalchemy import update, delete, or_
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import models_sqlalchemy as model
 
 def get_purchase(session, purchase_id):
     return session.query(model.Purchase).filter_by(purchase_id=purchase_id).first()
+
+def get_all_inactive_purchase(session):
+    return session.query(model.Purchase).filter(
+        or_(
+            model.Purchase.status == 'limited',
+            model.Purchase.status == 'expired'
+            )
+    ).all()
+
 
 def get_purchase_by_chat_id(session, chat_id):
     return session.query(model.Purchase).filter(
