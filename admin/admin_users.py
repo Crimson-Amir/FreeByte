@@ -444,7 +444,7 @@ async def admin_user_service_detail(update, context):
                 f"\nData Limit: {data_limit}GB"
                 f"\nLifeTime Used Traffic: {lifetime_used_traffic}GB"
                 f"\ncreated at: {datetime.fromisoformat(get_from_server.get('created_at')).strftime('%Y-%m-%d %H:%M:%S')} ({utilities_reFactore.human_readable(datetime.fromisoformat(get_from_server.get('created_at')), 'en')})"
-                f"\nExpired: {datetime.fromtimestamp(get_from_server.get('expire'))} ({utilities_reFactore.human_readable(datetime.fromisoformat(get_from_server.get('expire')), 'en')})"
+                f"\nExpired: {datetime.fromtimestamp(get_from_server.get('expire'))} ({utilities_reFactore.human_readable(datetime.fromtimestamp(get_from_server.get('expire')), 'en')})"
                 f"\n\nSubscription Link:"
                 f"\n\n<code>{subscribe_link}</code>"
             )
