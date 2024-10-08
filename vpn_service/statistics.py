@@ -76,7 +76,7 @@ async def reports_func(session, ft_instance, chat_id, get_purchased, period):
         date_now = datetime.now(pytz.timezone('Asia/Tehran'))
         purchased = [get_purchased]
         period = period
-
+        print(purchased)
         if purchased[0] == 'all':
             all_user_purchases = vpn_crud.get_purchase_by_chat_id(session, chat_id)
             purchased = [purchase.purchase_id for purchase in all_user_purchases]
@@ -95,10 +95,8 @@ async def reports_func(session, ft_instance, chat_id, get_purchased, period):
         user_usage_dict = {}
 
         for get_date in get_statistics:
-            get_user_usage = [{purchase_id: usage} for purchase_id, usage in json.loads(get_date.traffic_usage).items() if purchase_id == purchased[0]]
+            get_user_usage = [{purchase_id: usage} for purchase_id, usage in json.loads(get_date.traffic_usage).items() if purchase_id in purchased]
             user_usage_dict[get_date.register_date] = get_user_usage
-
-        print(user_usage_dict)
 
         detail_text, final_dict, final_traffic, avreage_traffic, index = '', {}, 0, 0, 1
 
@@ -238,7 +236,7 @@ async def report_section(update, context):
         get_plot_image = plot.get_plot(get_data[1], period)
 
         text = (f'<b>{await ft_instance.find_text("usage_report")} {button_name}:</b>'
-                f'\n\n<b>• {await ft_instance.find_text("vpn_traffic_use")} {button_name}: {await vpn_utilities.format_traffic_from_megabyte(ft_instance, purchase_id)}</b>'
+                f'\n\n<b>• {await ft_instance.find_text("vpn_traffic_use")} {button_name}: {await vpn_utilities.format_traffic_from_megabyte(ft_instance, get_data[2])}</b>'
                 f'\n<b>• {await ft_instance.find_text("avreage_usage_in")} {constituent_name}: {await vpn_utilities.format_traffic_from_megabyte(ft_instance, get_data[3])}</b>')
         text += f'\n{detail_text}'
 
