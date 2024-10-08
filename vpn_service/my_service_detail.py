@@ -162,8 +162,7 @@ async def ask_remove_service_for_user(update, context):
                 text = text.format(f"{returnable_amount:,}")
 
             keyboard = [
-                [InlineKeyboardButton(await ft_instance.find_keyboard('yes_im_sure'), callback_data=f'vpn_remove_service__{purchase_id}'),
-                 InlineKeyboardButton(await ft_instance.find_keyboard('no'), callback_data=f'vpn_my_service_detail__{purchase_id}')],
+                [InlineKeyboardButton(await ft_instance.find_keyboard('yes_im_sure'), callback_data=f'vpn_remove_service__{purchase_id}')],
                 [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=f'vpn_my_service_detail__{purchase_id}')]
             ]
 

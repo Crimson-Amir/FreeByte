@@ -72,128 +72,131 @@ def datetime_range(start, end, delta):
 
 
 async def reports_func(session, ft_instance, chat_id, get_purchased, period):
-        with session.begin():
-            date_now = datetime.now(pytz.timezone('Asia/Tehran'))
-            get_purchased = [get_purchased]
-            purchased = get_purchased
-            period = period
+    with session.begin():
+        date_now = datetime.now(pytz.timezone('Asia/Tehran'))
+        get_purchased = [get_purchased]
+        purchased = get_purchased
+        period = period
 
-            if purchased[0] == 'all':
-                all_user_purchases = vpn_crud.get_purchase_by_chat_id(session, chat_id)
-                purchased = [purchase.purchase_id for purchase in all_user_purchases]
+        if purchased[0] == 'all':
+            all_user_purchases = vpn_crud.get_purchase_by_chat_id(session, chat_id)
+            purchased = [purchase.purchase_id for purchase in all_user_purchases]
 
-            period_mapping = {
-                'day': (1, await ft_instance.find_text('day')),
-                'week': (7, await ft_instance.find_text('week')),
-                'month': (30, await ft_instance.find_text('month')),
-                'year': (365, await ft_instance.find_text('year'))
-            }
+        period_mapping = {
+            'day': (1, await ft_instance.find_text('day')),
+            'week': (7, await ft_instance.find_text('week')),
+            'month': (30, await ft_instance.find_text('month')),
+            'year': (365, await ft_instance.find_text('year'))
+        }
 
-            delta_days, period_text = period_mapping.get(period, (365, await ft_instance.find_text('annually')))
-            date = date_now - timedelta(days=delta_days)
+        delta_days, period_text = period_mapping.get(period, (365, await ft_instance.find_text('annually')))
+        date = date_now - timedelta(days=delta_days)
 
-            get_statistics = vpn_crud.get_specific_time_statistics(session, date)
-            user_usage_dict = {}
+        get_statistics = vpn_crud.get_specific_time_statistics(session, date)
+        user_usage_dict = {}
 
-            for get_date in get_statistics:
-                get_user_usage = [{user_purchased[0]: user_purchased[1]} for user_purchased in eval(get_date.traffic_usage).items() if user_purchased[0] in purchased]
-                user_usage_dict[get_date.register_date] = get_user_usage
+        for get_date in get_statistics:
+            get_user_usage = [{user_purchased[0]: user_purchased[1]} for user_purchased in eval(get_date.traffic_usage).items() if user_purchased[0] in purchased]
+            user_usage_dict[get_date.register_date] = get_user_usage
 
-            detail_text, final_dict, final_traffic, avreage_traffic, index = '', {}, 0, 0, 1
+        detail_text, final_dict, final_traffic, avreage_traffic, index = '', {}, 0, 0, 1
 
-            if period == 'day':
-                for index, (timedate, usage_list) in enumerate(user_usage_dict.items()):
-                    time = timedate
-                    first_time = timedate - timedelta(hours=STATISTICS_TIMER_HORSE)
+        if period == 'day':
+            for index, (timedate, usage_list) in enumerate(user_usage_dict.items()):
+                time = timedate
+                first_time = timedate - timedelta(hours=STATISTICS_TIMER_HORSE)
 
-                    usage_detail, get_traffic = [], 0
+                usage_detail, get_traffic = [], 0
 
-                    for usage in usage_list:
-                        usage_name = next(iter(usage.keys()))
-                        usage_traffic = next(iter(usage.values()))
+                for usage in usage_list:
+                    usage_name = next(iter(usage.keys()))
+                    usage_traffic = next(iter(usage.values()))
 
-                        usage_detail.append(
-                            f'\n- {await ft_instance.find_text("vpn_service_with_number")} {usage_name} = {await vpn_utilities.format_traffic_from_megabyte(ft_instance, usage_traffic)}' if usage_traffic else '')
-                        get_traffic += usage_traffic
+                    usage_detail.append(
+                        f'\n- {await ft_instance.find_text("vpn_service_with_number")} {usage_name} = {await vpn_utilities.format_traffic_from_megabyte(ft_instance, usage_traffic)}' if usage_traffic else '')
+                    get_traffic += usage_traffic
 
-                    detail_text += f'\n\n• {await ft_instance.find_text("vpn_from_clock")} {first_time.strftime("%H:%M")} {await ft_instance.find_text("to")} {time.strftime("%H:%M")} = {await vpn_utilities.format_traffic_from_megabyte(ft_instance,get_traffic)}'
-                    detail_text += ''.join(usage_detail[:5]) if get_purchased[0] == 'all' else ''
+                detail_text += f'\n\n• {await ft_instance.find_text("vpn_from_clock")} {first_time.strftime("%H:%M")} {await ft_instance.find_text("to")} {time.strftime("%H:%M")} = {await vpn_utilities.format_traffic_from_megabyte(ft_instance,get_traffic)}'
+                detail_text += ''.join(usage_detail[:5]) if get_purchased[0] == 'all' else ''
 
-                    final_traffic += get_traffic
+                final_traffic += get_traffic
 
-                    if not index:
-                        final_dict[time.strftime("%a %H:00")] = get_traffic
-                        continue
+                if not index:
+                    final_dict[time.strftime("%a %H:00")] = get_traffic
+                    continue
 
-                    final_dict[time.strftime("%H:00")] = get_traffic
+                final_dict[time.strftime("%H:00")] = get_traffic
 
-                avreage_traffic = (final_traffic / 3) / index if final_traffic and index else 0
+            avreage_traffic = (final_traffic / 3) / index if final_traffic and index else 0
 
-            elif period == 'week':
-                for index, our_date in enumerate(datetime_range(date, date_now, timedelta(days=1))):
-                    date_ = our_date.strftime('%Y-%m-%d')
+        elif period == 'week':
+            for index, our_date in enumerate(datetime_range(date, date_now, timedelta(days=1))):
+                date_ = our_date.strftime('%Y-%m-%d')
+                get_usage, get_traff = {}, 0
+                for _ in user_usage_dict.items():
+                    time = _[0].strftime('%Y-%m-%d')
+                    if time == date_:
+                        for usage in _[1]:
+                            usage_name, usage_traffic = next(iter(usage.items()))
+                            get_traff += usage_traffic
+                            get_usage[usage_name] = get_usage.get(usage_name, 0) + usage_traffic
+
+                usage_detail = [f'\n- {await ft_instance.find_text("vpn_service_with_number")} {get_name} = {await vpn_utilities.format_traffic_from_megabyte(ft_instance,get_traffic)}' for get_name, get_traffic in get_usage.items() if get_traffic]
+                detail_text += f"\n\n• {await ft_instance.find_text('in')} {make_day_name_farsi(ft_instance, our_date.strftime('%A'))} {date_} = {await vpn_utilities.format_traffic_from_megabyte(ft_instance,get_traff)}"
+                detail_text += ''.join(usage_detail[:5]) if get_purchased[0] == 'all' else ''
+
+                final_traffic += get_traff
+                final_dict[f"{our_date.strftime('%d')}"] = get_traff
+
+            avreage_traffic = final_traffic / index if final_traffic and index else 0
+
+        period_info = {
+            'month': {'timedelta': timedelta(days=1), 'date_format': '%Y-%m-%d', 'plot_format': '%d', 'first_date': '%b', 'avg_data_devison': 4},
+            'year': {'timedelta': timedelta(days=30), 'date_format': '%Y-%m', 'plot_format': '%m', 'first_date': '%Y', 'avg_data_devison': 12}
+        }
+
+        for period_key, period_value in period_info.items():
+            if period == period_key:
+                for index, our_date in enumerate(datetime_range(date, date_now, period_value['timedelta'])):
+                    date_ = our_date.strftime(period_value['date_format'])
                     get_usage, get_traff = {}, 0
                     for _ in user_usage_dict.items():
-                        time = _[0].strftime('%Y-%m-%d')
+                        time = datetime.strptime(_[0], '%Y-%m-%d %H:%M:%S').strftime(period_value['date_format'])
                         if time == date_:
                             for usage in _[1]:
                                 usage_name, usage_traffic = next(iter(usage.items()))
                                 get_traff += usage_traffic
                                 get_usage[usage_name] = get_usage.get(usage_name, 0) + usage_traffic
 
-                    usage_detail = [f'\n- {await ft_instance.find_text("vpn_service_with_number")} {get_name} = {await vpn_utilities.format_traffic_from_megabyte(ft_instance,get_traffic)}' for get_name, get_traffic in get_usage.items() if get_traffic]
-                    detail_text += f"\n\n• {await ft_instance.find_text('in')} {make_day_name_farsi(ft_instance, our_date.strftime('%A'))} {date_} = {await vpn_utilities.format_traffic_from_megabyte(ft_instance,get_traff)}"
-                    detail_text += ''.join(usage_detail[:5]) if get_purchased[0] == 'all' else ''
+
+                    detail_text += f'\n\n• {await ft_instance.find_text("in")} {our_date.strftime("%Y-%m-%d")} = {await vpn_utilities.format_traffic_from_megabyte(ft_instance,get_traff)}'
+
+                    if period_key != 'month':
+                        usage_detail = [f'\n- {await ft_instance.find_text("vpn_service_with_number")} {get_name} = {await vpn_utilities.format_traffic_from_megabyte(ft_instance,get_traffic)}' for get_name, get_traffic
+                                        in get_usage.items() if get_traffic]
+                        detail_text += ''.join(usage_detail[:5]) if get_purchased[0] == 'all' else ''
 
                     final_traffic += get_traff
-                    final_dict[f"{our_date.strftime('%d')}"] = get_traff
+                    if not index:
+                        final_dict[f"{our_date.strftime(period_value['first_date'])} {our_date.strftime(period_value['plot_format'])}"] = get_traff
+                    else:
+                        final_dict[f"{our_date.strftime(period_value['plot_format'])}"] = get_traff
 
-                avreage_traffic = final_traffic / index if final_traffic and index else 0
+                avreage_traffic = final_traffic / period_value.get('avg_data_devison', index) if final_traffic and index else 0
+                break
 
-            period_info = {
-                'month': {'timedelta': timedelta(days=1), 'date_format': '%Y-%m-%d', 'plot_format': '%d', 'first_date': '%b', 'avg_data_devison': 4},
-                'year': {'timedelta': timedelta(days=30), 'date_format': '%Y-%m', 'plot_format': '%m', 'first_date': '%Y', 'avg_data_devison': 12}
-            }
-
-            for period_key, period_value in period_info.items():
-                if period == period_key:
-                    for index, our_date in enumerate(datetime_range(date, date_now, period_value['timedelta'])):
-                        date_ = our_date.strftime(period_value['date_format'])
-                        get_usage, get_traff = {}, 0
-                        for _ in user_usage_dict.items():
-                            time = datetime.strptime(_[0], '%Y-%m-%d %H:%M:%S').strftime(period_value['date_format'])
-                            if time == date_:
-                                for usage in _[1]:
-                                    usage_name, usage_traffic = next(iter(usage.items()))
-                                    get_traff += usage_traffic
-                                    get_usage[usage_name] = get_usage.get(usage_name, 0) + usage_traffic
-
-
-                        detail_text += f'\n\n• {await ft_instance.find_text("in")} {our_date.strftime("%Y-%m-%d")} = {await vpn_utilities.format_traffic_from_megabyte(ft_instance,get_traff)}'
-
-                        if period_key != 'month':
-                            usage_detail = [f'\n- {await ft_instance.find_text("vpn_service_with_number")} {get_name} = {await vpn_utilities.format_traffic_from_megabyte(ft_instance,get_traffic)}' for get_name, get_traffic
-                                            in get_usage.items() if get_traffic]
-                            detail_text += ''.join(usage_detail[:5]) if get_purchased[0] == 'all' else ''
-
-                        final_traffic += get_traff
-                        if not index:
-                            final_dict[f"{our_date.strftime(period_value['first_date'])} {our_date.strftime(period_value['plot_format'])}"] = get_traff
-                        else:
-                            final_dict[f"{our_date.strftime(period_value['plot_format'])}"] = get_traff
-
-                    avreage_traffic = final_traffic / period_value.get('avg_data_devison', index) if final_traffic and index else 0
-                    break
-
-            return detail_text, final_dict, final_traffic, avreage_traffic
+        return detail_text, final_dict, final_traffic, avreage_traffic
 
 @handle_error.handle_functions_error
 async def report_section(update, context):
     query = update.callback_query
     period, purchase_id, button_status = query.data.replace('statistics_', '').split('_')
 
+    print(period, purchase_id, button_status)
+
     chat_id = query.message.chat_id
     ft_instance = FindText(update, context)
+
     with SessionLocal() as session:
         get_data = await reports_func(session, ft_instance, chat_id, get_purchased=purchase_id, period=period)
 
