@@ -8,7 +8,7 @@ def get_all_users(session):
     return session.query(model.UserDetail).all()
 
 def get_all_active_partner(session):
-    return session.query(model.Partner).filter_by(model.Partner.active == True).all()
+    return session.query(model.Partner).filter(model.Partner.active == True).all()
 
 
 def get_user_by_id(session, user_id: int):
