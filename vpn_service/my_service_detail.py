@@ -203,7 +203,12 @@ async def remove_service_for_user(update, context):
 async def service_advanced_options(update, context):
     query = update.callback_query
     ft_instance = FindText(update, context)
-    purchase_id = int(query.data.replace('vpn_advanced_options__', ''))
+    data = query.data
+
+    if 'remove_this_message__' in data:
+        data = data.replace('remove_this_message__', '')
+
+    purchase_id = int(data.replace('vpn_advanced_options__', ''))
 
     try:
         with SessionLocal() as session:

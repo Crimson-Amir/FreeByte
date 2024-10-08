@@ -230,9 +230,9 @@ async def report_section(update, context):
         keyboard = [
             arrows,
             [InlineKeyboardButton(f"{detail_emoji} {await ft_instance.find_keyboard('report_detail')}", callback_data=f'statistics_{period}_{purchase_id}_{detail_callback}')],
-            [InlineKeyboardButton(await ft_instance.find_keyboard('services_report'), callback_data=f'service_statistics_all_10'),
+            [InlineKeyboardButton(await ft_instance.find_keyboard('all_services_report'), callback_data=f'statistics_{period}_all_{button_status}'),
              InlineKeyboardButton(await ft_instance.find_keyboard('refresh'), callback_data=f"statistics_{period}_{purchase_id}_{button_status}")],
-            [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='start_in_new_message_delete_previos')]
+            [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='start_in_new_message_delete_previos' if purchase_id == 'all' else f'vpn_advanced_options__remove_this_message__{purchase_id}')]
         ]
 
         get_plot_image = plot.get_plot(get_data[1], period)

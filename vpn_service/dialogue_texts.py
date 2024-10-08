@@ -326,9 +326,9 @@ keyboard_transaction = {
         'en': '🛒 Buy Service',
         'fa': '🛒 خرید سرویس'
     },
-    'services_report': {
-        'en': 'Services Report',
-        'fa': 'گزارش سرویس ها'
+    'all_services_report': {
+        'en': 'General Report',
+        'fa': 'گزارش کلی'
     },
     'vpn_reports': {
         'en': '📊 Reports',
