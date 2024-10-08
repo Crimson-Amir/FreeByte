@@ -362,6 +362,7 @@ async def admin_assurance_buy_vpn_service(update, context):
 async def admin_confirm_buy_vpn_service(update, context):
     query = update.callback_query
     payment_status, chat_id, page, user_info_page, period, traffic = query.data.replace('admin_confirm_bv__', '').split('__')
+    user_detail = update.effective_chat
 
     with SessionLocal() as session:
         with session.begin():
@@ -382,6 +383,21 @@ async def admin_confirm_buy_vpn_service(update, context):
                 crud.less_from_wallet(session, finacial_report)
 
             await buy_and_upgrade_service.create_service_for_user(context, session, purchase_id=purchase.purchase_id)
+
+            msg = (
+                f'admin Create Service For User'
+                f'payment_status: {payment_status}'
+                f'\nAmount: {amount:,}'
+                f'\nService ID: {purchase.purchase_id}'
+                f'\nService username: {purchase.username}'
+                f'\nService Traffic: {purchase.traffic}'
+                f'\nService Period: {purchase.period}'
+                f'\nProduct Name: {purchase.product}'
+                f'\nUser chat id: {chat_id}'
+                f'\nAdmin chat ID: {user_detail.id} ({user_detail.first_name})'
+            )
+
+            await utilities_reFactore.report_to_admin('purchase', 'admin_confirm_buy_vpn_service', msg)
 
             keyboard = [
                 [InlineKeyboardButton("Back", callback_data=f'admin_assurance_bv__{chat_id}__{page}__{user_info_page}__{period}__{traffic}')]
