@@ -47,14 +47,11 @@ async def find_user(update, context):
 
     with SessionLocal() as session:
         with session.begin():
-            users = admin_crud.get_users_with_chat_id_substring(session, str(chat_id_substring[0]))
+            user = crud.get_user(session, int(chat_id_substring[0]))
             text = 'select user to manage:'
 
-            keyboard = [[InlineKeyboardButton(
-                f"{user.first_name} {user.chat_id} {service_status.get(user.config.user_status)}",
-                callback_data=f'admin_view_user__{user.chat_id}__{1}')] for user in users]
-
-            keyboard.append([InlineKeyboardButton('Back', callback_data='admin_page')])
+            keyboard = [[InlineKeyboardButton(f"{user.first_name} {user.chat_id} {service_status.get(user.config.user_status)}")],
+                        [InlineKeyboardButton('Back', callback_data='admin_page')]]
 
             return await context.bot.send_message(chat_id=user_detail.id, text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 

@@ -10,9 +10,6 @@ def get_all_users(session):
 def get_all_active_partner(session):
     return session.query(model.Partner).filter(model.Partner.active == True).all()
 
-def get_users_with_chat_id_substring(session, chat_id_substring):
-    return session.query(model.UserDetail).filter(model.UserDetail.chat_id.like(f'%{chat_id_substring}%')).all()
-
 
 def get_user_by_id(session, user_id: int):
     return session.query(model.UserDetail).filter(model.UserDetail.user_id == user_id).first()
