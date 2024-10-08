@@ -7,6 +7,7 @@ from database_sqlalchemy import SessionLocal
 from telegram.ext import ConversationHandler, filters, MessageHandler, CallbackQueryHandler, CommandHandler
 
 ADD_CREDIT_BAlANCE = 0
+
 service_status = {
     'active': '✅',
     'limited': '🟡',
@@ -35,7 +36,27 @@ async def all_users_list(update, context):
                 nav_buttons.append(InlineKeyboardButton('Next', callback_data=f'admin_manage_users__{page + 1}'))
             if nav_buttons: keyboard.append(nav_buttons)
             keyboard.append([InlineKeyboardButton('Back', callback_data='admin_page')])
+
             return await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+
+
+@admin_access
+async def find_user(update, context):
+    chat_id_substring = update.args
+    user_detail = update.effective_chat
+
+    with SessionLocal() as session:
+        with session.begin():
+            users = admin_crud.get_users_with_chat_id_substring(session, chat_id_substring)
+            text = 'select user to manage:'
+
+            keyboard = [[InlineKeyboardButton(
+                f"{user.first_name} {user.chat_id} {service_status.get(user.config.user_status)}",
+                callback_data=f'admin_view_user__{user.chat_id}__{1}')] for user in users]
+
+            keyboard.append([InlineKeyboardButton('Back', callback_data='admin_page')])
+
+            return await context.bot.send_message(chat_id=user_detail.id, text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
 
 @admin_access

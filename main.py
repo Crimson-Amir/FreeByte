@@ -57,6 +57,7 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler('admin', admin_page.admin_page))
     application.add_handler(CommandHandler('add_credit_to_user', admin_page.add_credit_for_user))
     application.add_handler(CommandHandler('add_partner', admin_page.add_partner))
+    application.add_handler(CommandHandler('find_user', admin_users.find_user))
 
 
     # Bot Main Menu
