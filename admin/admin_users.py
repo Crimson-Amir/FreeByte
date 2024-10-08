@@ -605,7 +605,7 @@ async def admin_assurance_remove_vpn_service(update, context):
 
         text = (f"Are you sure you wanna Remove this service for user?"
                 f"\nSelect payment status."
-                f"\n\nPrice {returnable_amount:,} IRT"
+                f"\n\nReturnable Amount {returnable_amount:,} IRT"
                 f"\nUser Balance: {purchase.owner.wallet:,} IRT"
                 f"\n\nUser Name: {purchase.owner.first_name} {purchase.owner.last_name}"
                 f"\n\nUser chat id: {purchase.chat_id}")
@@ -652,7 +652,7 @@ async def admin_confirm_remove_vpn_service(update, context):
             await utilities_reFactore.report_to_admin('info', 'admin_confirm_remove_vpn_service', msg)
 
             keyboard = [
-                [InlineKeyboardButton("Back", callback_data=f'admin_assurance_remove_vpn__{purchase_id}__{page}__{user_info_page}')]
+                [InlineKeyboardButton("Back", callback_data=f'admin_user_service_detail__{purchase_id}__{page}__{user_info_page}')]
             ]
 
             text = 'Remove Service For User Successful'
