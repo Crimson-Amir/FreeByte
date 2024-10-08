@@ -44,11 +44,12 @@ async def handle_successful_payment(session, financial, authority, payment_getwa
     extra_data = ""
     if financial.action == 'buy_vpn_service':
         service = await buy_and_upgrade_service.create_service_for_user(context, session, financial.id_holder)
-        extra_data = f"Service Traffic: {service.traffic}GB\nService Period: {service.period} Day"
+        extra_data = f"Service Traffic: {service.traffic}GB\nService Period: {service.period} Day\nService Username: {service.username}"
 
     if financial.action == 'upgrade_vpn_service':
         purchase, upgrade_traffic, upgrade_period = await buy_and_upgrade_service.upgrade_service_for_user(context, session, financial.id_holder)
-        extra_data = (f"\n\nService Traffic Now: {purchase.traffic}GB"
+        extra_data = (f"\n\nService Username: {purchase.username}"
+                      f"\nService Traffic Now: {purchase.traffic}GB"
                       f"\nService Period Now: {purchase.period} Day"
                       f"\nUpgrade Traffic: {upgrade_traffic}GB"
                       f"\nUpgrade Period: {upgrade_period} Day")

@@ -16,7 +16,6 @@ class AdminState(Enum):
 
 
 @admin_access
-@message_token.check_token
 async def admin_page(update: Update, context):
     user_detail = update.effective_chat
     keyboard = [

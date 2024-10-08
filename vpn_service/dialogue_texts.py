@@ -63,6 +63,10 @@ text_transaction = {
         'en': '🔴 Expired',
         'fa': '🔴 منقضی شده'
     },
+    'vpn_expired_service_deleted': {
+        'en': '🔴 Service {0}, which had already expired, was removed!',
+        'fa': '🔴 سرویس {0} که قبلا منقضی شده بود حذف شد!'
+    },
     'vpn_service_not_exit_in_db': {
         'en': '❌ Service not found in the database!',
         'fa': '❌ سرویس مورد نظر در دیتابیس وجود ندارد!'
@@ -76,8 +80,12 @@ text_transaction = {
         'fa': '❌ سرویس مورد نظر در سرور وجود ندارد!'
     },
     'vpn_ask_user_for_removing_service': {
-        'en': '❓ Are you sure you want to remove this service?\n\nRefundable amount: {0}',
-        'fa': '❓ آیا اطمینان دارید که می‌خواهید این سرویس را حذف کنید؟\nمبلغ قابل بازگشت: {0}'
+        'en': '❓ Are you sure you want to remove this service?',
+        'fa': '❓ آیا از حذف این سرویس اطمینان دارید؟'
+    },
+    'returnable_amount': {
+        'en': 'Refundable amount: {0}',
+        'fa': 'مبلغ قابل بازگشت: {0}'
     },
     'vpn_service_deleted_successfully': {
         'en': '✅ Service successfully deleted!',
@@ -272,9 +280,11 @@ text_transaction = {
     },
     'vpn_service_termination_notification': {
         'en': "🟡 Your service named {0} has ended!"
-              "\nIf you want to check or renew the service.",
+              "\nIf you want to check or renew the service."
+              "\nIf not renewed within the next 5 days, the service will be removed.",
         'fa':"🟡 سرویس شما با نام {0} به پایان رسید!"
              "\nدر صورتی که تمایل دارید نسبت به بررسی و یا تمدید سرویس اقدام کنید."
+             "\nدر صورت عدم تمدید تا 5 روز آینده، سرویس حذف خواهد شد."
 
     },
     'vpn_service_days_notification': {
@@ -316,9 +326,9 @@ keyboard_transaction = {
         'en': '🛒 Buy Service',
         'fa': '🛒 خرید سرویس'
     },
-    'services_report': {
-        'en': 'Services Report',
-        'fa': 'گزارش سرویس ها'
+    'all_services_report': {
+        'en': 'General Report',
+        'fa': 'گزارش کلی'
     },
     'vpn_reports': {
         'en': '📊 Reports',
@@ -391,5 +401,9 @@ keyboard_transaction = {
     'vpn_guide_button_label': {
         'en': 'How to Connect 📚',
         'fa': 'راهنمای اتصال 📚'
+    },
+    'report_detail': {
+        'en': 'Report Detail',
+        'fa': 'جزئیات گزارش',
     },
 }

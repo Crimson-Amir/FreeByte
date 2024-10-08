@@ -5,7 +5,7 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, CallbackQueryHandler, MessageHandler, filters
 import setting, wallet_reFactore, my_service, setting_menu, guidnes_and_support
 from vpn_service import buy_and_upgrade_service, my_service_detail, vpn_setting_menu, vpn_guid, panel_api, statistics, vpn_notification
-from admin import admin_page, vpn_admin
+from admin import admin_page, vpn_admin, admin_ticket, admin_users
 from database_sqlalchemy import SessionLocal
 from crud import crud
 
@@ -56,6 +56,9 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler('vpn_start', start_reFactore.start))
     application.add_handler(CommandHandler('admin', admin_page.admin_page))
     application.add_handler(CommandHandler('add_credit_to_user', admin_page.add_credit_for_user))
+    application.add_handler(CommandHandler('add_partner', admin_page.add_partner))
+    application.add_handler(CommandHandler('find_user', admin_users.find_user))
+
 
     # Bot Main Menu
     application.add_handler(CallbackQueryHandler(start_reFactore.start, pattern='start(.*)'))
@@ -90,14 +93,24 @@ if __name__ == '__main__':
 
     application.job_queue.run_repeating(vpn_notification.notification_timer, interval=10 * 60, first=0)
     application.job_queue.run_repeating(statistics.statistics_timer, interval=60 * 60, first=0)
-    application.job_queue.run_repeating(panel_api.marzban_api.refresh_connection_schedule, interval=720 * 60, first=0)
+    application.job_queue.run_repeating(vpn_notification.tasks_schedule, interval=720 * 60, first=0)
 
     # Admin
     application.add_handler(CallbackQueryHandler(admin_page.admin_page, pattern='admin_page'))
     application.add_handler(CallbackQueryHandler(vpn_admin.admin_page, pattern='admin_vpn'))
     application.add_handler(vpn_admin.admin_add_product_conversation)
     application.add_handler(vpn_admin.admin_add_mainserver_conversation)
-    application.add_handler(admin_page.admin_ticket_reply_conversation)
+    application.add_handler(admin_ticket.admin_ticket_reply_conversation)
+
+    application.add_handler(CallbackQueryHandler(admin_users.all_users_list, pattern='admin_manage_users__(.*)'))
+    application.add_handler(CallbackQueryHandler(admin_users.view_user_info, pattern='admin_view_user__(.*)'))
+    application.add_handler(CallbackQueryHandler(admin_users.admin_change_user_status, pattern='admin_set_user_status__(.*)'))
+    application.add_handler(CallbackQueryHandler(admin_users.admin_set_user_level, pattern='admin_set_user_level__(.*)'))
+    application.add_handler(CallbackQueryHandler(admin_users.admin_set_free_vpn_test, pattern='admin_set_vpn_free_test__(.*)'))
+
+
+    application.add_handler(admin_users.admin_change_wallet_balance_conversation)
+
 
     # Setting
     application.add_handler(CallbackQueryHandler(setting_menu.setting_menu, pattern='setting_menu'))

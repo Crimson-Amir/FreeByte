@@ -276,6 +276,10 @@ text_transaction = {
         'en': 'increase balance by admin',
         'fa': 'افزایش اعتبار توسط ادمین'
     },
+    'reduction_balance_by_admin': {
+        'en': 'reduction balance by admin',
+        'fa': 'کاهش اعتبار توسط ادمین'
+    },
 }
 
 keyboard_transaction = {

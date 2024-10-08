@@ -5,6 +5,7 @@ from crud import crud
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from database_sqlalchemy import SessionLocal
 from utilities_reFactore import FindText, message_token, handle_error, human_readable, report_to_user, report_to_admin
+from vpn_service import vpn_utilities
 from API import zarinPalAPI, cryptomusAPI, convert_irt_to_usd
 from WebApp.WebAppDialogue import transaction
 
@@ -80,6 +81,7 @@ async def financial_transactions_wallet(update, context):
                         'increase_wallet_balance': await ft_instance.find_text('increase_wallet_balance_action'),
                         'remove_vpn_service': await ft_instance.find_text('remove_vpn_sevice_and_recive_payback'),
                         'increase_balance_by_admin': await ft_instance.find_text('increase_balance_by_admin'),
+                        'reduction_balance_by_admin': await ft_instance.find_text('reduction_balance_by_admin'),
 
                     }
                     payment_gateway = {
@@ -157,7 +159,7 @@ async def create_invoice(update, context):
 
             elif action == "buy_vpn_service":
                 period, traffic = extra_data
-                amount = (int(traffic) * setting.PRICE_PER_GB) + (int(period) * setting.PRICE_PER_DAY)
+                amount = await vpn_utilities.calculate_price(traffic, period, chat_id)
                 product_id, back_button_callback= 1, 'vpn_set_period_traffic__30_40'
                 operation = 'spend'
                 invoice_extra_data = (f"{await ft_instance.find_text('buy_vpn_service')}"
@@ -169,7 +171,7 @@ async def create_invoice(update, context):
 
             elif action == "upgrade_vpn_service":
                 upgrade_period, upgrade_traffic, purchase_id = extra_data
-                amount = (int(upgrade_traffic) * setting.PRICE_PER_GB) + (int(upgrade_period) * setting.PRICE_PER_DAY)
+                amount = await vpn_utilities.calculate_price(upgrade_traffic, upgrade_period, chat_id)
                 back_button_callback, operation = f'vpn_upgrade_service__30__40__{purchase_id}', 'spend'
                 format_title = await ft_instance.find_text('upgrade_vpn_service')
                 format_title = format_title.format(purchase_id)

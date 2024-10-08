@@ -28,3 +28,11 @@ def admin_access(func):
             return await func(update, context, **kwargs)
 
     return wrapper
+
+
+async def cancel_conversation(update, context):
+    query = update.callback_query
+    await query.delete_message()
+    user_detail = update.effective_chat
+    await context.bot.send_message(chat_id=user_detail.id, text="Action cancelled.")
+    return ConversationHandler.END

@@ -33,9 +33,6 @@ class MarzbanAPI:
                     'server_instant': server
                 }
 
-    async def refresh_connection_schedule(self, context):
-        self.refresh_connection()
-
     @staticmethod
     def build_full_url(server, endpoint):
         """Construct full URL for a server and endpoint."""
