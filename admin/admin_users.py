@@ -352,7 +352,7 @@ async def admin_assurance_buy_vpn_service(update, context):
         keyboard = [
             [InlineKeyboardButton("Create And reduce credit from wallet", callback_data=f"admin_confirm_bv__reduce__{chat_id}__{page}__{user_info_page}__{period}__{traffic}")],
             [InlineKeyboardButton("Create without reduce", callback_data=f"admin_confirm_bv__noreduce__{chat_id}__{page}__{user_info_page}__{period}__{traffic}")],
-            [InlineKeyboardButton("Back", callback_data=f'admin_bv_for_user__{chat_id}__{page}__{user_info_page}__{period}_{traffic}')]
+            [InlineKeyboardButton("Back", callback_data=f'admin_bv_for_user__{chat_id}__{page}__{user_info_page}__{period}__{traffic}')]
         ]
 
         await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
