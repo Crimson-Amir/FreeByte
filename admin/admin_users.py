@@ -70,11 +70,11 @@ async def view_user_info(update, context, chat_id=None):
             text = f'{chat_id}'
 
             keyboard = [
-                [InlineKeyboardButton('Set User Status:', callback_data=f'')],
+                [InlineKeyboardButton('Set User Status:', callback_data=f'nothing')],
                 [InlineKeyboardButton(f"Active", callback_data=f'admin_set_user_status__{chat_id}__active'),
                  InlineKeyboardButton(f"Ban", callback_data=f'admin_set_user_status__{chat_id}__ban')],
 
-                [InlineKeyboardButton('Change Wallet Balance:', callback_data=f'')],
+                [InlineKeyboardButton('Change Wallet Balance:', callback_data=f'nothing')],
                 [InlineKeyboardButton(f"Add", callback_data=f'admin_change_user_wallet_balance__{chat_id}__increase_balance_by_admin'),
                  InlineKeyboardButton(f"Set", callback_data=f'admin_change_user_wallet_balance__{chat_id}__set'),
                  InlineKeyboardButton(f"Less", callback_data=f'admin_change_user_wallet_balance__{chat_id}__reduction_balance_by_admin')],
