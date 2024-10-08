@@ -98,6 +98,8 @@ async def reports_func(session, ft_instance, chat_id, get_purchased, period):
             get_user_usage = [{purchase_id: usage} for purchase_id, usage in json.loads(get_date.traffic_usage).items() if purchase_id == purchased[0]]
             user_usage_dict[get_date.register_date] = get_user_usage
 
+        print(user_usage_dict)
+
         detail_text, final_dict, final_traffic, avreage_traffic, index = '', {}, 0, 0, 1
 
         if period == 'day':
