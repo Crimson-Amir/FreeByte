@@ -96,7 +96,7 @@ async def reports_func(session, ft_instance, chat_id, get_purchased, period):
 
         for get_date in get_statistics:
             print(purchased)
-            get_user_usage = [{purchase_id: usage} for purchase_id, usage in json.loads(get_date.traffic_usage).items() if purchase_id in purchased]
+            get_user_usage = [{purchase_id: usage} for purchase_id, usage in json.loads(get_date.traffic_usage).items() if purchase_id == purchased[0]]
             user_usage_dict[get_date.register_date] = get_user_usage
 
         print(user_usage_dict)
