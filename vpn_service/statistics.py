@@ -78,7 +78,7 @@ async def reports_func(session, ft_instance, chat_id, get_purchased, period):
         period = period
         if purchased[0] == 'all':
             all_user_purchases = vpn_crud.get_purchase_by_chat_id(session, chat_id)
-            purchased = [purchase.purchase_id for purchase in all_user_purchases]
+            purchased = [str(purchase.purchase_id) for purchase in all_user_purchases]
 
         period_mapping = {
             'day': (1, await ft_instance.find_text('day')),
