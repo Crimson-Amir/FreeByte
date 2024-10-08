@@ -56,7 +56,7 @@ text_transaction = {
     },
     'add_credit_to_wallet_title': {
         'en': '• Choose an amount to add to your wallet:',
-        'fa': '• مشخص کنید چه مقدار اعتبار به کیف پولتان اضافه شود:'
+        'fa': '• مشخص کنید چه مقدار اعتبار به کیف پولتون اضافه بشه:'
     },
     'invoice_title': {
         'en': '• Please review the details below and finalize your payment if everything looks good:',
