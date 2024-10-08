@@ -297,7 +297,7 @@ async def admin_user_services(update, context):
             if nav_buttons:
                 keyboard.append(nav_buttons)
 
-            keyboard.extend([[InlineKeyboardButton('Buy Service For This user', callback_data=f'admin_buy_service_for_user__{chat_id}__{page}__{user_info_page}__30__40')],
+            keyboard.extend([[InlineKeyboardButton('Buy Service For This user', callback_data=f'admin_bv_for_user__{chat_id}__{page}__{user_info_page}__30__40')],
                              [InlineKeyboardButton('Back', callback_data=f'admin_view_user__{chat_id}__{user_info_page}')]])
 
             return await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
@@ -306,7 +306,7 @@ async def admin_user_services(update, context):
 @handle_functions_error
 async def admin_buy_service_for_user(update, context):
     query = update.callback_query
-    chat_id, page, user_info_page, period_callback, traffic_callback = query.data.replace('admin_buy_service_for_user__', '').split('__')
+    chat_id, page, user_info_page, period_callback, traffic_callback = query.data.replace('admin_bv_for_user__', '').split('__')
     user_detail = update.effective_chat
 
     traffic = max(min(int(traffic_callback), 150), 1) or 40
@@ -319,15 +319,15 @@ async def admin_buy_service_for_user(update, context):
 
     keyboard = [
         [InlineKeyboardButton('Traffic', callback_data="just_for_show")],
-        [InlineKeyboardButton("➖", callback_data=f"admin_buy_service_for_user__{chat_id}__{page}__{user_info_page}__{period}__{traffic - 1}"),
+        [InlineKeyboardButton("➖", callback_data=f"admin_bv_for_user__{chat_id}__{page}__{user_info_page}__{period}__{traffic - 1}"),
          InlineKeyboardButton(f"{traffic} GB", callback_data="just_for_show"),
-         InlineKeyboardButton("➕", callback_data=f"admin_buy_service_for_user__{chat_id}__{page}__{user_info_page}__{period}__{traffic + 10}")],
+         InlineKeyboardButton("➕", callback_data=f"admin_bv_for_user__{chat_id}__{page}__{user_info_page}__{period}__{traffic + 10}")],
         [InlineKeyboardButton('Period Time', callback_data="just_for_show")],
-        [InlineKeyboardButton("➖", callback_data=f"admin_buy_service_for_user__{chat_id}__{page}__{user_info_page}__{period - 1}__{traffic}"),
+        [InlineKeyboardButton("➖", callback_data=f"admin_bv_for_user__{chat_id}__{page}__{user_info_page}__{period - 1}__{traffic}"),
          InlineKeyboardButton(f"{period} Days", callback_data="just_for_show"),
-         InlineKeyboardButton("➕", callback_data=f"admin_buy_service_for_user__{chat_id}__{page}__{user_info_page}__{period + 10}__{traffic}")],
+         InlineKeyboardButton("➕", callback_data=f"admin_bv_for_user__{chat_id}__{page}__{user_info_page}__{period + 10}__{traffic}")],
         [InlineKeyboardButton("Back", callback_data=f'admin_user_services__{chat_id}__{page}__{user_info_page}'),
-         InlineKeyboardButton("Confirm", callback_data=f"admin_assurance_buy_vpn_service__{chat_id}__{page}__{user_info_page}__{period}__{traffic}")]
+         InlineKeyboardButton("Confirm", callback_data=f"admin_assurance_bv__{chat_id}__{page}__{user_info_page}__{period}__{traffic}")]
     ]
 
     await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
@@ -336,7 +336,7 @@ async def admin_buy_service_for_user(update, context):
 @handle_functions_error
 async def admin_assurance_buy_vpn_service(update, context):
     query = update.callback_query
-    chat_id, page, user_info_page, period, traffic = query.data.replace('admin_assurance_buy_vpn_service__', '').split('__')
+    chat_id, page, user_info_page, period, traffic = query.data.replace('admin_assurance_bv__', '').split('__')
     with SessionLocal() as session:
         price = await vpn_utilities.calculate_price(traffic, period, chat_id)
         get_user = crud.get_user(session, chat_id)
@@ -350,9 +350,9 @@ async def admin_assurance_buy_vpn_service(update, context):
                 f"\n\nUser chat id: {chat_id}")
 
         keyboard = [
-            [InlineKeyboardButton("Create And reduce credit from wallet", callback_data=f"admin_confirm_buy_vpn__reduce__{chat_id}__{page}__{user_info_page}__{period}__{traffic}")],
-            [InlineKeyboardButton("Create without reduce", callback_data=f"admin_confirm_buy_vpn__noreduce__{chat_id}__{page}__{user_info_page}__{period}__{traffic}")],
-            [InlineKeyboardButton("Back", callback_data=f'vpn_set_period_traffic__{chat_id}__{page}__{user_info_page}__{period}_{traffic}')]
+            [InlineKeyboardButton("Create And reduce credit from wallet", callback_data=f"admin_confirm_bv__reduce__{chat_id}__{page}__{user_info_page}__{period}__{traffic}")],
+            [InlineKeyboardButton("Create without reduce", callback_data=f"admin_confirm_bv__noreduce__{chat_id}__{page}__{user_info_page}__{period}__{traffic}")],
+            [InlineKeyboardButton("Back", callback_data=f'admin_bv_for_user__{chat_id}__{page}__{user_info_page}__{period}_{traffic}')]
         ]
 
         await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
@@ -361,7 +361,7 @@ async def admin_assurance_buy_vpn_service(update, context):
 @handle_functions_error
 async def admin_confirm_buy_vpn_service(update, context):
     query = update.callback_query
-    payment_status, chat_id, page, user_info_page, period, traffic = query.data.replace('admin_confirm_buy_vpn__', '').split('__')
+    payment_status, chat_id, page, user_info_page, period, traffic = query.data.replace('admin_confirm_bv__', '').split('__')
 
     with SessionLocal() as session:
         with session.begin():
@@ -384,7 +384,7 @@ async def admin_confirm_buy_vpn_service(update, context):
             await buy_and_upgrade_service.create_service_for_user(context, session, purchase_id=purchase.purchase_id)
 
             keyboard = [
-                [InlineKeyboardButton("Back", callback_data=f'admin_assurance_buy_vpn_service__{chat_id}__{page}__{user_info_page}__{period}_{traffic}')]
+                [InlineKeyboardButton("Back", callback_data=f'admin_assurance_bv__{chat_id}__{page}__{user_info_page}__{period}_{traffic}')]
             ]
             text = 'Create Service For User Successful'
             await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
