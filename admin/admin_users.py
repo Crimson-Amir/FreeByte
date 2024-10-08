@@ -47,7 +47,7 @@ async def find_user(update, context):
 
     with SessionLocal() as session:
         with session.begin():
-            users = crud.get_user(session, int(chat_id_substring[0]))
+            users = admin_crud.get_users_with_chat_id_substring(session, int(chat_id_substring[0]))
             text = 'select user to manage:'
 
             keyboard = [[InlineKeyboardButton(
