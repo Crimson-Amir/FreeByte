@@ -20,11 +20,16 @@ async def reply_ticket(update, context):
     await update.callback_query.answer()
     user_detail = update.effective_chat
     query = update.callback_query
+
+    if 'private' in query.data:
+        query.data.replace('private_', '')
+        context.user_data[f'ticket_private'] = True
+
     user_id = int(query.data.replace('reply_ticket_', ''))
     context.user_data[f'ticket_user_id'] = user_id
     keyboard = [[InlineKeyboardButton("Cancel", callback_data='cancel_reply_ticket_conversation')]]
     text = 'send message (photo or text):'
-    await context.bot.send_message(text=text, chat_id=user_detail.id, parse_mode='html', message_thread_id=setting.ticket_thread_id, reply_markup=InlineKeyboardMarkup(keyboard))
+    await context.bot.send_message(text=text, chat_id=user_detail.id, parse_mode='html', message_thread_id=setting.ticket_thread_id if context.user_data[f'ticket_private'] else None, reply_markup=InlineKeyboardMarkup(keyboard))
     return REPLY_TICKET
 
 async def assurance(update, context):

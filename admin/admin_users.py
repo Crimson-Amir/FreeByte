@@ -119,7 +119,7 @@ async def view_user_info(update, context, chat_id=None):
 
             keyboard = [
                 [InlineKeyboardButton('Refresh', callback_data=f'admin_view_user__{chat_id}__{page}'),
-                 InlineKeyboardButton('Message', callback_data=f'reply_ticket_{chat_id}')],
+                 InlineKeyboardButton('Message', callback_data=f'reply_ticket_private_{chat_id}')],
                 [InlineKeyboardButton('🔰 Set User Status:', callback_data=f'just_for_show')],
                 [InlineKeyboardButton(f"Active", callback_data=f'admin_set_user_status__{chat_id}__active'),
                  InlineKeyboardButton(f"Ban", callback_data=f'admin_set_user_status__{chat_id}__ban')],
