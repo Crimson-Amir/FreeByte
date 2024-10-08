@@ -45,14 +45,14 @@ async def statistics_timer(context):
                         for user in get_users_usage['users']:
                             if user['username'] == purchase.username:
 
-                                last_traffic_usage = users_last_usage.get(purchase.purchase_id)
+                                last_traffic_usage = users_last_usage.get(purchase.username)
                                 usage_traffic_in_megabyte = round(user['used_traffic'] / (1024 ** 2), 2)
                                 print(user['used_traffic'], usage_traffic_in_megabyte)
-                                last_usage_dict[purchase.purchase_id] = usage_traffic_in_megabyte
+                                last_usage_dict[purchase.username] = usage_traffic_in_megabyte
 
                                 if not last_traffic_usage: continue
                                 traffic_use = max(int((usage_traffic_in_megabyte - last_traffic_usage)), 0)
-                                statistics_usage_traffic[purchase.purchase_id] = traffic_use
+                                statistics_usage_traffic[purchase.username] = traffic_use
                                 break
 
                 vpn_crud.create_new_last_usage(session, json.dumps(last_usage_dict))
