@@ -6,7 +6,9 @@ from crud import admin_crud, crud, vpn_crud
 from database_sqlalchemy import SessionLocal
 from telegram.ext import ConversationHandler, filters, MessageHandler, CallbackQueryHandler, CommandHandler
 import utilities_reFactore
+from vpn_service import vpn_utilities, buy_and_upgrade_service
 
+DEFAULT_PRODUCT_ID = 1
 ADD_CREDIT_BAlANCE = 0
 
 service_status = {
@@ -72,12 +74,13 @@ async def find_user(update, context):
     with SessionLocal() as session:
         with session.begin():
             user = crud.get_user(session, int(chat_id_substring[0]))
+            if not user: return await context.bot.send_message(chat_id=user_detail.id, text='there is no user with this chat id')
             text = 'select user to manage:'
 
             keyboard = [[InlineKeyboardButton(f"{user.first_name} {user.chat_id} {service_status.get(user.config.user_status)}", callback_data=f'admin_view_user__{user.chat_id}__1')],
                         [InlineKeyboardButton('Back', callback_data='admin_page')]]
 
-            return await context.bot.send_message(chat_id=user_detail.id, text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+            return await context.bot.send_message(chat_id=user_detail.id, text=text, reply_markup=InlineKeyboardMarkup(keyboard))
 
 @handle_functions_error
 @admin_access
@@ -106,15 +109,16 @@ async def view_user_info(update, context, chat_id=None):
                     f'\nTraffic Notification: {user.config.traffic_notification_percent}%'
                     f'\nPeriod Time Notification: {user.config.period_notification_day} Day'
                     f'\nRecive FreeService: {user.config.get_vpn_free_service}'
-                    f'\n\nVpn Active Services: {len([service for service in user.services if service.status=="active" and service.active == True])}'
-                    f'\nVpn All Enable Services: {len([service for service in user.services if service.active == True])}'
+                    f'\n\nActive Vpn Services: {len([service for service in user.services if service.status == "active" and service.active == True])}'
+                    f'\nAll Enable Vpn Services: {len([service for service in user.services if service.active == True])}'
                     f'\nPaid Financials: {len([financial for financial in user.financial_reports if financial.payment_status == "paid"])}'
                     f'\nRefunded Financials: {len([financial for financial in user.financial_reports if financial.payment_status == "refund"])}'
                     f'\nAll Financials: {len(user.financial_reports)}'
                     )
 
             keyboard = [
-                [InlineKeyboardButton('Refresh', callback_data=f'admin_view_user__{chat_id}__{page}')],
+                [InlineKeyboardButton('Refresh', callback_data=f'admin_view_user__{chat_id}__{page}'),
+                 InlineKeyboardButton('Message', callback_data=f'reply_ticket_{chat_id}')],
                 [InlineKeyboardButton('🔰 Set User Status:', callback_data=f'just_for_show')],
                 [InlineKeyboardButton(f"Active", callback_data=f'admin_set_user_status__{chat_id}__active'),
                  InlineKeyboardButton(f"Ban", callback_data=f'admin_set_user_status__{chat_id}__ban')],
@@ -293,6 +297,94 @@ async def admin_user_services(update, context):
             if nav_buttons:
                 keyboard.append(nav_buttons)
 
-            keyboard.append([InlineKeyboardButton('Back', callback_data=f'admin_view_user__{chat_id}__{user_info_page}')])
+            keyboard.extend([[InlineKeyboardButton('Buy Service For This user', callback_data=f'admin_buy_service_for_user__{chat_id}__{page}__{user_info_page}__30__40')],
+                             [InlineKeyboardButton('Back', callback_data=f'admin_view_user__{chat_id}__{user_info_page}')]])
 
             return await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+
+
+@handle_functions_error
+async def admin_buy_service_for_user(update, context):
+    query = update.callback_query
+    chat_id, page, user_info_page, period_callback, traffic_callback = query.data.replace('admin_buy_service_for_user__', '').split('_')
+    user_detail = update.effective_chat
+
+    traffic = max(min(int(traffic_callback), 150), 1) or 40
+    period = max(min(int(period_callback), 90), 1) or 30
+
+    price = await vpn_utilities.calculate_price(traffic, period, user_detail.id)
+
+    text = (f"Customize service for user:"
+            f"\n\nPrice {price:,} IRT")
+
+    keyboard = [
+        [InlineKeyboardButton('Traffic', callback_data="just_for_show")],
+        [InlineKeyboardButton("➖", callback_data=f"vpn_set_period_traffic__{chat_id}__{page}__{user_info_page}__{period}_{traffic - 1}"),
+         InlineKeyboardButton(f"{traffic} GB", callback_data="just_for_show"),
+         InlineKeyboardButton("➕", callback_data=f"vpn_set_period_traffic__{chat_id}__{page}__{user_info_page}__{period}_{traffic + 10}")],
+        [InlineKeyboardButton('Period Time', callback_data="just_for_show")],
+        [InlineKeyboardButton("➖", callback_data=f"vpn_set_period_traffic__{chat_id}__{page}__{user_info_page}__{period - 1}_{traffic}"),
+         InlineKeyboardButton(f"{period} Days", callback_data="just_for_show"),
+         InlineKeyboardButton("➕", callback_data=f"vpn_set_period_traffic__{chat_id}__{page}__{user_info_page}__{period + 10}_{traffic}")],
+        [InlineKeyboardButton("Back", callback_data=f'admin_user_services__{chat_id}__{page}__{user_info_page}'),
+         InlineKeyboardButton("Confirm", callback_data=f"admin_assurance_buy_vpn_service__{chat_id}__{page}__{user_info_page}__{period}__{traffic}")]
+    ]
+
+    await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+
+
+@handle_functions_error
+async def admin_assurance_buy_vpn_service(update, context):
+    query = update.callback_query
+    chat_id, page, user_info_page, period, traffic = query.data.replace('admin_assurance_buy_vpn_service__', '').split('_')
+    with SessionLocal() as session:
+        price = await vpn_utilities.calculate_price(traffic, period, chat_id)
+        get_user = crud.get_user(session, chat_id)
+
+        text = (f"Are you sure you wanna buy this service for user?"
+                f"\nSelect payment status."
+                f"\nimportant: if user does not have enough credit, wallet will be negative"
+                f"\n\nPrice {price:,} IRT"
+                f"\nUser Balance: {get_user.wallet}"
+                f"\n\nUser Name: {get_user.first_name} {get_user.last_name}"
+                f"\n\nUser chat id: {chat_id}")
+
+        keyboard = [
+            [InlineKeyboardButton("Create And reduce credit from wallet", callback_data=f"admin_confirm_buy_vpn_service__reduce__{chat_id}__{page}__{user_info_page}__{period}__{traffic}")],
+            [InlineKeyboardButton("Create without reduce",callback_data=f"admin_confirm_buy_vpn_service__noreduce__{chat_id}__{page}__{user_info_page}__{period}__{traffic}")],
+            [InlineKeyboardButton("Back", callback_data=f'vpn_set_period_traffic__{chat_id}__{page}__{user_info_page}__{period}_{traffic}')]
+        ]
+
+        await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+
+
+@handle_functions_error
+async def admin_confirm_buy_vpn_service(update, context):
+    query = update.callback_query
+    payment_status, chat_id, page, user_info_page, period, traffic = query.data.replace('admin_confirm_buy_vpn_service__', '').split('_')
+
+    with SessionLocal() as session:
+        with session.begin():
+            amount = await vpn_utilities.calculate_price(traffic, period, chat_id)
+            purchase = crud.create_purchase(session, DEFAULT_PRODUCT_ID, chat_id, traffic, period)
+
+            if payment_status == 'reduce':
+                finacial_report = crud.create_financial_report(
+                    session, 'spend',
+                    chat_id=chat_id,
+                    amount=amount,
+                    action='buy_vpn_service',
+                    service_id=purchase.purchase_id,
+                    payment_status='not paid',
+                    payment_getway='wallet',
+                    currency='IRT'
+                )
+                crud.less_from_wallet(session, finacial_report)
+
+            await buy_and_upgrade_service.create_service_for_user(context, session, purchase_id=purchase.purchase_id)
+
+            keyboard = [
+                [InlineKeyboardButton("Back", callback_data=f'admin_assurance_buy_vpn_service__{chat_id}__{page}__{user_info_page}__{period}_{traffic}')]
+            ]
+            text = 'Create Service For User Successful'
+            await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
