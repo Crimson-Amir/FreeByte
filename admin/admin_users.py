@@ -106,7 +106,11 @@ async def view_user_info(update, context, chat_id=None):
                     f'\nTraffic Notification: {user.config.traffic_notification_percent}%'
                     f'\nPeriod Time Notification: {user.config.period_notification_day} Day'
                     f'\nRecive FreeService: {user.config.get_vpn_free_service}'
-                    f'\nVpn Service count: {len(user.services)}'
+                    f'\n\nVpn Active Services: {len([service for service in user.services if service.status=="active"])}'
+                    f'\nVpn All Services: {len([service for service in user.services if service.active == True])}'
+                    f'\nPaid Financials: {len([financial for financial in user.financial_reports if financial.payment_status == "paid"])}'
+                    f'\nRefunded Financials: {len([financial for financial in user.financial_reports if financial.payment_status == "refund"])}'
+                    f'\nAll Financials: {len(user.financial_reports)}'
                     )
 
             keyboard = [
@@ -262,6 +266,7 @@ async def admin_user_services(update, context):
     query = update.callback_query
     item_per_page = 10
     chat_id, page, user_info_page = query.data.replace('admin_user_services__', '').split('__')
+    page = int(page)
 
     with SessionLocal() as session:
         with session.begin():
