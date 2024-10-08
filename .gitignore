@@ -3,4 +3,5 @@ venv/
 venv_refactore/
 setting.py
 .idea/
-alembic/versions/*
+alembic/
+alembic.ini
