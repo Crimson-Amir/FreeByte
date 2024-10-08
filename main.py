@@ -109,6 +109,7 @@ if __name__ == '__main__':
     application.add_handler(CallbackQueryHandler(admin_users.admin_set_free_vpn_test, pattern='admin_set_vpn_free_test__(.*)'))
     application.add_handler(CallbackQueryHandler(admin_users.admin_user_services, pattern='admin_user_services__(.*)'))
 
+    application.add_handler(CallbackQueryHandler(admin_users.admin_user_service_detail, pattern='admin_user_service_detail__(.*)'))
     application.add_handler(CallbackQueryHandler(admin_users.admin_buy_service_for_user, pattern='admin_bv_for_user__(.*)'))
     application.add_handler(CallbackQueryHandler(admin_users.admin_assurance_buy_vpn_service, pattern='admin_assurance_bv__(.*)'))
     application.add_handler(CallbackQueryHandler(admin_users.admin_confirm_buy_vpn_service, pattern='admin_confirm_bv__(.*)'))

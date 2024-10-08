@@ -1,4 +1,4 @@
-import sys, os, math, functools, logging, traceback
+import sys, os, math, functools, logging, traceback, requests
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from admin.admin_utilities import admin_access, cancel_conversation as cancel
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
@@ -6,7 +6,8 @@ from crud import admin_crud, crud, vpn_crud
 from database_sqlalchemy import SessionLocal
 from telegram.ext import ConversationHandler, filters, MessageHandler, CallbackQueryHandler, CommandHandler
 import utilities_reFactore
-from vpn_service import vpn_utilities, buy_and_upgrade_service
+from datetime import datetime
+from vpn_service import vpn_utilities, buy_and_upgrade_service, panel_api
 
 DEFAULT_PRODUCT_ID = 1
 ADD_CREDIT_BAlANCE = 0
@@ -235,7 +236,8 @@ async def admin_change_wallet_balance(update, context):
                     crud.less_from_wallet(session, finacial_report)
 
                 msg = (
-                    f'Action: {finacial_report.action.replace("_", " ")}'
+                    f"Admin Change User Wallet"
+                    f'\nAction: {finacial_report.action.replace("_", " ")}'
                     f'\nAuthority: {finacial_report.financial_id}'
                     f'\nAmount: {finacial_report.amount:,}'
                     f'\nService ID: {finacial_report.id_holder}'
@@ -285,7 +287,7 @@ async def admin_user_services(update, context):
             current_services = purchases[start:end]
 
             text = 'Select the service to view info:'
-            keyboard = [[InlineKeyboardButton(f"{service.username} {service_status.get(service.status)}", callback_data=f'admin_user_service_detail__{service.purchase_id}')]
+            keyboard = [[InlineKeyboardButton(f"{service.username} {service_status.get(service.status)}", callback_data=f'admin_user_service_detail__{service.purchase_id}__{page}__{user_info_page}')]
                         for service in current_services]
 
             nav_buttons = []
@@ -386,13 +388,13 @@ async def admin_confirm_buy_vpn_service(update, context):
 
             msg = (
                 f'admin Create Service For User'
-                f'payment_status: {payment_status}'
+                f'\npayment_status: {payment_status}'
                 f'\nAmount: {amount:,}'
                 f'\nService ID: {purchase.purchase_id}'
                 f'\nService username: {purchase.username}'
                 f'\nService Traffic: {purchase.traffic}'
                 f'\nService Period: {purchase.period}'
-                f'\nProduct Name: {purchase.product}'
+                f'\nProduct Name: {purchase.product.product_name}'
                 f'\nUser chat id: {chat_id}'
                 f'\nAdmin chat ID: {user_detail.id} ({user_detail.first_name})'
             )
@@ -404,3 +406,65 @@ async def admin_confirm_buy_vpn_service(update, context):
             ]
             text = 'Create Service For User Successful'
             await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+
+
+
+@handle_functions_error
+async def admin_user_service_detail(update, context):
+    query = update.callback_query
+    data = query.data
+    user_detail = update.effective_chat
+
+    purchase_id, page, user_info_page = data.replace('admin_user_service_detail__+', '')
+
+    try:
+        with SessionLocal() as session:
+            purchase = vpn_crud.get_purchase(session, purchase_id)
+
+            if not purchase:
+                return await query.answer('service not found', show_alert=True)
+
+            main_server = purchase.product.main_server
+            get_from_server = await panel_api.marzban_api.get_user(purchase.product.main_server.server_ip, purchase.username)
+
+            used_traffic = round(get_from_server.get('used_traffic') / (1024 ** 3), 3)
+            data_limit = round(get_from_server.get('data_limit') / (1024 ** 3), 3)
+            lifetime_used_traffic = round(get_from_server.get('lifetime_used_traffic') / (1024 ** 3), 3)
+
+            server_port = f":{main_server.server_port}" if main_server.server_port != 443 else ""
+            subscribe_link = f"{main_server.server_protocol}{main_server.server_ip}{server_port}{get_from_server.get('subscription_url')}"
+
+            onlien_at = utilities_reFactore.human_readable(get_from_server.get('online_at'), 'en') if get_from_server.get('online_at') else 'not online yet'
+
+            text = (
+                f"\n\nUsername: {purchase.username}"
+                f"\n\nOnline at: {onlien_at}"
+                f"\nStatus: {service_status.get(get_from_server.get('status'), get_from_server.get('status'))} {get_from_server.get('status')}"
+                f"\nUsed Traffic: {used_traffic}GB"
+                f"\nData Limit: {data_limit}GB"
+                f"\nLifeTime Used Traffic: {lifetime_used_traffic}GB"
+                f"\ncreated at: {datetime.fromisoformat(get_from_server.get('created_at')).strftime('%Y-%m-%d %H:%M:%S')} ({utilities_reFactore.human_readable(datetime.fromisoformat(get_from_server.get('created_at')), 'en')})"
+                f"\nExpired: {datetime.fromtimestamp(get_from_server.get('expire'))} ({utilities_reFactore.human_readable(datetime.fromisoformat(get_from_server.get('expire')), 'en')})"
+                f"\n\nSubscription Link:"
+                f"\n\n<code>{subscribe_link}</code>"
+            )
+
+            keyboard = [
+                [InlineKeyboardButton("Get Configs", callback_data=f'vpn_get_configs_separately__{purchase_id}__no')],
+                [InlineKeyboardButton("Statistics", callback_data=f'statistics_week_{purchase_id}_hide'),
+                 InlineKeyboardButton("Refresh", callback_data=f'vpn_advanced_options__{purchase_id}')],
+                [InlineKeyboardButton("Change OwnerShip", callback_data=f'vpn_change_service_ownership__{purchase_id}')],
+                [InlineKeyboardButton("Back", callback_data=f'admin_user_services__{purchase.chat_id}__{page}__{user_info_page}')]
+            ]
+
+            if update.callback_query and 'remove_this_message__' in update.callback_query.data:
+                await query.delete_message()
+                return await context.bot.send_message(chat_id=user_detail.id, text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+            await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+
+    except requests.exceptions.HTTPError as e:
+        if '404 Client Error' in str(e):
+            return await query.answer('vpn service not exit in server', show_alert=True)
+
+    except Exception as e:
+        raise e
