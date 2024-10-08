@@ -103,7 +103,7 @@ async def get_new_balance(update, context):
     await update.callback_query.answer()
     user_detail = update.effective_chat
     query = update.callback_query
-    chat_id, action = query.data.replace('admin_change_user_wallet_balance__', '').split('__')
+    chat_id, action = query.data.replace('admin_cuwb__', '').split('__')
     context.user_data[f'admin_increase_user_balance_chat_id'] = chat_id
     context.user_data[f'admin_increase_user_balance_action'] = action
     keyboard = [[InlineKeyboardButton("Cancel", callback_data='cancel_increase_wallet_conversation')]]
