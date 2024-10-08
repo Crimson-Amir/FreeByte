@@ -384,7 +384,7 @@ async def admin_confirm_buy_vpn_service(update, context):
             await buy_and_upgrade_service.create_service_for_user(context, session, purchase_id=purchase.purchase_id)
 
             keyboard = [
-                [InlineKeyboardButton("Back", callback_data=f'admin_assurance_bv__{chat_id}__{page}__{user_info_page}__{period}_{traffic}')]
+                [InlineKeyboardButton("Back", callback_data=f'admin_assurance_bv__{chat_id}__{page}__{user_info_page}__{period}__{traffic}')]
             ]
             text = 'Create Service For User Successful'
             await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
