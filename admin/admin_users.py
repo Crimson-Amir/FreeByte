@@ -319,13 +319,13 @@ async def admin_buy_service_for_user(update, context):
 
     keyboard = [
         [InlineKeyboardButton('Traffic', callback_data="just_for_show")],
-        [InlineKeyboardButton("➖", callback_data=f"vpn_set_period_traffic__{chat_id}__{page}__{user_info_page}__{period}_{traffic - 1}"),
+        [InlineKeyboardButton("➖", callback_data=f"admin_buy_service_for_user__{chat_id}__{page}__{user_info_page}__{period}_{traffic - 1}"),
          InlineKeyboardButton(f"{traffic} GB", callback_data="just_for_show"),
-         InlineKeyboardButton("➕", callback_data=f"vpn_set_period_traffic__{chat_id}__{page}__{user_info_page}__{period}_{traffic + 10}")],
+         InlineKeyboardButton("➕", callback_data=f"admin_buy_service_for_user__{chat_id}__{page}__{user_info_page}__{period}_{traffic + 10}")],
         [InlineKeyboardButton('Period Time', callback_data="just_for_show")],
-        [InlineKeyboardButton("➖", callback_data=f"vpn_set_period_traffic__{chat_id}__{page}__{user_info_page}__{period - 1}_{traffic}"),
+        [InlineKeyboardButton("➖", callback_data=f"admin_buy_service_for_user__{chat_id}__{page}__{user_info_page}__{period - 1}_{traffic}"),
          InlineKeyboardButton(f"{period} Days", callback_data="just_for_show"),
-         InlineKeyboardButton("➕", callback_data=f"vpn_set_period_traffic__{chat_id}__{page}__{user_info_page}__{period + 10}_{traffic}")],
+         InlineKeyboardButton("➕", callback_data=f"admin_buy_service_for_user__{chat_id}__{page}__{user_info_page}__{period + 10}_{traffic}")],
         [InlineKeyboardButton("Back", callback_data=f'admin_user_services__{chat_id}__{page}__{user_info_page}'),
          InlineKeyboardButton("Confirm", callback_data=f"admin_assurance_buy_vpn_service__{chat_id}__{page}__{user_info_page}__{period}__{traffic}")]
     ]
