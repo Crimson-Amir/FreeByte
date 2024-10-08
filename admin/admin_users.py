@@ -106,6 +106,7 @@ async def view_user_info(update, context, chat_id=None):
                     f'\nTraffic Notification: {user.config.traffic_notification_percent}%'
                     f'\nPeriod Time Notification: {user.config.period_notification_day} Day'
                     f'\nRecive FreeService: {user.config.get_vpn_free_service}'
+                    f'\nVpn Service count: {user.services.count}'
                     )
 
             keyboard = [
@@ -129,7 +130,7 @@ async def view_user_info(update, context, chat_id=None):
                 [InlineKeyboardButton(f"True (received)", callback_data=f'admin_set_vpn_free_test__{chat_id}__true'),
                  InlineKeyboardButton(f"False", callback_data=f'admin_set_vpn_free_test__{chat_id}__false')],
 
-                [InlineKeyboardButton('🎛️ User Services', callback_data=f'admin_user_services__{chat_id}__1__{page}')],
+                [InlineKeyboardButton('🎛️ User VPN Services', callback_data=f'admin_user_services__{chat_id}__1__{page}')],
 
                 [InlineKeyboardButton('Back', callback_data=f'admin_manage_users__{page}')]
             ]
