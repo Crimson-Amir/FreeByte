@@ -79,6 +79,8 @@ async def notification_timer(context):
                             now = datetime.now(pytz.timezone('Asia/Tehran')).replace(tzinfo=None)
                             days_left = (expiry - now).days
 
+                            print(purchase.purchase_id, purchase.day_notification_status, days_left, purchase.owner.config.period_notification_day)
+
                             if service_stauts in ['limited', 'expired'] and purchase.status == 'active':
                                 vpn_crud.update_purchase(session, purchase.purchase_id, status=service_stauts)
                                 session.commit()
