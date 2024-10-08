@@ -20,12 +20,12 @@ async def reply_ticket(update, context):
     await update.callback_query.answer()
     user_detail = update.effective_chat
     query = update.callback_query
-
+    data = query.data
     if 'private' in query.data:
-        query.data.replace('private_', '')
+        data = data.replace('private_', '')
         context.user_data[f'ticket_private'] = True
 
-    user_id = int(query.data.replace('reply_ticket_', ''))
+    user_id = int(data.replace('reply_ticket_', ''))
     context.user_data[f'ticket_user_id'] = user_id
     keyboard = [[InlineKeyboardButton("Cancel", callback_data='cancel_reply_ticket_conversation')]]
     text = 'send message (photo or text):'
