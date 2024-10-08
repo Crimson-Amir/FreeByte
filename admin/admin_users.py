@@ -50,7 +50,7 @@ async def find_user(update, context):
             user = crud.get_user(session, int(chat_id_substring[0]))
             text = 'select user to manage:'
 
-            keyboard = [[InlineKeyboardButton(f"{user.first_name} {user.chat_id} {service_status.get(user.config.user_status)}", callback_data=f'admin_view_user__{user.chat_id}__{1}')],
+            keyboard = [[InlineKeyboardButton(f"{user.first_name} {user.chat_id} {service_status.get(user.config.user_status)}", callback_data=f'admin_view_user__{user.chat_id}__1')],
                         [InlineKeyboardButton('Back', callback_data='admin_page')]]
 
             return await context.bot.send_message(chat_id=user_detail.id, text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
@@ -59,7 +59,9 @@ async def find_user(update, context):
 @admin_access
 async def view_user_info(update, context, chat_id=None):
     query = update.callback_query
-    chat_id, page = [chat_id, 1] or query.data.replace('admin_view_user__', '').split('__')
+    chat_id, page = chat_id, 1
+    if not chat_id:
+        chat_id, page = query.data.replace('admin_view_user__', '').split('__')
 
     with SessionLocal() as session:
         with session.begin():
