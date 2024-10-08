@@ -12,7 +12,7 @@ async def cancel(update, context):
     query = update.callback_query
     await query.delete_message()
     user_detail = update.effective_chat
-    await context.bot.send_message(chat_id=user_detail.id, text="Action cancelled.", message_thread_id=setting.ticket_thread_id)
+    await context.bot.send_message(chat_id=user_detail.id, text="Action cancelled.", message_thread_id=setting.ticket_thread_id if not context.user_data[f'ticket_private'] else None)
     return ConversationHandler.END
 
 
@@ -42,12 +42,12 @@ async def assurance(update, context):
             [InlineKeyboardButton("Yes", callback_data='confirm_send')],
             [InlineKeyboardButton("Cancel", callback_data='cancel_send')]
         ]
-        await context.bot.send_message(chat_id=user_detail.id, text=f'Are you sure you want to send this message?\n\n{context.user_data["admin_message"]}', reply_markup=InlineKeyboardMarkup(keyboard), message_thread_id=setting.ticket_thread_id)
+        await context.bot.send_message(chat_id=user_detail.id, text=f'Are you sure you want to send this message?\n\n{context.user_data["admin_message"]}', reply_markup=InlineKeyboardMarkup(keyboard), message_thread_id=setting.ticket_thread_id if not context.user_data[f'ticket_private'] else None)
         return SEND_TICKET
 
     except Exception as e:
         logging.error(f'error in get message.\n{e}')
-        await context.bot.send_message(text=f'Error in send message: {e}', chat_id=user_detail.id, parse_mode='html', message_thread_id=setting.ticket_thread_id)
+        await context.bot.send_message(text=f'Error in send message: {e}', chat_id=user_detail.id, parse_mode='html', message_thread_id=setting.ticket_thread_id if not context.user_data[f'ticket_private'] else None)
         return REPLY_TICKET
 
 
@@ -58,7 +58,7 @@ async def answer_ticket(update, context):
         user_id = context.user_data['ticket_user_id']
         await query.delete_message()
         if query.data == 'cancel_send':
-            await context.bot.send_message(chat_id=user_detail.id, text='Conversation closed.', message_thread_id=setting.ticket_thread_id)
+            await context.bot.send_message(chat_id=user_detail.id, text='Conversation closed.',message_thread_id=setting.ticket_thread_id if not context.user_data[f'ticket_private'] else None)
             return ConversationHandler.END
 
         ft_instance = FindText(None, None)
@@ -69,7 +69,7 @@ async def answer_ticket(update, context):
         keyboard = [[InlineKeyboardButton('New Message +', callback_data=f"reply_ticket_{user_id}")]]
 
         await context.bot.send_message(text=text, chat_id=user_detail.id, reply_markup=InlineKeyboardMarkup(keyboard),
-                                       parse_mode='html', message_thread_id=setting.ticket_thread_id)
+                                       parse_mode='html', message_thread_id=setting.ticket_thread_id if not context.user_data[f'ticket_private'] else None)
 
         user_text = (f"{await ft_instance.find_from_database(user_id, 'ticket_was_answered')}"
                      f"\n\n{admin_message}")
@@ -87,7 +87,7 @@ async def answer_ticket(update, context):
 
     except Exception as e:
         logging.error(f'erro in send ticket. {e}')
-        await context.bot.send_message(text=f'Error in send message: {e}', chat_id=user_detail.id, parse_mode='html', message_thread_id=setting.ticket_thread_id)
+        await context.bot.send_message(text=f'Error in send message: {e}', chat_id=user_detail.id, parse_mode='html', message_thread_id=setting.ticket_thread_id if not context.user_data[f'ticket_private'] else None)
         return REPLY_TICKET
 
 
