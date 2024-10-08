@@ -83,6 +83,7 @@ async def answer_ticket(update, context):
         else:
             await context.bot.send_message(chat_id=int(user_id), text=user_text, reply_markup=InlineKeyboardMarkup(keyboard))
 
+        context.user_data[f'ticket_private'] = False
         return ConversationHandler.END
 
     except Exception as e:
