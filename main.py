@@ -105,6 +105,10 @@ if __name__ == '__main__':
     application.add_handler(CallbackQueryHandler(admin_users.all_users_list, pattern='admin_manage_users__(.*)'))
     application.add_handler(CallbackQueryHandler(admin_users.view_user_info, pattern='admin_view_user__(.*)'))
     application.add_handler(CallbackQueryHandler(admin_users.admin_change_user_status, pattern='admin_set_user_status__(.*)'))
+    application.add_handler(CallbackQueryHandler(admin_users.admin_set_user_level, pattern='admin_set_user_level__(.*)'))
+    application.add_handler(CallbackQueryHandler(admin_users.admin_set_free_vpn_test, pattern='admin_set_vpn_free_test__(.*)'))
+
+
     application.add_handler(admin_users.admin_change_wallet_balance_conversation)
 
 

@@ -109,6 +109,7 @@ async def view_user_info(update, context, chat_id=None):
                     )
 
             keyboard = [
+                [InlineKeyboardButton('Refresh', callback_data=f'admin_view_user__{chat_id}__{page}')],
                 [InlineKeyboardButton('🔰 Set User Status:', callback_data=f'just_for_show')],
                 [InlineKeyboardButton(f"Active", callback_data=f'admin_set_user_status__{chat_id}__active'),
                  InlineKeyboardButton(f"Ban", callback_data=f'admin_set_user_status__{chat_id}__ban')],
@@ -117,6 +118,18 @@ async def view_user_info(update, context, chat_id=None):
                 [InlineKeyboardButton(f"Add", callback_data=f'admin_cuwb__{chat_id}__increase_balance_by_admin'),
                  InlineKeyboardButton(f"Set", callback_data=f'admin_cuwb__{chat_id}__set'),
                  InlineKeyboardButton(f"Less", callback_data=f'admin_cuwb__{chat_id}__reduction_balance_by_admin')],
+
+                [InlineKeyboardButton('👑 Set User Level:', callback_data=f'just_for_show')],
+                [InlineKeyboardButton(f"Normal", callback_data=f'admin_set_user_level__{chat_id}__1'),
+                 InlineKeyboardButton(f"Trustable", callback_data=f'admin_set_user_level__{chat_id}__3')],
+                [InlineKeyboardButton(f"SuperUser", callback_data=f'admin_set_user_level__{chat_id}__5'),
+                 InlineKeyboardButton(f"Admin", callback_data=f'admin_set_user_level__{chat_id}__10')],
+
+                [InlineKeyboardButton('🎁 VPN Free Test:', callback_data=f'just_for_show')],
+                [InlineKeyboardButton(f"True (received)", callback_data=f'admin_set_vpn_free_test__{chat_id}__true'),
+                 InlineKeyboardButton(f"False", callback_data=f'admin_set_vpn_free_test__{chat_id}__false')],
+
+                [InlineKeyboardButton('🎛️ User Services', callback_data=f'just_for_show')],
 
                 [InlineKeyboardButton('Back', callback_data=f'admin_manage_users__{page}')]
             ]
@@ -136,6 +149,30 @@ async def admin_change_user_status(update, context):
             await query.answer('+ Changes Saved!')
             return await view_user_info(update, context, chat_id=chat_id)
 
+
+@handle_functions_error
+@admin_access
+async def admin_set_user_level(update, context):
+    query = update.callback_query
+    chat_id, level = query.data.replace('admin_set_user_level__', '').split('__')
+
+    with SessionLocal() as session:
+        with session.begin():
+            crud.update_user_config(session, int(chat_id), user_level=int(level))
+            await query.answer('+ Changes Saved!')
+            return await view_user_info(update, context, chat_id=chat_id)
+
+@handle_functions_error
+@admin_access
+async def admin_set_free_vpn_test(update, context):
+    query = update.callback_query
+    chat_id, status = query.data.replace('admin_set_vpn_free_test__', '').split('__')
+    status = status == 'true'
+    with SessionLocal() as session:
+        with session.begin():
+            crud.update_user_config(session, int(chat_id), get_vpn_free_service=status)
+            await query.answer('+ Changes Saved!')
+            return await view_user_info(update, context, chat_id=chat_id)
 
 @admin_access
 async def get_new_balance(update, context):
