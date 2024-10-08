@@ -29,7 +29,7 @@ async def reply_ticket(update, context):
     context.user_data[f'ticket_user_id'] = user_id
     keyboard = [[InlineKeyboardButton("Cancel", callback_data='cancel_reply_ticket_conversation')]]
     text = 'send message (photo or text):'
-    await context.bot.send_message(text=text, chat_id=user_detail.id, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+    await context.bot.send_message(text=text, chat_id=user_detail.id, parse_mode='html', message_thread_id=setting.ticket_thread_id if context.user_data[f'ticket_private'] else None, reply_markup=InlineKeyboardMarkup(keyboard))
     return REPLY_TICKET
 
 async def assurance(update, context):
@@ -92,7 +92,7 @@ async def answer_ticket(update, context):
 
 
 admin_ticket_reply_conversation = ConversationHandler(
-    entry_points=[CallbackQueryHandler(reply_ticket, pattern=r'reply_ticket_(\d+)')],
+    entry_points=[CallbackQueryHandler(reply_ticket, pattern=r'reply_ticket_(.*)')],
     states={
         REPLY_TICKET: [MessageHandler(filters.TEXT | filters.PHOTO, assurance)],
         SEND_TICKET: [CallbackQueryHandler(answer_ticket, pattern='^(confirm_send|cancel_send)$')],
