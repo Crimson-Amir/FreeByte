@@ -111,7 +111,7 @@ async def service_info(update, context):
                 )
 
                 keyboard = [
-                    [InlineKeyboardButton(await ft_instance.find_keyboard('vpn_upgrade_service'), callback_data=f'vpn_upgrade_service__30__40__{purchase_id}')],
+                    [InlineKeyboardButton(await ft_instance.find_keyboard('vpn_upgrade_service'), callback_data=f'vpn_upgrade_service__{purchase.period}__{purchase.traffic}__{purchase_id}')],
                     [InlineKeyboardButton(await ft_instance.find_keyboard('refresh'), callback_data=f'vpn_my_service_detail__{purchase_id}'),
                      InlineKeyboardButton(await ft_instance.find_keyboard('vpn_remove_service'), callback_data=f'vpn_remove_service_ask__{purchase_id}')],
                     [InlineKeyboardButton(await ft_instance.find_keyboard('vpn_advanced_options'),callback_data=f'vpn_advanced_options__{purchase_id}')],
