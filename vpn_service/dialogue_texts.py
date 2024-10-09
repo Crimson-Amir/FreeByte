@@ -20,8 +20,8 @@ text_transaction = {
         "fa": "🔄 درصورتی که سرویس شما به پایان رسیده است، مشخصات زیر جایگزین مشخصات قبلی می‌شوند.",
     },
     "vpn_service_activated": {
-        "en": "✅ Your VPN service has been successfully activated!",
-        "fa": "✅ سرویس VPN شما با موفقیت فعال شد!",
+        "en": "✅ Your VPN service naemd {0} has been successfully activated!",
+        "fa": "✅ سرویس VPN شما با نام {0} فعال شد!",
     },
     "vpn_service_name": {
         "en": "🔷 Service Name:",
