@@ -15,6 +15,7 @@ async def receive_payment_result(Authority: str, Status: str, request: Request):
     with SessionLocal() as session:
         session.begin()
         financial = crud.get_financial_report_by_authority(session, Authority)
+        WebAppUtilities.connect_to_server_instance.refresh_token()
 
         if Status != 'OK' or not financial:
             dialogues = transaction.get('fa')
@@ -75,6 +76,7 @@ async def crypto_receive_payment_result(data: WebAppUtilities.CryptomusPaymentWe
     """Handles incoming webhook for Cryptomus payment result."""
     with SessionLocal() as session:
         session.begin()
+        WebAppUtilities.connect_to_server_instance.refresh_token()
         financial = crud.get_financial_report_by_authority(session, data.order_id)
 
         if not financial or data.status not in ['paid', 'paid_over'] or financial.payment_status in ['paid', 'refund']:

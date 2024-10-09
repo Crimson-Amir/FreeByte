@@ -4,6 +4,23 @@ from vpn_service import buy_and_upgrade_service
 from WebApp.WebAppDialogue import transaction
 from pydantic import BaseModel
 from API import cryptomusAPI
+from vpn_service import panel_api
+from datetime import datetime, timedelta
+
+class ConnectToServer:
+    last_update = None
+
+    def refresh_token(self):
+        now = datetime.now()
+        if self.last_update:
+            if self.last_update < now:
+                panel_api.marzban_api.refresh_connection()
+                self.last_update = now + timedelta(hours=12)
+        else:
+            panel_api.marzban_api.refresh_connection()
+            self.last_update = now + timedelta(hours=12)
+
+connect_to_server_instance = ConnectToServer()
 
 async def increase_wallet_balance(financial, context, session):
     dialogues = transaction.get(financial.owner.language, transaction.get('fa'))
