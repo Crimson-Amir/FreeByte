@@ -109,7 +109,8 @@ admin_ticket_reply_conversation = ConversationHandler(
 async def delete_message_assuarance(update, context):
     user_detail = update.effective_chat
     query = update.callback_query
-    user_id, message_id = query.data.replace('delete_message_assurance__').split('__')
+    user_id, message_id = query.data.replace('delete_message_assurance__', '').split('__')
+
     keyboard = [
         [InlineKeyboardButton("Yes", callback_data=f'delete_message__{user_detail}__{message_id}')],
         [InlineKeyboardButton("Cancel", callback_data=f'cancel_deleteing_message__{user_id}')]
