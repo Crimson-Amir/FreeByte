@@ -62,10 +62,10 @@ async def manage_request_to_join_by_admin(update, context):
     if photos.total_count > 0:
         photo_file_id = photos.photos[0][-1].file_id
         await context.bot.send_photo(chat_id=setting.ADMIN_CHAT_IDs[0], photo=photo_file_id, caption=text,
-                                     reply_markup=InlineKeyboardMarkup(admin_keyboard))
+                                     reply_markup=InlineKeyboardMarkup(admin_keyboard), message_thread_id=setting.new_user_thread_id)
     else:
         await context.bot.send_message(chat_id=setting.ADMIN_CHAT_IDs[0], text=text + '\n\n• No Profile Picture (or not public)',
-                                       reply_markup=InlineKeyboardMarkup(admin_keyboard))
+                                       reply_markup=InlineKeyboardMarkup(admin_keyboard), message_thread_id=setting.new_user_thread_id)
 
     await query.answer('✅')
     await query.edit_message_text(
