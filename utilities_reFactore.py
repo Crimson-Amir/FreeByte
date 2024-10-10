@@ -64,7 +64,7 @@ async def find_user_id(user_id, context):
     user_database_id = context.user_data.get('user_database_id')
     if not user_database_id:
         with SessionLocal() as session:
-            get_user_user_database_id_from_db = await crud.get_user(session, user_id)
+            get_user_user_database_id_from_db = crud.get_user(session, user_id)
             user_database_id = get_user_user_database_id_from_db.user_id
             context.user_data['user_database_id'] = user_database_id
     return user_database_id
