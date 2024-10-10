@@ -89,7 +89,7 @@ async def service_info(update, context):
                 online_at = await ft_instance.find_text('not_connected_yet')
 
                 if get_last_online_time:
-                    await update.message.reply(text=get_last_online_time)
+                    print(get_last_online_time)
                     online_at = datetime.strptime(get_last_online_time, "%Y-%m-%dT%H:%M:%SZ")
                     now = datetime.now(tz=pytz.timezone('Asia/Tehran'))
                     if (now - online_at).total_seconds() < 60:
