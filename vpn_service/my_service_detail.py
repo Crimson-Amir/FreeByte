@@ -94,7 +94,10 @@ async def service_info(update, context):
                 await context.bot.send_message(chat_id=setting.ADMIN_CHAT_IDs[0], text=str(get_last_online_time))
                 if get_last_online_time:
                     online_at = datetime.fromisoformat(get_last_online_time).replace(microsecond=0)
-                    now = datetime.now(tz=pytz.timezone('Asia/Tehran'))
+                    tehran_tz = pytz.timezone('Asia/Tehran')
+                    online_at = tehran_tz.localize(online_at)
+
+                    now = datetime.now(tz=tehran_tz)
                     if (now - online_at).total_seconds() < 60:
                         online_at = now
                     online_at = human_readable(online_at, await ft_instance.find_user_language())
