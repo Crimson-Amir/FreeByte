@@ -28,7 +28,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE, in_new_messa
                 return await context.bot.send_message(chat_id=user_detail.id, text='You already send a join request!\nشما قبلا درخواست عضویت ارسال کردید!')
             text = ('This bot is private, please return with the invite link. Or send a request to join the admin.'
                     '\nاین ربات خصوصی است، لطفا با لینک دعوت برگردید یا درخواست عضویت را به مدیر ارسال کنید.')
-            keyboard = [[InlineKeyboardButton('درخواست عضویت | Reques to Join', callback_data=f'user_request_to_join_{user_detail.id}')]]
+            keyboard = [[InlineKeyboardButton('درخواست عضویت | Reques to Join', callback_data=f'user_requested_to_join')]]
             await context.bot.send_message(chat_id=user_detail.id, text=text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
             user_request_to_join[user_detail.id] = {'user_detail': user_detail}
 
@@ -54,8 +54,8 @@ async def manage_request_to_join_by_admin(update, context):
             f'Is User BOT: {user_detail.is_bot}\n')
 
     admin_keyboard = [
-        [InlineKeyboardButton("Accept User✅", callback_data=f'accept_user_join_request__{user_detail.id}'),
-         InlineKeyboardButton("Deny User❌", callback_data=f'deny_user_join_request__{user_detail.id}')],
+        [InlineKeyboardButton("Accept User✅", callback_data=f'user_join_request_accept__{user_detail.id}'),
+         InlineKeyboardButton("Deny User❌", callback_data=f'user_join_request_deny__{user_detail.id}')],
     ]
 
     if photos.total_count > 0:
@@ -76,10 +76,10 @@ async def manage_request_to_join_by_admin(update, context):
 
 async def check_new_user_request_by_admin(update, context):
     query = update.callback_query
-    chat_id = int(query.data.replace('accept_user_join_request__', '').replace('deny_user_join_request__', ''))
+    chat_id = int(query.data.replace('user_join_request_accept__', '').replace('user_join_request_deny__', ''))
     user_detail = user_request_to_join[chat_id]['user_detail']
 
-    if 'accept_user_' in query.data:
+    if 'accept' in query.data:
         user_request_to_join[chat_id]['without_invite_link'] = True
         text = ('<b>• زبان خود را انتخاب کنید:'
                 '\n• Please choose your language:</b>')

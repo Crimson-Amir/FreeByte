@@ -68,6 +68,10 @@ if __name__ == '__main__':
     application.add_handler(CallbackQueryHandler(start_reFactore.just_for_show, pattern='just_for_show'))
     application.add_handler(CallbackQueryHandler(start_reFactore.already_on_this, pattern='already_on_this'))
     application.add_handler(CallbackQueryHandler(my_service.my_services, pattern='my_services'))
+    application.add_handler(CallbackQueryHandler(start_reFactore.manage_request_to_join_by_admin, pattern='user_requested_to_join'))
+    application.add_handler(CallbackQueryHandler(start_reFactore.check_new_user_request_by_admin, pattern='user_join_request_(.*)'))
+
+
 
     # Wallet
     application.add_handler(CallbackQueryHandler(wallet_reFactore.wallet_page, pattern='wallet_page'))
