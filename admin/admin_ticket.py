@@ -128,7 +128,7 @@ async def delete_message_assuarance(update, context):
 async def delete_message(update, context):
     query = update.callback_query
     user_id, message_id = query.data.replace('dell_message__', '').split('__')
-    context.bot.delete_message(chat_id=int(user_id), message_id=int(message_id))
+    await context.bot.delete_message(chat_id=int(user_id), message_id=int(message_id))
     await query.answer('message deleted!')
     await query.edit_message_text(text='message_deleted_successfully for user!')
 
