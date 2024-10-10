@@ -74,13 +74,13 @@ async def answer_ticket(update, context):
         ]
 
         if file_id:
-            message_id = await context.bot.send_photo(chat_id=int(user_id), photo=file_id, caption=user_text, reply_markup=InlineKeyboardMarkup(keyboard))
+            new_message = await context.bot.send_photo(chat_id=int(user_id), photo=file_id, caption=user_text, reply_markup=InlineKeyboardMarkup(keyboard))
         else:
-            message_id = await context.bot.send_message(chat_id=int(user_id), text=user_text, reply_markup=InlineKeyboardMarkup(keyboard))
+            new_message = await context.bot.send_message(chat_id=int(user_id), text=user_text, reply_markup=InlineKeyboardMarkup(keyboard))
 
-        text = f'Message Recived And Send to User {user_id}'
+        text = f'Message Recived And Send to User {user_id} {new_message.message_id}'
         keyboard = [[InlineKeyboardButton('Send New Message +', callback_data=f"reply_ticket_{user_id}")],
-                    [InlineKeyboardButton('Delete message for User -', callback_data=f"delete_message_assurance__{user_id}__{message_id.message_id}")]]
+                    [InlineKeyboardButton('Delete message for User -', callback_data=f"delete_message_assurance__{user_id}__{new_message.message_id}")]]
 
         await context.bot.send_message(text=text, chat_id=user_detail.id, reply_markup=InlineKeyboardMarkup(keyboard),
                                        parse_mode='html', message_thread_id=setting.ticket_thread_id if not context.user_data.get(f'ticket_private') else None)
