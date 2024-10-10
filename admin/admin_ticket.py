@@ -114,7 +114,7 @@ async def delete_message_assuarance(update, context):
     user_id, message_id = query.data.replace('dell_mess_asu__', '').split('__')
 
     keyboard = [
-        [InlineKeyboardButton("Yes", callback_data=f'dell_message__{user_detail}__{message_id}')],
+        [InlineKeyboardButton("Yes", callback_data=f'dell_message__{user_id}__{message_id}')],
         [InlineKeyboardButton("Cancel", callback_data=f'cancel_dell__{user_id}')]
     ]
     await context.bot.send_message(
