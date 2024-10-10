@@ -153,7 +153,7 @@ async def admin_xray_core(update, context):
                 [InlineKeyboardButton('Refresh', callback_data=f'admin_view_core__{product_id}__{page}'),
                 InlineKeyboardButton('Back', callback_data=f'admin_view_product__{product_id}__{page}')]
             ]
-            return await query.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(keyboard))
+            return await query.edit_message_text(text=text[:4096], reply_markup=InlineKeyboardMarkup(keyboard))
 
 
 @vpn_utilities.handle_functions_error
