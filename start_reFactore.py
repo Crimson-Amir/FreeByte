@@ -34,9 +34,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE, in_new_messa
             await context.bot.send_message(chat_id=user_detail.id, text=text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
             user_request_to_join[user_detail.id] = {'user_detail': user_detail}
 
-    except Exception as e:
-        logging.error(f'error in send start message! \n{e}')
-        await context.bot.send_message(chat_id=user_detail.id, text='<b>Sorry, somthing went wrong!\nبخشید مشکلی وجود داشت!</b>', parse_mode='html')
+    # except Exception as e:
+    #     logging.error(f'error in send start message! \n{e}')
+    #     await context.bot.send_message(chat_id=user_detail.id, text='<b>Sorry, somthing went wrong!\nبخشید مشکلی وجود داشت!</b>', parse_mode='html')
 
 
 @handle_error.handle_functions_error
