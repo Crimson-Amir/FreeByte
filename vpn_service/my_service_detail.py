@@ -86,7 +86,7 @@ async def service_info(update, context):
                 expire_date = human_readable(get_from_server.get('expire'), await ft_instance.find_user_language())
 
                 get_last_online_time = get_from_server.get('online_at')
-                online_at = ft_instance.find_text('not_connected_yet')
+                online_at = await ft_instance.find_text('not_connected_yet')
 
                 if get_last_online_time:
                     online_at = datetime.fromtimestamp(get_last_online_time)
