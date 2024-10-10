@@ -113,6 +113,9 @@ if __name__ == '__main__':
     application.add_handler(CallbackQueryHandler(admin_system.admin_view_product, pattern='admin_view_product__(.*)'))
     application.add_handler(CallbackQueryHandler(admin_system.admin_change_product_status, pattern='admin_set_product_status__(.*)'))
     application.add_handler(CallbackQueryHandler(admin_system.view_product_main_server_info, pattern='admin_product_main_server_info__(.*)'))
+    application.add_handler(CallbackQueryHandler(admin_system.admin_xray_core, pattern='admin_view_core__(.*)'))
+    application.add_handler(CallbackQueryHandler(admin_system.admin_restart_xray_core, pattern='admin_restart_core__(.*)'))
+
     application.add_handler(CallbackQueryHandler(admin_system.admin_view_host, pattern='admin_view_host__(.*)'))
     application.add_handler(CallbackQueryHandler(admin_system.admin_view_inbounds, pattern='admin_view_inbounds__(.*)'))
     application.add_handler(CallbackQueryHandler(admin_system.admin_view_online_users, pattern='admin_view_online_users__(.*)'))

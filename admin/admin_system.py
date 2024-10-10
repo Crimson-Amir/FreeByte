@@ -1,4 +1,6 @@
 import sys, os, math, pprint
+import time
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from admin.admin_utilities import admin_access
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
@@ -56,6 +58,7 @@ async def admin_view_online_users(update, context):
     item_per_page = 15
 
     online_users = vpn_notification.online_users_instance.online_users
+
     online_users_count = len(online_users)
     total_pages = math.ceil(online_users_count / item_per_page)
 
@@ -72,8 +75,8 @@ async def admin_view_online_users(update, context):
     if nav_buttons: keyboard.append(nav_buttons)
 
     text = f'Online Users: {len(online_users)}'
-    keyboard.append([InlineKeyboardButton('Refresh', callback_data=f'admin_view_online_users__{page}'),
-                    InlineKeyboardButton('Back', callback_data=f'admin_page__{product_page}')])
+    keyboard.append([InlineKeyboardButton('Refresh', callback_data=f'admin_view_online_users__{page}__{product_page}'),
+                    InlineKeyboardButton('Back', callback_data=f'admin_system__{product_page}')])
 
     return await query.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(keyboard))
 
@@ -104,7 +107,8 @@ async def admin_view_product(update, context, product_id=None, page=None):
             )
 
             keyboard = [
-                [InlineKeyboardButton('Refresh', callback_data=f'admin_view_product__{product_id}__{page}')],
+                [InlineKeyboardButton('Refresh', callback_data=f'admin_view_product__{product_id}__{page}'),
+                 InlineKeyboardButton('Xray Core', callback_data=f'admin_view_core__{product_id}__{page}')],
                 [InlineKeyboardButton('🔰 Set Product Status:', callback_data=f'just_for_show')],
                 [InlineKeyboardButton(f"Active", callback_data=f'admin_set_product_status__{product_id}__true__{page}'),
                  InlineKeyboardButton(f"Deactive", callback_data=f'admin_set_product_status__{product_id}__false__{page}')],
@@ -127,6 +131,42 @@ async def admin_change_product_status(update, context):
             admin_crud.update_product(session, int(product_id), active=status)
             await query.answer('+ Changes Saved!')
             return await admin_view_product(update, context, product_id=product_id, page=page)
+
+
+@vpn_utilities.handle_functions_error
+@admin_access
+async def admin_xray_core(update, context):
+    query = update.callback_query
+    product_id, page = query.data.replace('admin_view_core__', '').split('__')
+
+    with SessionLocal() as session:
+        with session.begin():
+            product = admin_crud.get_product(session, int(product_id))
+            get_state = panel_api.marzban_api.get_core_stats(product.main_server.server_ip)
+            get_xray_confg = panel_api.marzban_api.get_core_config(product.main_server.server_ip)
+            text = (f'Version: {get_state.get("version")}'
+                    f'\nStarted: {get_state.get("started")}'
+                    f'\nLogs Websocket: {get_state.get("logs_websocket")}'
+                    f'\n\n{get_xray_confg}')
+            keyboard = [
+                [InlineKeyboardButton('Restart Core', callback_data=f'admin_restart_core__{product_id}')],
+                [InlineKeyboardButton('Refresh', callback_data=f'admin_view_core__{product_id}__{page}'),
+                InlineKeyboardButton('Back', callback_data=f'admin_view_product__{product_id}__{page}')]
+            ]
+            return await query.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(keyboard))
+
+
+@vpn_utilities.handle_functions_error
+@admin_access
+async def admin_restart_xray_core(update, context):
+    query = update.callback_query
+    product_id = int(query.data.replace('admin_restart_core__', ''))
+
+    with SessionLocal() as session:
+        with session.begin():
+            product = admin_crud.get_product(session, int(product_id))
+            await panel_api.marzban_api.restart_core(product.main_server.server_ip)
+            await query.answer('+ Done!')
 
 
 @vpn_utilities.handle_functions_error
