@@ -32,7 +32,7 @@ def format_traffic_from_byte(traffic_in_byte, convert_to='GB'):
         'GB': 3,
         'MB': 2
     }
-    return traffic_in_byte / (1024 / convert_to_dict.get(convert_to, 3))
+    return round(traffic_in_byte / (1024 ** convert_to_dict.get(convert_to, 3)), 2)
 
 
 
