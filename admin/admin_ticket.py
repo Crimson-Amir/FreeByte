@@ -80,7 +80,7 @@ async def answer_ticket(update, context):
 
         text = f'Message Recived And Send to User {user_id} | delete_message_assurance__{user_id}__{new_message.message_id}'
         keyboard = [[InlineKeyboardButton('Send New Message +', callback_data=f"reply_ticket_{user_id}")],
-                    [InlineKeyboardButton('Delete message for User -', callback_data=f"delete_message_assurance__{user_id}__{new_message.message_id}")]]
+                    [InlineKeyboardButton('Delete message for User -', callback_data=f"dell_mess_asu__{user_id}__{new_message.message_id}")]]
 
         await context.bot.send_message(text=text, chat_id=user_detail.id, reply_markup=InlineKeyboardMarkup(keyboard),
                                        parse_mode='html', message_thread_id=setting.ticket_thread_id if not context.user_data.get(f'ticket_private') else None)
@@ -109,7 +109,7 @@ admin_ticket_reply_conversation = ConversationHandler(
 async def delete_message_assuarance(update, context):
     user_detail = update.effective_chat
     query = update.callback_query
-    user_id, message_id = query.data.replace('delete_message_assurance__', '').split('__')
+    user_id, message_id = query.data.replace('dell_mess_asu__', '').split('__')
 
     keyboard = [
         [InlineKeyboardButton("Yes", callback_data=f'delete_message__{user_detail}__{message_id}')],
