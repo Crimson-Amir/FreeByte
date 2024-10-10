@@ -91,13 +91,13 @@ async def service_info(update, context):
                 get_last_online_time = get_from_server.get('online_at')
                 online_at = await ft_instance.find_text('not_connected_yet')
 
-                await context.bot.send_message(chat_id=setting.ADMIN_CHAT_IDs[0], text=str(get_last_online_time))
-                if get_last_online_time:
-                    online_at = datetime.strptime(get_last_online_time, "%Y-%m-%dT%H:%M:%S")
-                    now = datetime.now(tz=pytz.timezone('Asia/Tehran'))
-                    if (now - online_at).total_seconds() < 60:
-                        online_at = now
-                    online_at = human_readable(online_at, await ft_instance.find_user_language())
+                # await context.bot.send_message(chat_id=setting.ADMIN_CHAT_IDs[0], text=str(get_last_online_time))
+                # if get_last_online_time:
+                #     online_at = datetime.strptime(get_last_online_time, "%Y-%m-%dT%H:%M:%S")
+                #     now = datetime.now(tz=pytz.timezone('Asia/Tehran'))
+                #     if (now - online_at).total_seconds() < 60:
+                #         online_at = now
+                #     online_at = human_readable(online_at, await ft_instance.find_user_language())
 
                 used_traffic = round(get_from_server.get('used_traffic') / (1024 ** 3), 2)
                 data_limit = int(get_from_server.get('data_limit') / (1024 ** 3))
