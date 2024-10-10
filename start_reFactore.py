@@ -53,7 +53,6 @@ async def manage_request_to_join_by_admin(update, context):
             f'User Name: {user_detail.first_name} {user_detail.last_name}\n'
             f'User ID: {user_detail.id}\n'
             f'UserName: @{user_detail.username}\n'
-            f'User Language: {user_detail.language_code}\n'
             f'Is User BOT: {user_detail.is_bot}\n')
 
     admin_keyboard = [
