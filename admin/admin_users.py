@@ -82,7 +82,7 @@ async def view_user_info(update, context, chat_id=None, page=None):
                     f'\nPhone Number: {user.phone_number}'
                     f'\nLanguage: {user.language}'
                     f'\nWallet Balance: {user.wallet:,} IRT'
-                    f'\nInvited By: {user.invited_by}'
+                    f'\nInvited By: {user.invited_by_id}'
                     f'\nRegister Date: {user.register_date.replace(microsecond=0)} ({utilities_reFactore.human_readable(user.register_date, "en")})'
                     f'\n\nLevel: {user.config.user_level}'
                     f'\nStatus: {user.config.user_status}'
