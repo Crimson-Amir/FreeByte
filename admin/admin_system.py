@@ -142,8 +142,8 @@ async def admin_xray_core(update, context):
     with SessionLocal() as session:
         with session.begin():
             product = admin_crud.get_product(session, int(product_id))
-            get_state = panel_api.marzban_api.get_core_stats(product.main_server.server_ip)
-            get_xray_confg = panel_api.marzban_api.get_core_config(product.main_server.server_ip)
+            get_state = await panel_api.marzban_api.get_core_stats(product.main_server.server_ip)
+            get_xray_confg = await panel_api.marzban_api.get_core_config(product.main_server.server_ip)
             text = (f'Version: {get_state.get("version")}'
                     f'\nStarted: {get_state.get("started")}'
                     f'\nLogs Websocket: {get_state.get("logs_websocket")}'
