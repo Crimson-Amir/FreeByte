@@ -17,7 +17,7 @@ from database_sqlalchemy import SessionLocal
 async def buy_custom_service(update, context):
     query = update.callback_query
     ft_instance = FindText(update, context)
-    period_callback, traffic_callback = query.data.replace('vpn_set_period_traffic__', '').split('_')
+    period_callback, traffic_callback, product_id = query.data.replace('vpn_set_period_traffic__', '').split('_')
     user_detail = update.effective_chat
 
     traffic = max(min(int(traffic_callback), 150), 5) or 40
@@ -29,15 +29,15 @@ async def buy_custom_service(update, context):
 
     keyboard = [
         [InlineKeyboardButton(await ft_instance.find_keyboard('vpn_traffic_lable'), callback_data="just_for_show")],
-        [InlineKeyboardButton("➖", callback_data=f"vpn_set_period_traffic__{period}_{traffic - 5}"),
+        [InlineKeyboardButton("➖", callback_data=f"vpn_set_period_traffic__{period}_{traffic - 5}_{product_id}"),
          InlineKeyboardButton(f"{traffic} {await ft_instance.find_keyboard('gb_lable')}", callback_data="just_for_show"),
-         InlineKeyboardButton("➕", callback_data=f"vpn_set_period_traffic__{period}_{traffic + 10}")],
+         InlineKeyboardButton("➕", callback_data=f"vpn_set_period_traffic__{period}_{traffic + 10}_{product_id}")],
         [InlineKeyboardButton(await ft_instance.find_keyboard('period_traffic_lable'), callback_data="just_for_show")],
-        [InlineKeyboardButton("➖", callback_data=f"vpn_set_period_traffic__{period - 5}_{traffic}"),
+        [InlineKeyboardButton("➖", callback_data=f"vpn_set_period_traffic__{period - 5}_{traffic}_{product_id}"),
          InlineKeyboardButton(f"{period} {await ft_instance.find_keyboard('day_lable')}", callback_data="just_for_show"),
-         InlineKeyboardButton("➕", callback_data=f"vpn_set_period_traffic__{period + 10}_{traffic}")],
+         InlineKeyboardButton("➕", callback_data=f"vpn_set_period_traffic__{period + 10}_{traffic}_{product_id}")],
         [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='menu_services'),
-         InlineKeyboardButton(await ft_instance.find_keyboard('confirm'), callback_data=f"create_invoice__buy_vpn_service__{period}__{traffic}")]
+         InlineKeyboardButton(await ft_instance.find_keyboard('confirm'), callback_data=f"create_invoice__buy_vpn_service__{period}__{traffic}__{product_id}")]
     ]
 
     await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))

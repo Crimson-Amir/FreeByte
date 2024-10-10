@@ -1,4 +1,4 @@
-import sys, os, math, functools, logging, traceback, requests, pytz
+import sys, os, math, requests, pytz
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from admin.admin_utilities import admin_access, cancel_conversation as cancel
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
@@ -18,28 +18,7 @@ service_status = {
     'ban': '🔴'
 }
 
-
-def handle_functions_error(func):
-    @functools.wraps(func)
-    async def wrapper(update, context, **kwargs):
-        user_detail = update.effective_chat
-        try:
-            return await func(update, context, **kwargs)
-        except Exception as e:
-            if 'Message is not modified' in str(e): return await update.callback_query.answer()
-            logging.error(f'error in {func.__name__}: {str(e)}')
-            tb = traceback.format_exc()
-            err = (
-                f"🔴 An error occurred in {func.__name__}:"
-                f"\n\nerror type:{type(e)}"
-                f"\nerror reason: {str(e)}"
-                f"\n\nTraceback: \n{tb}"
-            )
-            await context.bot.send_message(chat_id=user_detail.id, text=err)
-
-    return wrapper
-
-@handle_functions_error
+@vpn_utilities.handle_functions_error
 @admin_access
 async def all_users_list(update, context):
     query = update.callback_query
@@ -66,7 +45,7 @@ async def all_users_list(update, context):
             return await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
 
-@handle_functions_error
+@vpn_utilities.handle_functions_error
 @admin_access
 async def find_user(update, context):
     chat_id_substring = context.args
@@ -83,18 +62,18 @@ async def find_user(update, context):
 
             return await context.bot.send_message(chat_id=user_detail.id, text=text, reply_markup=InlineKeyboardMarkup(keyboard))
 
-@handle_functions_error
+@vpn_utilities.handle_functions_error
 @admin_access
-async def view_user_info(update, context, chat_id=None):
+async def view_user_info(update, context, chat_id=None, page=None):
     query = update.callback_query
-    chat_id, page = chat_id, 1
+    chat_id, page = chat_id, page
     if not chat_id:
         chat_id, page = query.data.replace('admin_view_user__', '').split('__')
 
     with SessionLocal() as session:
         with session.begin():
             user = crud.get_user(session, int(chat_id))
-            print(user.services.count)
+
             text = (f'Full Name: {user.first_name} {user.last_name}'
                     f'\nUsername: @{user.username}'
                     f'\nID: {user.user_id}'
@@ -121,8 +100,8 @@ async def view_user_info(update, context, chat_id=None):
                 [InlineKeyboardButton('Refresh', callback_data=f'admin_view_user__{chat_id}__{page}'),
                  InlineKeyboardButton('Message', callback_data=f'reply_ticket_private_{chat_id}')],
                 [InlineKeyboardButton('🔰 Set User Status:', callback_data=f'just_for_show')],
-                [InlineKeyboardButton(f"Active", callback_data=f'admin_set_user_status__{chat_id}__active'),
-                 InlineKeyboardButton(f"Ban", callback_data=f'admin_set_user_status__{chat_id}__ban')],
+                [InlineKeyboardButton(f"Active", callback_data=f'admin_set_user_status__{chat_id}__active__{page}'),
+                 InlineKeyboardButton(f"Ban", callback_data=f'admin_set_user_status__{chat_id}__ban__{page}')],
 
                 [InlineKeyboardButton('👝 Change Wallet Balance:', callback_data=f'just_for_show')],
                 [InlineKeyboardButton(f"Add", callback_data=f'admin_cuwb__{chat_id}__increase_balance_by_admin'),
@@ -130,14 +109,14 @@ async def view_user_info(update, context, chat_id=None):
                  InlineKeyboardButton(f"Less", callback_data=f'admin_cuwb__{chat_id}__reduction_balance_by_admin')],
 
                 [InlineKeyboardButton('👑 Set User Level:', callback_data=f'just_for_show')],
-                [InlineKeyboardButton(f"Normal", callback_data=f'admin_set_user_level__{chat_id}__1'),
-                 InlineKeyboardButton(f"Trustable", callback_data=f'admin_set_user_level__{chat_id}__3')],
-                [InlineKeyboardButton(f"SuperUser", callback_data=f'admin_set_user_level__{chat_id}__5'),
-                 InlineKeyboardButton(f"Admin", callback_data=f'admin_set_user_level__{chat_id}__10')],
+                [InlineKeyboardButton(f"Normal", callback_data=f'admin_set_user_level__{chat_id}__1__{page}'),
+                 InlineKeyboardButton(f"Trustable", callback_data=f'admin_set_user_level__{chat_id}__3__{page}')],
+                [InlineKeyboardButton(f"SuperUser", callback_data=f'admin_set_user_level__{chat_id}__5__{page}'),
+                 InlineKeyboardButton(f"Admin", callback_data=f'admin_set_user_level__{chat_id}__10__{page}')],
 
                 [InlineKeyboardButton('🎁 VPN Free Test:', callback_data=f'just_for_show')],
-                [InlineKeyboardButton(f"True (received)", callback_data=f'admin_set_vpn_free_test__{chat_id}__true'),
-                 InlineKeyboardButton(f"False", callback_data=f'admin_set_vpn_free_test__{chat_id}__false')],
+                [InlineKeyboardButton(f"True (received)", callback_data=f'admin_set_vpn_free_test__{chat_id}__true__{page}'),
+                 InlineKeyboardButton(f"False", callback_data=f'admin_set_vpn_free_test__{chat_id}__false__{page}')],
 
                 [InlineKeyboardButton('🎛️ User VPN Services', callback_data=f'admin_user_services__{chat_id}__1__{page}')],
 
@@ -147,43 +126,43 @@ async def view_user_info(update, context, chat_id=None):
             return await query.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(keyboard))
 
 
-@handle_functions_error
+@vpn_utilities.handle_functions_error
 @admin_access
 async def admin_change_user_status(update, context):
     query = update.callback_query
-    chat_id, status = query.data.replace('admin_set_user_status__', '').split('__')
+    chat_id, status, page = query.data.replace('admin_set_user_status__', '').split('__')
 
     with SessionLocal() as session:
         with session.begin():
             crud.update_user_config(session, int(chat_id), user_status=status)
             await query.answer('+ Changes Saved!')
-            return await view_user_info(update, context, chat_id=chat_id)
+            return await view_user_info(update, context, chat_id=chat_id, page=page)
 
 
-@handle_functions_error
+@vpn_utilities.handle_functions_error
 @admin_access
 async def admin_set_user_level(update, context):
     query = update.callback_query
-    chat_id, level = query.data.replace('admin_set_user_level__', '').split('__')
+    chat_id, level, page = query.data.replace('admin_set_user_level__', '').split('__')
 
     with SessionLocal() as session:
         with session.begin():
             crud.update_user_config(session, int(chat_id), user_level=int(level))
             await query.answer('+ Changes Saved!')
-            return await view_user_info(update, context, chat_id=chat_id)
+            return await view_user_info(update, context, chat_id=chat_id, page=page)
 
 
-@handle_functions_error
+@vpn_utilities.handle_functions_error
 @admin_access
 async def admin_set_free_vpn_test(update, context):
     query = update.callback_query
-    chat_id, status = query.data.replace('admin_set_vpn_free_test__', '').split('__')
+    chat_id, status, page = query.data.replace('admin_set_vpn_free_test__', '').split('__')
     status = status == 'true'
     with SessionLocal() as session:
         with session.begin():
             crud.update_user_config(session, int(chat_id), get_vpn_free_service=status)
             await query.answer('+ Changes Saved!')
-            return await view_user_info(update, context, chat_id=chat_id)
+            return await view_user_info(update, context, chat_id=chat_id, page=page)
 
 
 @admin_access
@@ -267,7 +246,7 @@ admin_change_wallet_balance_conversation = ConversationHandler(
 
 )
 
-@handle_functions_error
+@vpn_utilities.handle_functions_error
 @admin_access
 async def admin_user_services(update, context):
     query = update.callback_query
@@ -306,7 +285,7 @@ async def admin_user_services(update, context):
             return await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
 
-@handle_functions_error
+@vpn_utilities.handle_functions_error
 @admin_access
 async def admin_buy_service_for_user(update, context):
     query = update.callback_query
@@ -337,7 +316,7 @@ async def admin_buy_service_for_user(update, context):
     await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
 
-@handle_functions_error
+@vpn_utilities.handle_functions_error
 @admin_access
 async def admin_assurance_buy_vpn_service(update, context):
     query = update.callback_query
@@ -363,7 +342,7 @@ async def admin_assurance_buy_vpn_service(update, context):
         await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
 
-@handle_functions_error
+@vpn_utilities.handle_functions_error
 @admin_access
 async def admin_confirm_buy_vpn_service(update, context):
     query = update.callback_query
@@ -413,7 +392,7 @@ async def admin_confirm_buy_vpn_service(update, context):
 
 
 
-@handle_functions_error
+@vpn_utilities.handle_functions_error
 @admin_access
 async def admin_user_service_detail(update, context):
     query = update.callback_query
@@ -448,6 +427,7 @@ async def admin_user_service_detail(update, context):
                 f"\nUsed Traffic: {used_traffic}GB"
                 f"\nData Limit: {data_limit}GB"
                 f"\nLifeTime Used Traffic: {lifetime_used_traffic}GB"
+                f"\nSubscription Updated at: {datetime.fromtimestamp(get_from_server.get('sub_updated_at'))} ({utilities_reFactore.human_readable(datetime.fromtimestamp(get_from_server.get('sub_updated_at')), 'en')})"
                 f"\ncreated at: {datetime.fromisoformat(get_from_server.get('created_at')).strftime('%Y-%m-%d %H:%M:%S')} ({utilities_reFactore.human_readable(datetime.fromisoformat(get_from_server.get('created_at')), 'en')})"
                 f"\nExpired: {datetime.fromtimestamp(get_from_server.get('expire'))} ({utilities_reFactore.human_readable(datetime.fromtimestamp(get_from_server.get('expire')), 'en')})"
                 f"\n\nSubscription Link:"
@@ -475,7 +455,7 @@ async def admin_user_service_detail(update, context):
         raise e
 
 
-@handle_functions_error
+@vpn_utilities.handle_functions_error
 @admin_access
 async def admin_upgrade_service_for_user(update, context):
     query = update.callback_query
@@ -506,7 +486,7 @@ async def admin_upgrade_service_for_user(update, context):
     await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
 
-@handle_functions_error
+@vpn_utilities.handle_functions_error
 @admin_access
 async def admin_assurance_upgrade_vpn_service(update, context):
     query = update.callback_query
@@ -533,7 +513,7 @@ async def admin_assurance_upgrade_vpn_service(update, context):
         await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
 
-@handle_functions_error
+@vpn_utilities.handle_functions_error
 @admin_access
 async def admin_confirm_upgrade_vpn_service(update, context):
     query = update.callback_query
@@ -589,7 +569,7 @@ async def admin_confirm_upgrade_vpn_service(update, context):
             await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
 
-@handle_functions_error
+@vpn_utilities.handle_functions_error
 @admin_access
 async def admin_assurance_remove_vpn_service(update, context):
     query = update.callback_query
@@ -629,7 +609,7 @@ async def admin_assurance_remove_vpn_service(update, context):
         await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
 
-@handle_functions_error
+@vpn_utilities.handle_functions_error
 @admin_access
 async def admin_confirm_remove_vpn_service(update, context):
     query = update.callback_query
@@ -668,7 +648,7 @@ async def admin_confirm_remove_vpn_service(update, context):
             text = 'Remove Service For User Successful'
             await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
-@handle_functions_error
+@vpn_utilities.handle_functions_error
 @admin_access
 async def find_service(update, context):
     service_id = context.args

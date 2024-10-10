@@ -158,9 +158,9 @@ async def create_invoice(update, context):
                 invoice_extra_data = await ft_instance.find_text('charge_wallet')
 
             elif action == "buy_vpn_service":
-                period, traffic = extra_data
+                period, traffic, product_id = extra_data
                 amount = await vpn_utilities.calculate_price(traffic, period, chat_id)
-                product_id, back_button_callback= 1, 'vpn_set_period_traffic__30_40'
+                back_button_callback= f'vpn_set_period_traffic__30_40_{product_id}'
                 operation = 'spend'
                 invoice_extra_data = (f"{await ft_instance.find_text('buy_vpn_service')}"
                                       f"\n{await ft_instance.find_text('traffic')} {traffic} {await ft_instance.find_keyboard('gb_lable')}"

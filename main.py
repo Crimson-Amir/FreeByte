@@ -4,8 +4,8 @@ import start_reFactore
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, CallbackQueryHandler, MessageHandler, filters
 import setting, wallet_reFactore, my_service, setting_menu, guidnes_and_support
-from vpn_service import buy_and_upgrade_service, my_service_detail, vpn_setting_menu, vpn_guid, panel_api, statistics, vpn_notification
-from admin import admin_page, vpn_admin, admin_ticket, admin_users
+from vpn_service import buy_and_upgrade_service, my_service_detail, vpn_setting_menu, vpn_guid, statistics, vpn_notification
+from admin import admin_page, vpn_admin, admin_ticket, admin_users, admin_system
 from database_sqlalchemy import SessionLocal
 from crud import crud
 
@@ -35,7 +35,7 @@ async def services(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         keyboard = [
             [InlineKeyboardButton(await ft_instance.find_keyboard('get_vpn_test_label'), callback_data='vpn_recive_test_service') if not config.get_vpn_free_service else None,
-             InlineKeyboardButton(await ft_instance.find_keyboard('buy_vpn_service_label'), callback_data='vpn_set_period_traffic__30_40')],
+             InlineKeyboardButton(await ft_instance.find_keyboard('buy_vpn_service_label'), callback_data='vpn_set_period_traffic__30_40_1')],
             [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='start')]
         ]
 
@@ -109,6 +109,10 @@ if __name__ == '__main__':
 
     application.add_handler(CallbackQueryHandler(admin_users.all_users_list, pattern='admin_manage_users__(.*)'))
     application.add_handler(CallbackQueryHandler(admin_users.view_user_info, pattern='admin_view_user__(.*)'))
+    application.add_handler(CallbackQueryHandler(admin_system.all_products, pattern='admin_system__(.*)'))
+    application.add_handler(CallbackQueryHandler(admin_system.admin_view_product, pattern='admin_view_product__(.*)'))
+    application.add_handler(CallbackQueryHandler(admin_system.admin_change_product_status, pattern='admin_set_product_status__(.*)'))
+    application.add_handler(CallbackQueryHandler(admin_system.view_product_main_server_info, pattern='admin_product_main_server_info__(.*)'))
     application.add_handler(CallbackQueryHandler(admin_users.admin_change_user_status, pattern='admin_set_user_status__(.*)'))
     application.add_handler(CallbackQueryHandler(admin_users.admin_set_user_level, pattern='admin_set_user_level__(.*)'))
     application.add_handler(CallbackQueryHandler(admin_users.admin_set_free_vpn_test, pattern='admin_set_vpn_free_test__(.*)'))

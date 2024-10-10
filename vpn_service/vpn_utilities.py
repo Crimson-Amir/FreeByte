@@ -1,4 +1,4 @@
-import sys, os, pytz
+import sys, os, pytz, functools, logging, traceback
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import setting
 from vpn_service import panel_api
@@ -59,3 +59,23 @@ async def remove_service_in_server(session, purchase):
 
     await panel_api.marzban_api.remove_user(main_server_ip, purchase.username)
     return returnable_amount
+
+
+def handle_functions_error(func):
+    @functools.wraps(func)
+    async def wrapper(update, context, **kwargs):
+        user_detail = update.effective_chat
+        try:
+            return await func(update, context, **kwargs)
+        except Exception as e:
+            if 'Message is not modified' in str(e): return await update.callback_query.answer()
+            logging.error(f'error in {func.__name__}: {str(e)}')
+            tb = traceback.format_exc()
+            err = (
+                f"🔴 An error occurred in {func.__name__}:"
+                f"\n\nerror type:{type(e)}"
+                f"\nerror reason: {str(e)}"
+                f"\n\nTraceback: \n{tb}"
+            )
+            await context.bot.send_message(chat_id=user_detail.id, text=err)
+    return wrapper

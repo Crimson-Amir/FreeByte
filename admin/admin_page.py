@@ -12,6 +12,7 @@ async def admin_page(update, context):
     user_detail = update.effective_chat
 
     keyboard = [
+        [InlineKeyboardButton('System', callback_data=f"admin_system__1")],
         [InlineKeyboardButton('VPN Section', callback_data=f"admin_vpn"),
          InlineKeyboardButton('Manage Users', callback_data=f"admin_manage_users__1")]
     ]

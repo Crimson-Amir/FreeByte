@@ -11,6 +11,13 @@ def get_all_active_partner(session):
     return session.query(model.Partner).filter(model.Partner.active == True).all()
 
 
+def get_all_products(session):
+    return session.query(model.Product).all()
+
+
+def get_product(session, product_id):
+    return session.query(model.Product).filter(model.Product.product_id == product_id).first()
+
 def get_user_by_id(session, user_id: int):
     return session.query(model.UserDetail).filter(model.UserDetail.user_id == user_id).first()
 
@@ -59,3 +66,14 @@ def add_partner(session, active, chat_id, **kwargs):
     session.flush()
     session.refresh(partner)
     return partner
+
+
+def update_product(session, product_id: int, **kwargs):
+    stmt = (
+        update(model.Product)
+        .where(model.Product.product_id == product_id)
+        .values(
+            **kwargs
+        )
+    )
+    session.execute(stmt)
