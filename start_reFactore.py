@@ -29,7 +29,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE, in_new_messa
             if user_detail.id in user_request_to_join:
                 return await context.bot.send_message(chat_id=user_detail.id, text='You already send a join request!\nشما قبلا درخواست عضویت ارسال کردید!')
             text = ('This bot is private, please return with the invite link. Or send a request to join the admin.'
-                    '\nاین ربات خصوصی است، لطفا با لینک دعوت برگردید یا درخواست عضویت را به مدیر ارسال کنید.')
+                    '\nاین ربات خصوصی است، لطفا با لینک دعوت برگردید یا درخواست عضویت ارسال کنید.')
             keyboard = [[InlineKeyboardButton('درخواست عضویت | Reques to Join', callback_data=f'user_requested_to_join')]]
             await context.bot.send_message(chat_id=user_detail.id, text=text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
 
@@ -53,8 +53,7 @@ async def manage_request_to_join_by_admin(update, context):
             f'User Name: {user_detail.first_name} {user_detail.last_name}\n'
             f'User ID: {user_detail.id}\n'
             f'UserName: @{user_detail.username}\n'
-            f'Is User BOT: {user_detail.is_bot}\n')
-
+            )
     admin_keyboard = [
         [InlineKeyboardButton("Accept User✅", callback_data=f'user_join_request_accept__{user_detail.id}'),
          InlineKeyboardButton("Deny User❌", callback_data=f'user_join_request_deny__{user_detail.id}')],
