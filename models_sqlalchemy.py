@@ -17,7 +17,7 @@ class UserDetail(Base):
     chat_id = Column(BigInteger, unique=True, nullable=False)
     language = Column(String, default='fa')
     wallet = Column(Integer, default=0)
-    invited_by_id = Column(BigInteger, ForeignKey('user_detail.chat_id'))  # نام را برای شفافیت تغییر دادیم
+    invited_by = Column(BigInteger, ForeignKey('user_detail.chat_id'))
     register_date = Column(DateTime, default=datetime.now())
 
     financial_reports = relationship("FinancialReport", back_populates="owner", cascade="all, delete-orphan")
@@ -25,8 +25,8 @@ class UserDetail(Base):
     config = relationship("UserConfig", back_populates="owner", cascade="all, delete-orphan", uselist=False)
     partner = relationship("Partner", back_populates="owner", cascade="all, delete-orphan", uselist=False)
 
-    inviter = relationship("UserDetail", back_populates="invitees", remote_side=[chat_id])  # رابطه با دعوت‌کننده
-    invitees = relationship("UserDetail", back_populates="inviter", foreign_keys=[invited_by_id])
+    inviter = relationship("UserDetail", back_populates="invitees", remote_side=[chat_id])
+    invitees = relationship("UserDetail", back_populates="inviter", foreign_keys=[invited_by])
 
 
 class UserConfig(Base):
