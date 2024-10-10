@@ -5,7 +5,7 @@ from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 from crud import admin_crud, crud, vpn_crud
 from database_sqlalchemy import SessionLocal
 from telegram.ext import ConversationHandler, filters, MessageHandler, CallbackQueryHandler, CommandHandler
-import utilities_reFactore
+from utilities_reFactore import report_to_admin, human_readable, format_traffic_from_byte
 from datetime import datetime
 from vpn_service import vpn_utilities, buy_and_upgrade_service, panel_api
 
@@ -64,7 +64,7 @@ async def admin_view_product(update, context, product_id=None, page=None):
                 f'\nMain Server Protocol: {product.main_server.server_protocol}'
                 f'\nMain Server Port: {product.main_server.server_port}'
                 f'\nStatus: {product.active}'
-                f'\nRegister Date: {product.register_date} ({utilities_reFactore.human_readable(product.register_date, "en")})'
+                f'\nRegister Date: {product.register_date} ({human_readable(product.register_date, "en")})'
                 f'\nAll Purchase: {len(product.purchase)}'
                 f'\nActive Purchase: {len([purchase for purchase in product.purchase if purchase.status == "active" and purchase.active == True])}'
             )
@@ -108,16 +108,16 @@ async def view_product_main_server_info(update, context):
 
             text = (
                 f'Version: {system.get("version")}'
-                f'\nMemory Total: {system.get("mem_total")}'
-                f'\nMemory Used: {system.get("mem_used")}'
+                f'\nMemory Total: {format_traffic_from_byte(system.get("mem_total"))} GB'
+                f'\nMemory Used: {format_traffic_from_byte(system.get("mem_used"))} GB'
                 f'\nCPU cores: {system.get("cpu_cores")}'
-                f'\nCPU Usage: {system.get("cpu_usage")}'
+                f'\nCPU Usage: {system.get("cpu_usage")} %'
                 f'\nTotal User: {system.get("total_user")}'
                 f'\nActive Users: {system.get("users_active")}'
-                f'\nIncoming Bandwidth: {system.get("incoming_bandwidth")}'
-                f'\nOutgoing Bandwidth: {system.get("outgoing_bandwidth")}'
-                f'\nIncoming Bandwidth Speed: {system.get("incoming_bandwidth_speed")}'
-                f'\nOutgoing Bandwidth Speed: {system.get("outgoing_bandwidth_speed")}'
+                f'\nIncoming Bandwidth: {format_traffic_from_byte(system.get("incoming_bandwidth"))} GB'
+                f'\nOutgoing Bandwidth: {format_traffic_from_byte(system.get("outgoing_bandwidth"))} GB'
+                f'\nIncoming Bandwidth Speed: {format_traffic_from_byte(system.get("incoming_bandwidth_speed"))} GB'
+                f'\nOutgoing Bandwidth Speed: {format_traffic_from_byte(system.get("outgoing_bandwidth_speed"))} GB'
 
             )
 
@@ -187,7 +187,7 @@ async def admin_change_wallet_balance(update, context):
                     f'\nAdmin chat ID: {user_detail.id} ({user_detail.first_name})'
                 )
 
-                await utilities_reFactore.report_to_admin('purchase', 'admin_change_wallet_balance', msg)
+                await report_to_admin('purchase', 'admin_change_wallet_balance', msg)
 
                 keyboard = [[InlineKeyboardButton('User Detail', callback_data=f"admin_view_user__{chat_id}__1")]]
                 await context.bot.send_message(text=text, chat_id=user_detail.id, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')

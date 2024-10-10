@@ -27,6 +27,15 @@ def human_readable(date, user_language):
         logging.error(f'an error in humanize data: {e}')
         return f'Error In Parse Data'
 
+def format_traffic_from_byte(traffic_in_byte, convert_to='GB'):
+    convert_to_dict = {
+        'GB': 3,
+        'MB': 2
+    }
+    return traffic_in_byte / (1024 / convert_to_dict.get(convert_to, 3))
+
+
+
 
 async def start(update, context, in_new_message=False, raise_error=False):
     query = update.callback_query
