@@ -31,7 +31,7 @@ async def all_products(update, context):
             current_products = products[start:end]
             text = 'select Product to manage:'
 
-            keyboard = [InlineKeyboardButton('Online Users', callback_data=f'admin_view_online_users__1__{page}')]
+            keyboard = [[InlineKeyboardButton('Online Users', callback_data=f'admin_view_online_users__1__{page}')]]
             product_keyboard = [[InlineKeyboardButton(f"{product.product_id} {product.product_name} {service_status.get(product.active)}", callback_data=f'admin_view_product__{product.product_id}__{page}')] for product in current_products]
             keyboard.extend(product_keyboard)
 
