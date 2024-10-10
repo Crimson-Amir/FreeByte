@@ -130,8 +130,8 @@ async def register_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
             else:
                 await context.bot.send_message(chat_id=setting.ADMIN_CHAT_IDs[0], text=start_text_notif + '\n\n• Without profile picture (or not public)', parse_mode='HTML', message_thread_id=setting.new_user_thread_id)
 
-            del user_request_to_join[user_detail.id]
-            del context.user_data[f'inviter_{user_detail.id}']
+            context.user_data.pop(f'inviter_{user_detail.id}', None)
+            user_request_to_join.pop(user_detail.id, None)
             return await start(update, context)
 
 
