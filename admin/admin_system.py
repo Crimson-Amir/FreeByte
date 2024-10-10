@@ -1,3 +1,4 @@
+import json
 import sys, os, math, requests, pytz
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from admin.admin_utilities import admin_access, cancel_conversation as cancel
@@ -9,8 +10,7 @@ from utilities_reFactore import report_to_admin, human_readable, format_traffic_
 from datetime import datetime
 from vpn_service import vpn_utilities, buy_and_upgrade_service, panel_api
 
-DEFAULT_PRODUCT_ID = 1
-ADD_CREDIT_BAlANCE = 0
+GET_NEW_HOST_CONFIG = 0
 
 service_status = {
     True: '✅',
@@ -118,93 +118,44 @@ async def view_product_main_server_info(update, context):
                 f'\nOutgoing Bandwidth: {format_traffic_from_byte(system.get("outgoing_bandwidth"))} GB'
                 f'\nIncoming Bandwidth Speed: {format_traffic_from_byte(system.get("incoming_bandwidth_speed"))} GB'
                 f'\nOutgoing Bandwidth Speed: {format_traffic_from_byte(system.get("outgoing_bandwidth_speed"))} GB'
-
             )
 
             keyboard = [
+                [InlineKeyboardButton('View Host', callback_data=f'admin_view_host__{product_id}__{page}'),
+                 InlineKeyboardButton('View Inbounds', callback_data=f'admin_view_inbounds__{product_id}__{page}')],
                 [InlineKeyboardButton('Refresh', callback_data=f'admin_product_main_server_info__{product_id}__{page}'),
-                InlineKeyboardButton('Back', callback_data=f'admin_view_product__{product_id}__{page}')]
+                 InlineKeyboardButton('Back', callback_data=f'admin_view_product__{product_id}__{page}')]
             ]
 
             return await query.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(keyboard))
 
 @admin_access
-async def get_new_balance(update, context):
-    await update.callback_query.answer()
-    user_detail = update.effective_chat
-    try:
-        query = update.callback_query
-        chat_id, action = query.data.replace('admin_cuwb__', '').split('__')
-        context.user_data[f'admin_increase_user_balance_chat_id'] = chat_id
-        context.user_data[f'admin_increase_user_balance_action'] = action
-        keyboard = [[InlineKeyboardButton("Cancel", callback_data='cancel_increase_wallet_conversation')]]
-        text = 'send amount in IRT:'
-        await context.bot.send_message(text=text, chat_id=user_detail.id, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
-        return ADD_CREDIT_BAlANCE
-    except Exception as e:
-        await context.bot.send_message(chat_id=user_detail.id, text=f'error:\n{e}')
-        return ConversationHandler.END
+async def admin_view_host(update, context):
+    query = update.callback_query
+    product_id, page = query.data.replace('admin_view_host__', '').split('__')
+
+    with SessionLocal() as session:
+        get_product = admin_crud.get_product(session, product_id)
+        get_host = await panel_api.marzban_api.get_host(get_product.main_server.server_ip)
+
+        keyboard = [
+            [InlineKeyboardButton('Refresh', callback_data=f'admin_view_host__{product_id}__{page}'),
+             InlineKeyboardButton('Back', callback_data=f'admin_product_main_server_info__{product_id}__{page}')]
+        ]
+        return await query.edit_message_text(text=f"{get_host}"[:4096], reply_markup=InlineKeyboardMarkup(keyboard))
 
 
 @admin_access
-async def admin_change_wallet_balance(update, context):
-    user_detail = update.effective_chat
-    try:
-        with SessionLocal() as session:
-            with session.begin():
+async def admin_view_inbounds(update, context):
+    query = update.callback_query
+    product_id, page = query.data.replace('admin_view_inbounds__', '').split('__')
 
-                chat_id = int(context.user_data[f'admin_increase_user_balance_chat_id'])
-                action = context.user_data[f'admin_increase_user_balance_action']
-                amount = int(update.message.text)
+    with SessionLocal() as session:
+        get_product = admin_crud.get_product(session, product_id)
+        get_host = await panel_api.marzban_api.get_inbounds(get_product.main_server.server_ip)
 
-                finacial_report = crud.create_financial_report(
-                    session, 'recive' if action == 'increase_balance_by_admin' else 'spend',
-                    chat_id=chat_id,
-                    amount=amount,
-                    action=action,
-                    service_id=None,
-                    payment_status='not paid',
-                    payment_getway='wallet',
-                    currency='IRT'
-                )
-
-                text = f'+ Operation Successfull.\namoutn: {amount:,} IRT\nchat id: {chat_id}\naction: {action}'
-
-                if action == 'increase_balance_by_admin':
-                    crud.add_credit_to_wallet(session, finacial_report)
-                elif action == 'set':
-                    crud.update_user(session, chat_id, wallet=amount)
-                elif action == 'reduction_balance_by_admin':
-                    crud.less_from_wallet(session, finacial_report)
-
-                msg = (
-                    f"Admin Change User Wallet"
-                    f'\nAction: {finacial_report.action.replace("_", " ")}'
-                    f'\nAuthority: {finacial_report.financial_id}'
-                    f'\nAmount: {finacial_report.amount:,}'
-                    f'\nService ID: {finacial_report.id_holder}'
-                    f'\nUser chat id: {finacial_report.chat_id}'
-                    f'\nAdmin chat ID: {user_detail.id} ({user_detail.first_name})'
-                )
-
-                await report_to_admin('purchase', 'admin_change_wallet_balance', msg)
-
-                keyboard = [[InlineKeyboardButton('User Detail', callback_data=f"admin_view_user__{chat_id}__1")]]
-                await context.bot.send_message(text=text, chat_id=user_detail.id, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
-
-                return ConversationHandler.END
-
-    except Exception as e:
-        await context.bot.send_message(text=f'Error in add amount: {e}', chat_id=user_detail.id, parse_mode='html')
-        return ConversationHandler.END
-
-
-admin_change_wallet_balance_conversation = ConversationHandler(
-    entry_points=[CallbackQueryHandler(get_new_balance, pattern='admin_cuwb__(.*)')],
-    states={
-        ADD_CREDIT_BAlANCE: [MessageHandler(filters.TEXT & ~filters.COMMAND, admin_change_wallet_balance)],
-    },
-    fallbacks=[CallbackQueryHandler(cancel, pattern='cancel_increase_wallet_conversation')],
-    conversation_timeout=600
-
-)
+        keyboard = [
+            [InlineKeyboardButton('Refresh', callback_data=f'admin_view_inbounds__{product_id}__{page}'),
+             InlineKeyboardButton('Back', callback_data=f'admin_product_main_server_info__{product_id}__{page}')]
+        ]
+        return await query.edit_message_text(text=f"{get_host}"[:4096], reply_markup=InlineKeyboardMarkup(keyboard))

@@ -5,8 +5,22 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
 import setting
 from database_sqlalchemy import SessionLocal
+from threading import Lock
 
-user_request_to_join = {}
+class UserDataStore:
+    def __init__(self):
+        self.lock = Lock()
+        self.user_data = {}
+
+    def add_user(self, chat_id, data):
+        with self.lock:
+            self.user_data[chat_id] = data
+
+    def get_user(self, chat_id):
+        with self.lock:
+            return self.user_data.get(chat_id)
+
+user_data_store = UserDataStore()
 
 @handle_error.handle_functions_error
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE, in_new_message=False):
@@ -26,7 +40,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE, in_new_messa
             new_select = await context.bot.send_message(chat_id=user_detail.id, text=text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
             message_token.set_message_time(new_select.message_id)
         else:
-            if user_detail.id in user_request_to_join:
+            if user_detail.id in user_data_store.user_data:
                 return await context.bot.send_message(chat_id=user_detail.id, text='You already send a join request!\nشما قبلا درخواست عضویت ارسال کردید!')
             text = ('This bot is private, please return with the invite link. Or send a request to join the admin.'
                     '\nاین ربات خصوصی است، لطفا با لینک دعوت برگردید یا درخواست عضویت ارسال کنید.')
@@ -43,10 +57,10 @@ async def manage_request_to_join_by_admin(update, context):
     query = update.callback_query
     user_detail = update.effective_chat
 
-    if user_request_to_join.get(user_detail.id):
+    if user_data_store.get_user(user_detail.id):
         return await query.answer('you already send a request!')
 
-    user_request_to_join[user_detail.id] = {'user_detail': user_detail}
+    user_data_store.add_user(user_detail.id, {'user_detail': user_detail})
 
     photos = await context.bot.get_user_profile_photos(user_id=user_detail.id)
     text = (f'👤 User Request to join the BOT\n\n'
@@ -78,10 +92,12 @@ async def manage_request_to_join_by_admin(update, context):
 async def check_new_user_request_by_admin(update, context):
     query = update.callback_query
     chat_id = int(query.data.replace('user_join_request_accept__', '').replace('user_join_request_deny__', ''))
-    user_detail = user_request_to_join[chat_id]['user_detail']
+    with user_data_store.lock:
+        user_detail = user_data_store.user_data[chat_id]['user_detail']
 
     if 'accept' in query.data:
-        user_request_to_join[chat_id]['without_invite_link'] = True
+        with user_data_store.lock:
+            user_data_store.user_data[chat_id]['without_invite_link'] = True
         text = ('<b>• زبان خود را انتخاب کنید:'
                 '\n• Please choose your language:</b>')
         keyboard = [[InlineKeyboardButton('English 🇬🇧', callback_data='register_user_en'),
@@ -105,32 +121,33 @@ async def register_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
     with SessionLocal() as session:
         with session.begin():
 
-            join_without_invite_link = user_request_to_join.get(user_detail.id, {}).get('without_invite_link')
-            inviter_chat_id = None
+            with user_data_store.lock:
+                join_without_invite_link = user_data_store.user_data.get(user_detail.id, {}).get('without_invite_link')
+                inviter_chat_id = None
 
-            if not join_without_invite_link:
-                inviter_chat_id, inviter_user_id = context.user_data[f'inviter_{user_detail.id}']
-                inviter_user = crud.get_user_by_chat_id_and_user_id(session, inviter_chat_id, inviter_user_id)
-                if not inviter_user:
-                    return context.bot.send_message(chat_id=user_detail.id, text='The inviting user does not exist in our database!\nکاربر دعوت کننده در دیتابیس ما وجود ندارد!')
+                if not join_without_invite_link:
+                    inviter_chat_id, inviter_user_id = context.user_data[f'inviter_{user_detail.id}']
+                    inviter_user = crud.get_user_by_chat_id_and_user_id(session, inviter_chat_id, inviter_user_id)
+                    if not inviter_user:
+                        return context.bot.send_message(chat_id=user_detail.id, text='The inviting user does not exist in our database!\nکاربر دعوت کننده در دیتابیس ما وجود ندارد!')
 
-            crud.create_user(session, user_detail, inviter_chat_id, selected_language)
-            photos = await context.bot.get_user_profile_photos(user_id=user_detail.id)
+                crud.create_user(session, user_detail, inviter_chat_id, selected_language)
+                photos = await context.bot.get_user_profile_photos(user_id=user_detail.id)
 
-            start_text_notif = (f'👤 New Start IN Bot\n\n'
-                                f'User Name: {user_detail.first_name} {user_detail.last_name}\n'
-                                f'User ID: <a href=\"tg://user?id={user_detail.id}\">{user_detail.id}</a>\n'
-                                f'UserName: @{user_detail.username}\n'
-                                f'Selected Language: {selected_language}\n'
-                                f"\nInvited By: <a href=\"tg://user?id={inviter_chat_id}\">{inviter_chat_id}</a>")
+                start_text_notif = (f'👤 New Start IN Bot\n\n'
+                                    f'User Name: {user_detail.first_name} {user_detail.last_name}\n'
+                                    f'User ID: <a href=\"tg://user?id={user_detail.id}\">{user_detail.id}</a>\n'
+                                    f'UserName: @{user_detail.username}\n'
+                                    f'Selected Language: {selected_language}\n'
+                                    f"\nInvited By: <a href=\"tg://user?id={inviter_chat_id}\">{inviter_chat_id}</a>")
 
-            if photos.total_count > 0:
-                photo_file_id = photos.photos[0][-1].file_id
-                await context.bot.send_photo(chat_id=setting.ADMIN_CHAT_IDs[0], photo=photo_file_id, caption=start_text_notif, parse_mode='HTML', message_thread_id=setting.new_user_thread_id)
-            else:
-                await context.bot.send_message(chat_id=setting.ADMIN_CHAT_IDs[0], text=start_text_notif + '\n\n• Without profile picture (or not public)', parse_mode='HTML', message_thread_id=setting.new_user_thread_id)
-            context.user_data.pop(f'inviter_{user_detail.id}', None)
-            user_request_to_join.pop(user_detail.id, None)
+                if photos.total_count > 0:
+                    photo_file_id = photos.photos[0][-1].file_id
+                    await context.bot.send_photo(chat_id=setting.ADMIN_CHAT_IDs[0], photo=photo_file_id, caption=start_text_notif, parse_mode='HTML', message_thread_id=setting.new_user_thread_id)
+                else:
+                    await context.bot.send_message(chat_id=setting.ADMIN_CHAT_IDs[0], text=start_text_notif + '\n\n• Without profile picture (or not public)', parse_mode='HTML', message_thread_id=setting.new_user_thread_id)
+                context.user_data.pop(f'inviter_{user_detail.id}', None)
+                user_data_store.user_data.pop(user_detail.id, None)
 
     return await start(update, context)
 

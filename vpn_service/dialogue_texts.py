@@ -147,8 +147,8 @@ text_transaction = {
         "\n\n💻 لینک دانلود v2rayN:",
     },
     "online_at": {
-        "en": "🟢 Online At:",
-        "fa": "🟢 آنلاین در:",
+        "en": "🟢 Online:",
+        "fa": "🟢 آنلاین:",
     },
     "not_connected_yet": {
         "en": "Not Connected Yet",

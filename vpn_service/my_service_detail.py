@@ -1,5 +1,5 @@
 from _datetime import datetime
-import sys, os, logging, math, pytz
+import sys, os, math, pytz
 import requests.exceptions
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -83,8 +83,15 @@ async def service_info(update, context):
                 if service_stauts_server in ['limited', 'expired'] and purchase.status == 'active':
                     vpn_crud.update_purchase(session, purchase.purchase_id, status=service_stauts_server)
 
-                expire_date = human_readable(datetime.fromtimestamp(get_from_server.get('expire')), await ft_instance.find_user_language())
-                onlien_at = human_readable(get_from_server.get('online_at'), await ft_instance.find_user_language()) \
+                expire_date = human_readable(get_from_server.get('expire'), await ft_instance.find_user_language())
+
+                online_at = datetime.fromtimestamp(get_from_server.get('online_at'))
+                now = datetime.now(tz=pytz.timezone('Asia/Tehran'))
+
+                if (now - online_at).total_seconds() < 60:
+                    online_at = now
+
+                online_at = human_readable(online_at, await ft_instance.find_user_language()) \
                     if get_from_server.get('online_at') else await ft_instance.find_text('not_connected_yet')
 
                 used_traffic = round(get_from_server.get('used_traffic') / (1024 ** 3), 2)
@@ -102,7 +109,7 @@ async def service_info(update, context):
                 text = (
                     f"<b>{await ft_instance.find_text('vpn_selected_service_info')}</b>"
                     f"\n\n{await ft_instance.find_text('vpn_service_name')} <code>{purchase.username}</code>"
-                    f"\n\n{await ft_instance.find_text('online_at')} {onlien_at}"
+                    f"\n\n{await ft_instance.find_text('online_at')} {online_at}"
                     f"\n{await ft_instance.find_text('vpn_service_status')} {service_status.get(service_stauts_server, service_stauts_server)}"
                     f"\n{await ft_instance.find_text('vpn_expire_date')} {expire_date}"
                     f"\n{await ft_instance.find_text('vpn_traffic_use')} {used_traffic}/{data_limit}GB"

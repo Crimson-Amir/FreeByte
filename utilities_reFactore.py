@@ -35,8 +35,6 @@ def format_traffic_from_byte(traffic_in_byte, convert_to='GB'):
     return round(traffic_in_byte / (1024 ** convert_to_dict.get(convert_to, 3)), 2)
 
 
-
-
 async def start(update, context, in_new_message=False, raise_error=False):
     query = update.callback_query
     user_detail = update.effective_chat

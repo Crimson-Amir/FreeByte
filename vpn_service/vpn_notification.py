@@ -1,4 +1,4 @@
-import traceback, pytz, sys, os
+import traceback, pytz, sys, os, logging
 from datetime import datetime, timedelta
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -8,6 +8,8 @@ from utilities_reFactore import FindText, report_to_admin, human_readable
 from database_sqlalchemy import SessionLocal
 import setting
 
+online_users = []
+
 async def format_traffic_from_megabyte(ft_instance, traffic_in_megabyte, chat_id):
     if traffic_in_megabyte == 0:
         return await ft_instance.find_from_database(chat_id, 'without_usage')
@@ -16,6 +18,12 @@ async def format_traffic_from_megabyte(ft_instance, traffic_in_megabyte, chat_id
     else:
         return f"{round(traffic_in_megabyte / 1000, 2)} {await ft_instance.find_from_database(chat_id,'gigabyte')}"
 
+async def send_message_to_user(context, purchase, text, keyboard):
+    try:
+        await context.bot.send_message(purchase.chat_id, text=text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
+    except Exception as e:
+        logging.error(f'error in send notification to user:\n{e}')
+
 async def report_service_termination_to_user(context, purchase, ft_instance):
     text = await ft_instance.find_from_database(purchase.chat_id, 'vpn_service_termination_notification')
     text = text.format(f"<code>{purchase.username}</code>")
@@ -23,7 +31,7 @@ async def report_service_termination_to_user(context, purchase, ft_instance):
         [InlineKeyboardButton(await ft_instance.find_from_database(purchase.chat_id, 'vpn_upgrade_service', 'keyboard'), callback_data=f'vpn_upgrade_service__30__40__{purchase.purchase_id}'),
          InlineKeyboardButton(await ft_instance.find_from_database(purchase.chat_id, 'vpn_buy_vpn', 'keyboard'), callback_data='vpn_set_period_traffic__30_40')]
     ]
-    await context.bot.send_message(purchase.chat_id, text=text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
+    await send_message_to_user(context, purchase, text, keyboard)
 
 
 async def report_service_expired_in_days(context, purchase, ft_instance, days_left):
@@ -33,7 +41,7 @@ async def report_service_expired_in_days(context, purchase, ft_instance, days_le
         [InlineKeyboardButton(await ft_instance.find_from_database(purchase.chat_id,'vpn_upgrade_service','keyboard'), callback_data=f'vpn_upgrade_service__30__40__{purchase.purchase_id}'),
          InlineKeyboardButton(await ft_instance.find_from_database(purchase.chat_id,'vpn_view_service_detail','keyboard'), callback_data=f'vpn_my_service_detail__{purchase.purchase_id}')]
     ]
-    await context.bot.send_message(purchase.chat_id, text=text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
+    await send_message_to_user(context, purchase, text, keyboard)
 
 
 async def report_service_expired_in_gigabyte(context, purchase, ft_instance, percentage_traffic_consumed:int, left_traffic_in_gigabyte):
@@ -44,7 +52,7 @@ async def report_service_expired_in_gigabyte(context, purchase, ft_instance, per
         [InlineKeyboardButton(await ft_instance.find_from_database(purchase.chat_id, 'vpn_upgrade_service', 'keyboard'), callback_data=f'vpn_upgrade_service__30__40__{purchase.purchase_id}'),
          InlineKeyboardButton(await ft_instance.find_from_database(purchase.chat_id, 'vpn_view_service_detail', 'keyboard'), callback_data=f'vpn_my_service_detail__{purchase.purchase_id}')]
     ]
-    await context.bot.send_message(purchase.chat_id, text=text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
+    await send_message_to_user(context, purchase, text, keyboard)
 
 
 async def report_service_termination_to_admin(purchase):
@@ -60,6 +68,7 @@ async def report_service_termination_to_admin(purchase):
 async def notification_timer(context):
     try:
         with SessionLocal() as session:
+            online_users.clear()
             all_product = vpn_crud.get_all_product(session)
             ft_instanc = FindText(None, None)
 
@@ -92,7 +101,6 @@ async def notification_timer(context):
 
                             elif traffic_percent >= purchase.owner.config.traffic_notification_percent and not purchase.traffic_notification_status:
                                 vpn_crud.update_purchase(session, purchase.purchase_id, traffic_notification_status=True)
-                                session.commit()
                                 await report_service_expired_in_gigabyte(
                                     context,
                                     purchase,
@@ -101,6 +109,11 @@ async def notification_timer(context):
                                     traffic_left_in_gigabyte
                                 )
 
+                            online_at = datetime.fromtimestamp(user.get('online_at'))
+                            now = datetime.now(tz=pytz.timezone('Asia/Tehran'))
+                            if (now - online_at).total_seconds() < 60:
+                                online_users.append(user['username'])
+            session.commit()
 
     except Exception as e:
         tb = traceback.format_exc()

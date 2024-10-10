@@ -63,7 +63,7 @@ class MarzbanAPI:
         url, headers = self.initialize_request(main_server_ip, endpoint)
         return self.make_request('get', url, headers=headers)
 
-    async def get_hosts(self, main_server_ip):
+    async def get_host(self, main_server_ip):
         """Retrieve host statistics."""
         endpoint = "/api/hosts"
         url, headers = self.initialize_request(main_server_ip, endpoint)
