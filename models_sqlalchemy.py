@@ -3,7 +3,6 @@ from sqlalchemy import Integer, String, Column, Boolean, ForeignKey, DateTime, B
 from sqlalchemy.orm import relationship
 from datetime import datetime
 
-
 class UserDetail(Base):
     __tablename__ = 'user_detail'
 
@@ -19,14 +18,10 @@ class UserDetail(Base):
     wallet = Column(Integer, default=0)
     invited_by = Column(BigInteger, ForeignKey('user_detail.chat_id'))
     register_date = Column(DateTime, default=datetime.now())
-
     financial_reports = relationship("FinancialReport", back_populates="owner", cascade="all, delete-orphan")
     services = relationship("Purchase", back_populates="owner", cascade="all, delete-orphan")
     config = relationship("UserConfig", back_populates="owner", cascade="all, delete-orphan", uselist=False)
     partner = relationship("Partner", back_populates="owner", cascade="all, delete-orphan", uselist=False)
-
-    inviter = relationship("UserDetail", back_populates="invitees", remote_side=[chat_id])
-    invitees = relationship("UserDetail", back_populates="inviter", foreign_keys=[invited_by])
 
 
 class UserConfig(Base):

@@ -21,13 +21,29 @@ class ConnectToServer:
 
 connect_to_server_instance = ConnectToServer()
 
-async def handle_inviter_refrall(session, financial):
+async def handle_inviter_referral(session, financial):
     if not financial.owner.config.first_purchase_refreal_for_inviter:
         try:
-            frerall_amount = (financial.amount * setting.REFREALL_PERCENT) / 100
-            increase_wallet_balance()
+            with session.begin_nested():
+                ft_instance = utilities_reFactore.FindText(None, None)
+                referral_amount = (financial.amount * setting.REFERRAL_PERCENT) / 100
+                finacial_report = crud.create_financial_report(
+                    session, 'recive',
+                    chat_id=financial.owner.invited_by,
+                    amount=referral_amount,
+                    action='first_purchase_referral',
+                    service_id=financial.financial_id,
+                    payment_status='not paid',
+                    payment_getway='wallet',
+                    currency='IRT'
+                )
+                crud.add_credit_to_wallet(session, finacial_report)
+                text = await ft_instance.find_from_database(financial.chat_id, 'recive_money_for_referral')
+                text = text.format(setting.REFERRAL_PERCENT, referral_amount)
+                crud.update_user_config(session, chat_id=financial.chat_id, first_purchase_refreal_for_inviter=True)
+                await utilities_reFactore.report_to_user('purchase', financial.chat_id, text)
         except Exception as e:
-            pass
+            logging.error(f'error to add referral to inviter wallet:\n{e}')
 
 async def increase_wallet_balance(financial, context, session):
     dialogues = transaction.get(financial.owner.language, transaction.get('fa'))
@@ -81,8 +97,9 @@ async def handle_successful_payment(session, financial, authority, payment_getwa
     elif financial.action == 'increase_wallet_balance':
         await increase_wallet_balance(financial, context, session)
 
-    await handle_inviter_refrall(session, financial)
-    await handle_successful_report(session, financial, extra_data, authority, payment_getway)
+    await handle_inviter_referral(session, financial)
+    await handle_successful_report(financial, extra_data, authority, payment_getway)
+    crud.update_financial_report_status(session, financial.financial_id, 'paid')
 
 async def handle_failed_payment(session, financial, exception, dialogues, authority, payment_getway):
     """Handles payment failure and refunds if necessary."""
@@ -95,21 +112,16 @@ async def handle_failed_payment(session, financial, exception, dialogues, author
     await utilities_reFactore.report_to_admin('error', payment_getway, error_msg, financial.owner)
     await utilities_reFactore.report_to_user('warning', financial.chat_id, message)
 
-async def handle_successful_report(session, financial, extra_data, authority, payment_getway):
+async def handle_successful_report(financial, extra_data, authority, payment_getway):
     """Reports successful payment."""
-    try:
-        msg = (
-            f'Action: {financial.action.replace("_", " ")}\n'
-            f'Authority: {authority}\n'
-            f'Amount: {financial.amount:,}\n'
-            f'Service ID: {financial.id_holder}\n'
-            f'{extra_data}'
-        )
-        await utilities_reFactore.report_to_admin('purchase', payment_getway, msg, financial.owner)
-        crud.update_financial_report_status(session, financial.financial_id, 'paid')
-
-    except Exception as e:
-        logging.error(f'error in report successful payment to admin.\n{e}')
+    msg = (
+        f'Action: {financial.action.replace("_", " ")}\n'
+        f'Authority: {authority}\n'
+        f'Amount: {financial.amount:,}\n'
+        f'Service ID: {financial.id_holder}\n'
+        f'{extra_data}'
+    )
+    await utilities_reFactore.report_to_admin('purchase', payment_getway, msg, financial.owner)
 
 def log_error(msg, exception, order_id):
     """Logs error details."""

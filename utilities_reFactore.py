@@ -41,16 +41,12 @@ async def start(update, context, in_new_message=False, raise_error=False):
     ft_instance = FindText(update, context, notify_user=False)
     text = await ft_instance.find_text('start_menu')
     try:
-        user_database_id = await find_user_id(user_detail.id, context)
-        link = f'https://t.me/Free_Byte_Bot/?start=ref_{user_detail.id}_{user_database_id}'
-        invite_text = f'{await ft_instance.find_text("invite_firend")}\n{link}'
-
         main_keyboard = [
             [InlineKeyboardButton(await ft_instance.find_keyboard('menu_services'), callback_data='menu_services')],
             [InlineKeyboardButton(await ft_instance.find_keyboard('wallet'), callback_data='wallet_page'),
              InlineKeyboardButton(await ft_instance.find_keyboard('my_services'), callback_data='my_services')],
             [InlineKeyboardButton(await ft_instance.find_keyboard('setting'), callback_data='setting_menu'),
-             InlineKeyboardButton(await ft_instance.find_keyboard('invite'), url=f'https://t.me/share/url?text={invite_text}')],
+             InlineKeyboardButton(await ft_instance.find_keyboard('invite_firend'), callback_data='invite_firends')],
             [InlineKeyboardButton(await ft_instance.find_keyboard('help_button'), callback_data='guide_menu')],
         ]
 
@@ -66,6 +62,7 @@ async def start(update, context, in_new_message=False, raise_error=False):
         if raise_error: raise e
         logging.error(f'error in send start message! \n{e}')
         await context.bot.send_message(chat_id=user_detail.id, text='<b>Sorry, somthing went wrong!</b>', parse_mode='html')
+
 
 async def find_user_id(user_id, context):
     user_database_id = context.user_data.get('user_database_id')

@@ -1,6 +1,6 @@
 import logging
 from crud import crud
-from utilities_reFactore import FindText, UserNotFound, handle_error, message_token, start as ustart
+from utilities_reFactore import FindText, UserNotFound, handle_error, message_token, start as ustart, find_user_id
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
 import setting
@@ -162,3 +162,21 @@ async def already_on_this(update, context):
     query = update.callback_query
     ft_instance = FindText(update, context, notify_user=False)
     await query.answer(text=await ft_instance.find_text('already_on_this'))
+
+
+@handle_error.handle_functions_error
+async def invite_firends(update, context):
+    query = update.callback_query
+    user_detail = update.effective_chat
+    ft_instance = FindText(update, context)
+    text = await ft_instance.find_text('invite_firend_text')
+    text = text.format(setting.REFERRAL_PERCENT)
+    user_database_id = await find_user_id(user_detail.id, context)
+    link = f'https://t.me/Free_Byte_Bot/?start=ref_{user_detail.id}_{user_database_id}'
+    invite_text = f'{await ft_instance.find_text("invite_firend")}\n{link}'
+
+    main_keyboard = [
+        [InlineKeyboardButton(await ft_instance.find_keyboard('send_invite_link'),  url=f'https://t.me/share/url?text={invite_text}')],
+        [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='start')],
+    ]
+    return await query.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(main_keyboard), parse_mode='html')

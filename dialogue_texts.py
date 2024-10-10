@@ -212,10 +212,6 @@ text_transaction = {
         "en": "Payment Authority:",
         "fa": "شناسه پرداخت:",
     },
-    "invite_firend": {
-        "en": "",
-        "fa": "",
-    },
     "already_on_this": {
         "en": "You already on this option!",
         "fa": "این گزینه از قبل انتخاب شده است!",
@@ -278,9 +274,25 @@ text_transaction = {
         "en": "reduction balance by admin",
         "fa": "کاهش اعتبار توسط ادمین",
     },
+    "recive_money_for_referral": {
+        "en": "Your friend made the first purchase, {0}% of the purchase amounting to {1} IRT was deposited into your account✅",
+        "fa": "دوست شما اولین خرید خودش رو انجام داد، {0} درصد خرید به مبلغ {1} تومن به حساب شما واریز شد✅",
+    },
+    "invite_firend_text": {
+        "en": "👥 By sending an invitation link, receive {0}% of your friends' first transaction amount as a gift!",
+        "fa": "👥 با ارسال لینک دعوت، {0} درصد مبلغ اولین تراکنش دوستانتان را به عنوان هدیه دریافت کنید!",
+    },
 }
 
 keyboard_transaction = {
+    "invite_firend": {
+        "en": "🔗 Invite Firends",
+        "fa": "🔗 دعوت از دوستان",
+    },
+    "send_invite_link": {
+        "en": "Send Invite Link",
+        "fa": "ارسال لینک دعوت",
+    },
     "error_message": {
         "en": "Oops, something went wrong!",
         "fa": "خطا در انجام عملیات!",
@@ -304,10 +316,6 @@ keyboard_transaction = {
     "my_services": {
         "en": "My Services 🎛",
         "fa": "🎛 سرویس‌های من",
-    },
-    "invite": {
-        "en": "👥️ Invite Firends",
-        "fa": "👥️ دعوت از دوستان",
     },
     "back_button": {
         "en": "↰ Back",

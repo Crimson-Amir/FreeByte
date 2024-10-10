@@ -70,6 +70,7 @@ if __name__ == '__main__':
     application.add_handler(CallbackQueryHandler(my_service.my_services, pattern='my_services'))
     application.add_handler(CallbackQueryHandler(start_reFactore.manage_request_to_join_by_admin, pattern='user_requested_to_join'))
     application.add_handler(CallbackQueryHandler(start_reFactore.check_new_user_request_by_admin, pattern='user_join_request_(.*)'))
+    application.add_handler(CallbackQueryHandler(start_reFactore.invite_firends, pattern='invite_firends'))
 
 
 

@@ -210,6 +210,11 @@ async def admin_change_wallet_balance(update, context):
 
                 if action == 'increase_balance_by_admin':
                     crud.add_credit_to_wallet(session, finacial_report)
+
+                    user_text = await ft_instance.find_from_database(chat_id, 'amount_added_to_wallet_successfully')
+                    user_text = user_text.format(f"{amount:,}")
+                    await context.bot.send_message(text=user_text, chat_id=chat_id)
+
                 elif action == 'set':
                     crud.update_user(session, chat_id, wallet=amount)
                 elif action == 'reduction_balance_by_admin':
@@ -229,10 +234,6 @@ async def admin_change_wallet_balance(update, context):
 
                 keyboard = [[InlineKeyboardButton('User Detail', callback_data=f"admin_view_user__{chat_id}__1")]]
                 await context.bot.send_message(text=text, chat_id=user_detail.id, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
-
-                user_text = await ft_instance.find_from_database(chat_id, 'amount_added_to_wallet_successfully')
-                user_text = user_text.format(f"{amount:,}")
-                await context.bot.send_message(text=user_text, chat_id=chat_id)
 
                 return ConversationHandler.END
 
