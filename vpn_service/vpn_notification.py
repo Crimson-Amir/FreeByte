@@ -7,8 +7,21 @@ from crud import vpn_crud
 from utilities_reFactore import FindText, report_to_admin, human_readable
 from database_sqlalchemy import SessionLocal
 import setting
+from threading import Lock
 
-online_users = []
+class OnlineUsers:
+    def __init__(self):
+        self.lock = Lock()
+        self.online_users = []
+    def add_user(self, user_info):
+        with self.lock:
+            self.online_users.append(user_info)
+
+    def clear_list(self):
+        with self.lock:
+            self.online_users.clear()
+
+online_users_instance = OnlineUsers()
 
 async def format_traffic_from_megabyte(ft_instance, traffic_in_megabyte, chat_id):
     if traffic_in_megabyte == 0:
@@ -68,7 +81,7 @@ async def report_service_termination_to_admin(purchase):
 async def notification_timer(context):
     try:
         with SessionLocal() as session:
-            online_users.clear()
+            online_users_instance.clear_list()
             all_product = vpn_crud.get_all_product(session)
             ft_instanc = FindText(None, None)
 
@@ -113,7 +126,7 @@ async def notification_timer(context):
                                 online_at = datetime.fromisoformat(user.get('online_at')).replace(microsecond=0)
                                 now = datetime.now()
                                 if (now - online_at).total_seconds() < 60:
-                                    online_users.append(user['username'])
+                                    online_users_instance.add_user([user['username'], purchase.purchase_id])
             session.commit()
 
     except Exception as e:

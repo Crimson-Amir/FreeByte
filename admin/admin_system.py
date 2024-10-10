@@ -5,7 +5,7 @@ from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 from crud import admin_crud
 from database_sqlalchemy import SessionLocal
 from utilities_reFactore import human_readable, format_traffic_from_byte
-from vpn_service import vpn_utilities, panel_api
+from vpn_service import vpn_utilities, panel_api, vpn_notification
 
 GET_NEW_HOST_CONFIG = 0
 
@@ -30,16 +30,38 @@ async def all_products(update, context):
             end = start + item_per_page
             current_products = products[start:end]
             text = 'select Product to manage:'
-            keyboard = [[InlineKeyboardButton(f"{product.product_id} {product.product_name} {service_status.get(product.active)}", callback_data=f'admin_view_product__{product.product_id}__{page}')] for product in current_products]
+
+            keyboard = [InlineKeyboardButton('Online Users', callback_data=f'admin_view_online_users__{page}')]
+            product_keyboard = [[InlineKeyboardButton(f"{product.product_id} {product.product_name} {service_status.get(product.active)}", callback_data=f'admin_view_product__{product.product_id}__{page}')] for product in current_products]
+            keyboard.extend(product_keyboard)
+
             nav_buttons = []
             if page > 1:
                 nav_buttons.append(InlineKeyboardButton('<- previous', callback_data=f'admin_system__{page - 1}'))
             if page < total_pages:
                 nav_buttons.append(InlineKeyboardButton('next ->', callback_data=f'admin_system__{page + 1}'))
             if nav_buttons: keyboard.append(nav_buttons)
+
             keyboard.append([InlineKeyboardButton('Back', callback_data='admin_page')])
 
             return await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+
+
+@vpn_utilities.handle_functions_error
+@admin_access
+async def admin_view_online_users(update, context):
+    query = update.callback_query
+    page = query.data.replace('admin_view_online_users__', '')
+    online_users = vpn_notification.online_users_instance.online_users
+
+    text = f'Online Users: {len(online_users)}'
+    keyboard = [
+        [InlineKeyboardButton('Refresh', callback_data=f'admin_view_online_users__{page}'),
+         InlineKeyboardButton('Back', callback_data=f'admin_system__{page}')]
+    ]
+
+    return await query.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(keyboard))
+
 
 @vpn_utilities.handle_functions_error
 @admin_access

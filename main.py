@@ -115,6 +115,8 @@ if __name__ == '__main__':
     application.add_handler(CallbackQueryHandler(admin_system.view_product_main_server_info, pattern='admin_product_main_server_info__(.*)'))
     application.add_handler(CallbackQueryHandler(admin_system.admin_view_host, pattern='admin_view_host__(.*)'))
     application.add_handler(CallbackQueryHandler(admin_system.admin_view_inbounds, pattern='admin_view_inbounds__(.*)'))
+    application.add_handler(CallbackQueryHandler(admin_system.admin_view_online_users, pattern='admin_view_online_users__(.*)'))
+
 
     application.add_handler(CallbackQueryHandler(admin_users.admin_change_user_status, pattern='admin_set_user_status__(.*)'))
     application.add_handler(CallbackQueryHandler(admin_users.admin_set_user_level, pattern='admin_set_user_level__(.*)'))
