@@ -173,7 +173,7 @@ async def invite_firends(update, context):
     text = text.format(setting.REFERRAL_PERCENT)
     user_database_id = await find_user_id(user_detail.id, context)
     link = f'https://t.me/Free_Byte_Bot/?start=ref_{user_detail.id}_{user_database_id}'
-    invite_text = f'{await ft_instance.find_text("invite_firend")}\n{link}'
+    invite_text = f'{await ft_instance.find_text("invite_firend_text_link")}\n{link}'
 
     main_keyboard = [
         [InlineKeyboardButton(await ft_instance.find_keyboard('send_invite_link'),  url=f'https://t.me/share/url?text={invite_text}')],

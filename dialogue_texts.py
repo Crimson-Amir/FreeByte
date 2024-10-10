@@ -282,6 +282,10 @@ text_transaction = {
         "en": "👥 By sending an invitation link, receive {0}% of your friends' first transaction amount as a gift!",
         "fa": "👥 با ارسال لینک دعوت، {0} درصد مبلغ اولین تراکنش دوستانتان را به عنوان هدیه دریافت کنید!",
     },
+    "invite_firend_text_link": {
+        "en": "",
+        "fa": "",
+    },
 }
 
 keyboard_transaction = {
@@ -314,7 +318,7 @@ keyboard_transaction = {
         "fa": "⚙️ تنظیمات",
     },
     "my_services": {
-        "en": "My Services 🎛",
+        "en": "🎛 My Services",
         "fa": "🎛 سرویس‌های من",
     },
     "back_button": {
