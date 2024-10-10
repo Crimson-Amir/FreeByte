@@ -1,14 +1,11 @@
-import json
-import sys, os, math, requests, pytz
+import sys, os, math, pprint
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from admin.admin_utilities import admin_access, cancel_conversation as cancel
+from admin.admin_utilities import admin_access
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
-from crud import admin_crud, crud, vpn_crud
+from crud import admin_crud
 from database_sqlalchemy import SessionLocal
-from telegram.ext import ConversationHandler, filters, MessageHandler, CallbackQueryHandler, CommandHandler
-from utilities_reFactore import report_to_admin, human_readable, format_traffic_from_byte
-from datetime import datetime
-from vpn_service import vpn_utilities, buy_and_upgrade_service, panel_api
+from utilities_reFactore import human_readable, format_traffic_from_byte
+from vpn_service import vpn_utilities, panel_api
 
 GET_NEW_HOST_CONFIG = 0
 
@@ -137,12 +134,13 @@ async def admin_view_host(update, context):
     with SessionLocal() as session:
         get_product = admin_crud.get_product(session, product_id)
         get_host = await panel_api.marzban_api.get_host(get_product.main_server.server_ip)
+        prettify = pprint.pformat(get_host)
 
         keyboard = [
             [InlineKeyboardButton('Refresh', callback_data=f'admin_view_host__{product_id}__{page}'),
              InlineKeyboardButton('Back', callback_data=f'admin_product_main_server_info__{product_id}__{page}')]
         ]
-        return await query.edit_message_text(text=f"{get_host}"[:4096], reply_markup=InlineKeyboardMarkup(keyboard))
+        return await query.edit_message_text(text=f"{prettify}"[:4096], reply_markup=InlineKeyboardMarkup(keyboard))
 
 
 @admin_access
