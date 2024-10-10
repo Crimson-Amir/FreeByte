@@ -126,8 +126,8 @@ if __name__ == '__main__':
     application.add_handler(CallbackQueryHandler(admin_users.admin_set_free_vpn_test, pattern='admin_set_vpn_free_test__(.*)'))
     application.add_handler(CallbackQueryHandler(admin_users.admin_user_services, pattern='admin_user_services__(.*)'))
     application.add_handler(CallbackQueryHandler(admin_ticket.delete_message_assuarance, pattern='dell_mess_asu__(.*)'))
-    application.add_handler(CallbackQueryHandler(admin_ticket.delete_message, pattern='delete_message__(.*)'))
-    application.add_handler(CallbackQueryHandler(admin_ticket.cancel_deleteing_message, pattern='cancel_deleteing_message__(.*)'))
+    application.add_handler(CallbackQueryHandler(admin_ticket.delete_message, pattern='dell_message__(.*)'))
+    application.add_handler(CallbackQueryHandler(admin_ticket.cancel_deleteing_message, pattern='cancel_dell__(.*)'))
 
 
     application.add_handler(CallbackQueryHandler(admin_users.admin_user_service_detail, pattern='admin_user_service_detail__(.*)'))
