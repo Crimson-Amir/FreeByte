@@ -85,14 +85,15 @@ async def service_info(update, context):
 
                 expire_date = human_readable(get_from_server.get('expire'), await ft_instance.find_user_language())
 
-                online_at = datetime.fromtimestamp(get_from_server.get('online_at'))
-                now = datetime.now(tz=pytz.timezone('Asia/Tehran'))
+                get_last_online_time = get_from_server.get('online_at')
+                online_at = ft_instance.find_text('not_connected_yet')
 
-                if (now - online_at).total_seconds() < 60:
-                    online_at = now
-
-                online_at = human_readable(online_at, await ft_instance.find_user_language()) \
-                    if get_from_server.get('online_at') else await ft_instance.find_text('not_connected_yet')
+                if online_at:
+                    online_at = datetime.fromtimestamp(get_last_online_time)
+                    now = datetime.now(tz=pytz.timezone('Asia/Tehran'))
+                    if (now - online_at).total_seconds() < 60:
+                        online_at = now
+                    online_at = human_readable(online_at, await ft_instance.find_user_language())
 
                 used_traffic = round(get_from_server.get('used_traffic') / (1024 ** 3), 2)
                 data_limit = int(get_from_server.get('data_limit') / (1024 ** 3))
