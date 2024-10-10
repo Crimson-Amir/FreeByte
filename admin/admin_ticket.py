@@ -5,6 +5,7 @@ from utilities_reFactore import FindText
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import ConversationHandler, filters, MessageHandler, CallbackQueryHandler, CommandHandler
 import setting
+from vpn_service import vpn_utilities
 
 REPLY_TICKET, SEND_TICKET = range(2)
 
@@ -48,7 +49,7 @@ async def assurance(update, context):
     except Exception as e:
         logging.error(f'error in get message.\n{e}')
         await context.bot.send_message(text=f'Error in send message: {e}', chat_id=user_detail.id, parse_mode='html', message_thread_id=setting.ticket_thread_id if not context.user_data.get(f'ticket_private') else None)
-        return REPLY_TICKET
+        return ConversationHandler.END
 
 
 async def answer_ticket(update, context):
@@ -65,12 +66,6 @@ async def answer_ticket(update, context):
         admin_message = context.user_data['admin_message'] or await ft_instance.find_from_database(user_id, 'without_caption')
         file_id = context.user_data['file_id']
 
-        text = f'Message Recived And Send to User {user_id}'
-        keyboard = [[InlineKeyboardButton('New Message +', callback_data=f"reply_ticket_{user_id}")]]
-
-        await context.bot.send_message(text=text, chat_id=user_detail.id, reply_markup=InlineKeyboardMarkup(keyboard),
-                                       parse_mode='html', message_thread_id=setting.ticket_thread_id if not context.user_data.get(f'ticket_private') else None)
-
         user_text = (f"{await ft_instance.find_from_database(user_id, 'ticket_was_answered')}"
                      f"\n\n{admin_message}")
         keyboard = [
@@ -79,9 +74,16 @@ async def answer_ticket(update, context):
         ]
 
         if file_id:
-            await context.bot.send_photo(chat_id=int(user_id), photo=file_id, caption=user_text, reply_markup=InlineKeyboardMarkup(keyboard))
+            message_id = await context.bot.send_photo(chat_id=int(user_id), photo=file_id, caption=user_text, reply_markup=InlineKeyboardMarkup(keyboard))
         else:
-            await context.bot.send_message(chat_id=int(user_id), text=user_text, reply_markup=InlineKeyboardMarkup(keyboard))
+            message_id = await context.bot.send_message(chat_id=int(user_id), text=user_text, reply_markup=InlineKeyboardMarkup(keyboard))
+
+        text = f'Message Recived And Send to User {user_id}'
+        keyboard = [[InlineKeyboardButton('Send New Message +', callback_data=f"reply_ticket_{user_id}")],
+                    [InlineKeyboardButton('Delete message for User -', callback_data=f"delete_message_assurance__{user_id}__{message_id.message_id}")]]
+
+        await context.bot.send_message(text=text, chat_id=user_detail.id, reply_markup=InlineKeyboardMarkup(keyboard),
+                                       parse_mode='html', message_thread_id=setting.ticket_thread_id if not context.user_data.get(f'ticket_private') else None)
 
         context.user_data[f'ticket_private'] = False
         return ConversationHandler.END
@@ -89,7 +91,7 @@ async def answer_ticket(update, context):
     except Exception as e:
         logging.error(f'erro in send ticket. {e}')
         await context.bot.send_message(text=f'Error in send message: {e}', chat_id=user_detail.id, parse_mode='html', message_thread_id=setting.ticket_thread_id if not context.user_data.get(f'ticket_private') else None)
-        return REPLY_TICKET
+        return ConversationHandler.END
 
 
 admin_ticket_reply_conversation = ConversationHandler(
@@ -102,3 +104,36 @@ admin_ticket_reply_conversation = ConversationHandler(
     conversation_timeout=600
 
 )
+
+@vpn_utilities.handle_functions_error
+async def delete_message_assuarance(update, context):
+    user_detail = update.effective_chat
+    query = update.callback_query
+    user_id, message_id = query.data.replace('delete_message_assurance__').split('__')
+    keyboard = [
+        [InlineKeyboardButton("Yes", callback_data=f'delete_message__{user_detail}__{message_id}')],
+        [InlineKeyboardButton("Cancel", callback_data=f'cancel_deleteing_message__{user_id}')]
+    ]
+    await context.bot.send_message(
+        chat_id=user_detail.id,
+        text='are you syre you wanna delete this message?',
+        reply_markup=InlineKeyboardMarkup(keyboard)
+    )
+
+
+@vpn_utilities.handle_functions_error
+async def delete_message(update, context):
+    query = update.callback_query
+    user_id, message_id = query.data.replace('delete_message__').split('__')
+    context.bot.delete_message(chat_id=int(user_id), message_id=int(message_id))
+    await query.answer('message deleted!')
+    await query.edit_message_text(text='message_deleted_successfully for user!')
+
+
+@vpn_utilities.handle_functions_error
+async def cancel_deleteing_message(update, context):
+    query = update.callback_query
+    user_id = query.data.replace('cancel_deleteing_message__')
+    keyboard = [[InlineKeyboardButton('Send New Message +', callback_data=f"reply_ticket_{user_id}")]]
+    await query.answer('operation canceled!')
+    await query.edit_message_text(text='Operation Canceled', reply_markup=InlineKeyboardMarkup(keyboard))

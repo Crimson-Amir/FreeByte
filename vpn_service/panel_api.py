@@ -75,12 +75,6 @@ class MarzbanAPI:
         url, headers = self.initialize_request(main_server_ip, endpoint)
         return self.make_request('get', url, headers=headers)
 
-    async def get_core_config(self, main_server_ip):
-        """Retrieve core statistics."""
-        endpoint = "/api/core/log"
-        url, headers = self.initialize_request(main_server_ip, endpoint)
-        return self.make_request('post', url, headers=headers)
-
 
     async def restart_core(self, main_server_ip):
         """Restart core service."""
