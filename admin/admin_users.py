@@ -189,6 +189,7 @@ async def admin_change_wallet_balance(update, context):
     try:
         with SessionLocal() as session:
             with session.begin():
+                ft_instance = utilities_reFactore.FindText(None, None)
 
                 chat_id = int(context.user_data[f'admin_increase_user_balance_chat_id'])
                 action = context.user_data[f'admin_increase_user_balance_action']
@@ -228,6 +229,10 @@ async def admin_change_wallet_balance(update, context):
 
                 keyboard = [[InlineKeyboardButton('User Detail', callback_data=f"admin_view_user__{chat_id}__1")]]
                 await context.bot.send_message(text=text, chat_id=user_detail.id, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
+
+                user_text = await ft_instance.find_from_database(chat_id, 'amount_added_to_wallet_successfully')
+                user_text = user_text.format(f"{amount:,}")
+                await context.bot.send_message(text=user_text, chat_id=chat_id)
 
                 return ConversationHandler.END
 

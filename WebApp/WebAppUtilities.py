@@ -21,6 +21,14 @@ class ConnectToServer:
 
 connect_to_server_instance = ConnectToServer()
 
+async def handle_inviter_refrall(session, financial):
+    if not financial.owner.config.first_purchase_refreal_for_inviter:
+        try:
+            frerall_amount = (financial.amount * setting.REFREALL_PERCENT) / 100
+            increase_wallet_balance()
+        except Exception as e:
+            pass
+
 async def increase_wallet_balance(financial, context, session):
     dialogues = transaction.get(financial.owner.language, transaction.get('fa'))
     crud.add_credit_to_wallet(session, financial)
@@ -73,6 +81,7 @@ async def handle_successful_payment(session, financial, authority, payment_getwa
     elif financial.action == 'increase_wallet_balance':
         await increase_wallet_balance(financial, context, session)
 
+    await handle_inviter_refrall(session, financial)
     await handle_successful_report(session, financial, extra_data, authority, payment_getway)
 
 async def handle_failed_payment(session, financial, exception, dialogues, authority, payment_getway):

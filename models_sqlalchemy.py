@@ -8,7 +8,6 @@ class UserDetail(Base):
 
     user_id = Column(Integer, primary_key=True)
     active = Column(Boolean, default=True)
-
     email = Column(String, unique=True, default=None)
     phone_number = Column(String, unique=True, default=None)
     first_name = Column(String)
@@ -19,11 +18,11 @@ class UserDetail(Base):
     wallet = Column(Integer, default=0)
     invited_by = Column(BigInteger, ForeignKey('user_detail.chat_id'))
     register_date = Column(DateTime, default=datetime.now())
-
     financial_reports = relationship("FinancialReport", back_populates="owner", cascade="all, delete-orphan")
     services = relationship("Purchase", back_populates="owner", cascade="all, delete-orphan")
     config = relationship("UserConfig", back_populates="owner", cascade="all, delete-orphan", uselist=False)
     partner = relationship("Partner", back_populates="owner", cascade="all, delete-orphan", uselist=False)
+    inviter = relationship("UserDetail", back_populates="invited_by", cascade="all, delete-orphan", uselist=False)
 
 
 class UserConfig(Base):
@@ -35,6 +34,7 @@ class UserConfig(Base):
     period_notification_day = Column(Integer, default=3)
     get_vpn_free_service = Column(Boolean, default=False)
     chat_id = Column(BigInteger, ForeignKey('user_detail.chat_id'), unique=True)
+    first_purchase_refreal_for_inviter = Column(Boolean, default=False)
     owner = relationship("UserDetail", back_populates="config")
 
 
