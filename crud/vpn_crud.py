@@ -43,7 +43,6 @@ def update_purchase(session, purchase_id:int, **kwargs):
         update(model.Purchase)
         .where(model.Purchase.purchase_id == purchase_id)
         .values(
-            register_date=datetime.now(pytz.timezone('Asia/Tehran')),
             active=True,
             **kwargs
         ).returning(model.Purchase)

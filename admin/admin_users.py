@@ -427,7 +427,7 @@ async def admin_user_service_detail(update, context):
                 f"\nUsed Traffic: {used_traffic}GB"
                 f"\nData Limit: {data_limit}GB"
                 f"\nLifeTime Used Traffic: {lifetime_used_traffic}GB"
-                f"\nSubscription Updated at: {get_from_server.get('sub_updated_at')} ({utilities_reFactore.human_readable(get_from_server.get('sub_updated_at'), 'en')})"
+                f"\nSubscription Updated at: ({utilities_reFactore.human_readable(get_from_server.get('sub_updated_at'), 'en')})"
                 f"\ncreated at: {datetime.fromisoformat(get_from_server.get('created_at')).strftime('%Y-%m-%d %H:%M:%S')} ({utilities_reFactore.human_readable(datetime.fromisoformat(get_from_server.get('created_at')), 'en')})"
                 f"\nExpired: {datetime.fromtimestamp(get_from_server.get('expire'))} ({utilities_reFactore.human_readable(datetime.fromtimestamp(get_from_server.get('expire')), 'en')})"
                 f"\n\nSubscription Link:"
@@ -522,7 +522,13 @@ async def admin_confirm_upgrade_vpn_service(update, context):
 
     with SessionLocal() as session:
         with session.begin():
-            purchase = vpn_crud.update_purchase(session, purchase_id, upgrade_traffic=traffic, upgrade_period=period)
+            purchase = vpn_crud.update_purchase(
+                session,
+                purchase_id,
+                upgrade_traffic=traffic,
+                upgrade_period=period,
+                register_date=datetime.now(pytz.timezone('Asia/Tehran'))
+            )
             amount = await vpn_utilities.calculate_price(traffic, period, purchase.chat_id)
 
             if payment_status == 'reduce':
