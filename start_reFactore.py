@@ -32,11 +32,10 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE, in_new_messa
                     '\nاین ربات خصوصی است، لطفا با لینک دعوت برگردید یا درخواست عضویت را به مدیر ارسال کنید.')
             keyboard = [[InlineKeyboardButton('درخواست عضویت | Reques to Join', callback_data=f'user_requested_to_join')]]
             await context.bot.send_message(chat_id=user_detail.id, text=text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
-            user_request_to_join[user_detail.id] = {'user_detail': user_detail}
 
-    # except Exception as e:
-    #     logging.error(f'error in send start message! \n{e}')
-    #     await context.bot.send_message(chat_id=user_detail.id, text='<b>Sorry, somthing went wrong!\nبخشید مشکلی وجود داشت!</b>', parse_mode='html')
+    except Exception as e:
+        logging.error(f'error in send start message! \n{e}')
+        await context.bot.send_message(chat_id=user_detail.id, text='<b>Sorry, somthing went wrong!\nبخشید مشکلی وجود داشت!</b>', parse_mode='html')
 
 
 @handle_error.handle_functions_error
@@ -46,6 +45,8 @@ async def manage_request_to_join_by_admin(update, context):
 
     if user_request_to_join.get(user_detail.id):
         return await query.answer('you already send a request!')
+
+    user_request_to_join[user_detail.id] = {'user_detail': user_detail}
 
     photos = await context.bot.get_user_profile_photos(user_id=user_detail.id)
     text = (f'👤 User Request to join the BOT\n\n'
