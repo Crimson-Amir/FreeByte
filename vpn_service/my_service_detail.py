@@ -91,7 +91,6 @@ async def service_info(update, context):
                 get_last_online_time = get_from_server.get('online_at')
                 online_at = await ft_instance.find_text('not_connected_yet')
 
-                await context.bot.send_message(chat_id=setting.ADMIN_CHAT_IDs[0], text=str(get_last_online_time))
                 if get_last_online_time:
                     online_at = datetime.fromisoformat(get_last_online_time).replace(microsecond=0)
                     now = datetime.now()

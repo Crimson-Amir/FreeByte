@@ -109,10 +109,11 @@ async def notification_timer(context):
                                     traffic_left_in_gigabyte
                                 )
 
-                            online_at = datetime.fromtimestamp(user.get('online_at'))
-                            now = datetime.now(tz=pytz.timezone('Asia/Tehran'))
-                            if (now - online_at).total_seconds() < 60:
-                                online_users.append(user['username'])
+                            if user.get('online_at'):
+                                online_at = datetime.fromisoformat(user.get('online_at')).replace(microsecond=0)
+                                now = datetime.now()
+                                if (now - online_at).total_seconds() < 60:
+                                    online_users.append(user['username'])
             session.commit()
 
     except Exception as e:
