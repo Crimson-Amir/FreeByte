@@ -31,7 +31,7 @@ async def all_products(update, context):
             current_products = products[start:end]
             text = 'select Product to manage:'
 
-            keyboard = [InlineKeyboardButton('Online Users', callback_data=f'admin_view_online_users__{page}')]
+            keyboard = [InlineKeyboardButton('Online Users', callback_data=f'admin_view_online_users__1__{page}')]
             product_keyboard = [[InlineKeyboardButton(f"{product.product_id} {product.product_name} {service_status.get(product.active)}", callback_data=f'admin_view_product__{product.product_id}__{page}')] for product in current_products]
             keyboard.extend(product_keyboard)
 
@@ -51,14 +51,28 @@ async def all_products(update, context):
 @admin_access
 async def admin_view_online_users(update, context):
     query = update.callback_query
-    page = query.data.replace('admin_view_online_users__', '')
+    page, product_page = query.data.replace('admin_view_online_users__', '').split('__')
+    item_per_page = 15
+
     online_users = vpn_notification.online_users_instance.online_users
+    online_users_count = len(online_users)
+    total_pages = math.ceil(online_users_count / item_per_page)
+
+    start = (page - 1) * item_per_page
+    end = start + item_per_page
+    current_users = online_users[start:end]
+    keyboard = [[InlineKeyboardButton(f"{username}", callback_data=f'admin_user_service_detail__{purchase_id}__1__1')] for username, purchase_id in current_users]
+
+    nav_buttons = []
+    if page > 1:
+        nav_buttons.append(InlineKeyboardButton('<- previous', callback_data=f'admin_system__{page - 1}'))
+    if page < total_pages:
+        nav_buttons.append(InlineKeyboardButton('next ->', callback_data=f'admin_system__{page + 1}'))
+    if nav_buttons: keyboard.append(nav_buttons)
 
     text = f'Online Users: {len(online_users)}'
-    keyboard = [
-        [InlineKeyboardButton('Refresh', callback_data=f'admin_view_online_users__{page}'),
-         InlineKeyboardButton('Back', callback_data=f'admin_system__{page}')]
-    ]
+    keyboard.append([InlineKeyboardButton('Refresh', callback_data=f'admin_view_online_users__{page}'),
+                    InlineKeyboardButton('Back', callback_data=f'admin_page__{product_page}')])
 
     return await query.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(keyboard))
 
