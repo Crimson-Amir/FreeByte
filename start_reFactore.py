@@ -129,10 +129,10 @@ async def register_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await context.bot.send_photo(chat_id=setting.ADMIN_CHAT_IDs[0], photo=photo_file_id, caption=start_text_notif, parse_mode='HTML', message_thread_id=setting.new_user_thread_id)
             else:
                 await context.bot.send_message(chat_id=setting.ADMIN_CHAT_IDs[0], text=start_text_notif + '\n\n• Without profile picture (or not public)', parse_mode='HTML', message_thread_id=setting.new_user_thread_id)
-
             context.user_data.pop(f'inviter_{user_detail.id}', None)
             user_request_to_join.pop(user_detail.id, None)
-            return await start(update, context)
+
+    return await start(update, context)
 
 
 async def just_for_show(update, context):
