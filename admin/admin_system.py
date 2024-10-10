@@ -150,10 +150,11 @@ async def admin_view_inbounds(update, context):
 
     with SessionLocal() as session:
         get_product = admin_crud.get_product(session, product_id)
-        get_host = await panel_api.marzban_api.get_inbounds(get_product.main_server.server_ip)
+        get_inbounds = await panel_api.marzban_api.get_inbounds(get_product.main_server.server_ip)
+        prettify = pprint.pformat(get_inbounds)
 
         keyboard = [
             [InlineKeyboardButton('Refresh', callback_data=f'admin_view_inbounds__{product_id}__{page}'),
              InlineKeyboardButton('Back', callback_data=f'admin_product_main_server_info__{product_id}__{page}')]
         ]
-        return await query.edit_message_text(text=f"{get_host}"[:4096], reply_markup=InlineKeyboardMarkup(keyboard))
+        return await query.edit_message_text(text=f"{prettify}"[:4096], reply_markup=InlineKeyboardMarkup(keyboard))
