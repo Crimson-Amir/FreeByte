@@ -52,6 +52,7 @@ async def all_products(update, context):
 async def admin_view_online_users(update, context):
     query = update.callback_query
     page, product_page = query.data.replace('admin_view_online_users__', '').split('__')
+    page = int(page)
     item_per_page = 15
 
     online_users = vpn_notification.online_users_instance.online_users
