@@ -9,7 +9,6 @@ from datetime import datetime, timedelta
 
 class ConnectToServer:
     last_update = None
-
     def refresh_token(self):
         now = datetime.now()
         if self.last_update:

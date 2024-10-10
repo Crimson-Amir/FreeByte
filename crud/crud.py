@@ -6,6 +6,12 @@ from sqlalchemy import update, func, desc, or_
 def get_user(session, chat_id):
     return session.query(model.UserDetail).filter_by(chat_id=chat_id).first()
 
+def get_user_by_chat_id_and_user_id(session, chat_id, user_id):
+    return session.query(model.UserDetail).filter(
+        model.UserDetail.chat_id==chat_id,
+        model.UserDetail.user_id==user_id
+    ).first()
+
 def get_user_config(session, chat_id):
     return session.query(model.UserConfig).filter_by(chat_id=chat_id).first()
 
@@ -58,26 +64,24 @@ def get_total_financial_reports(session, chat_id):
     return financial_reports_count
 
 
-def create_user(user_detail, inviter_user_id, selected_language):
-    with SessionLocal() as session:
-        with session.begin():
-            user = model.UserDetail(
-                first_name=user_detail.first_name,
-                last_name=user_detail.last_name,
-                username=user_detail.username,
-                chat_id=user_detail.id,
-                invited_by=inviter_user_id,
-                language=selected_language
-            )
-            session.add(user)
-            session.flush()
-            session.refresh(user)
+def create_user(session, user_detail, inviter_user_id, selected_language):
+    user = model.UserDetail(
+        first_name=user_detail.first_name,
+        last_name=user_detail.last_name,
+        username=user_detail.username,
+        chat_id=user_detail.id,
+        invited_by=inviter_user_id,
+        language=selected_language
+    )
+    session.add(user)
+    session.flush()
+    session.refresh(user)
 
-            user_config = model.UserConfig(
-                chat_id=user.chat_id,
+    user_config = model.UserConfig(
+        chat_id=user.chat_id,
 
-            )
-            session.add(user_config)
+    )
+    session.add(user_config)
 
 
 def add_credit_to_wallet(session, financial_db, payment_status='paid'):
