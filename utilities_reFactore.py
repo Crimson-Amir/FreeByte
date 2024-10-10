@@ -34,7 +34,8 @@ async def start(update, context, in_new_message=False, raise_error=False):
     ft_instance = FindText(update, context, notify_user=False)
     text = await ft_instance.find_text('start_menu')
     try:
-        link = f'https://t.me/Free_Byte_Bot/?start=ref_{user_detail.id}'
+        user_database_id = await find_user_id(user_detail.id, context)
+        link = f'https://t.me/Free_Byte_Bot/?start=ref_{user_detail.id}_{user_database_id}'
         invite_text = f'{await ft_instance.find_text("invite_firend")}\n{link}'
 
         main_keyboard = [
@@ -58,6 +59,15 @@ async def start(update, context, in_new_message=False, raise_error=False):
         if raise_error: raise e
         logging.error(f'error in send start message! \n{e}')
         await context.bot.send_message(chat_id=user_detail.id, text='<b>Sorry, somthing went wrong!</b>', parse_mode='html')
+
+async def find_user_id(user_id, context):
+    user_database_id = context.user_data.get('user_database_id')
+    if not user_database_id:
+        with SessionLocal() as session:
+            get_user_user_database_id_from_db = await crud.get_user(session, user_id)
+            user_database_id = get_user_user_database_id_from_db.user_id
+            context.user_data['user_database_id'] = user_database_id
+    return user_database_id
 
 
 class FindText:
