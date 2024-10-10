@@ -110,14 +110,14 @@ async def view_product_main_server_info(update, context):
                 f'Version: {system.get("version")}'
                 f'\nMemory Total: {system.get("mem_total")}'
                 f'\nMemory Used: {system.get('mem_used')}'
-                f'\nCPU cores: {system.get('cpu_cores')}'
-                f'\nCPU Usage: {system.get('cpu_usage')}'
-                f'\nTotal User: {system.get('total_user')}'
-                f'\nActive Users: {system.get('users_active')}'
-                f'\nIncoming Bandwidth: {system.get('incoming_bandwidth')}'
-                f'\nOutgoing Bandwidth: {system.get('outgoing_bandwidth')}'
-                f'\nIncoming Bandwidth Speed: {system.get('incoming_bandwidth_speed')}'
-                f'\nOutgoing Bandwidth Speed: {system.get('outgoing_bandwidth_speed')}'
+                f'\nCPU cores: {system.get("cpu_cores")}'
+                f'\nCPU Usage: {system.get("cpu_usage")}'
+                f'\nTotal User: {system.get("total_user")}'
+                f'\nActive Users: {system.get("users_active")}'
+                f'\nIncoming Bandwidth: {system.get("incoming_bandwidth")}'
+                f'\nOutgoing Bandwidth: {system.get("outgoing_bandwidth")}'
+                f'\nIncoming Bandwidth Speed: {system.get("incoming_bandwidth_speed")}'
+                f'\nOutgoing Bandwidth Speed: {system.get("outgoing_bandwidth_speed")}'
 
             )
 
