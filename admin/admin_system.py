@@ -109,7 +109,7 @@ async def view_product_main_server_info(update, context):
             text = (
                 f'Version: {system.get("version")}'
                 f'\nMemory Total: {system.get("mem_total")}'
-                f'\nMemory Used: {system.get('mem_used')}'
+                f'\nMemory Used: {system.get("mem_used")}'
                 f'\nCPU cores: {system.get("cpu_cores")}'
                 f'\nCPU Usage: {system.get("cpu_usage")}'
                 f'\nTotal User: {system.get("total_user")}'
