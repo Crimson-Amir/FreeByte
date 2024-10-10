@@ -2,6 +2,9 @@ from _datetime import datetime
 import sys, os, math, pytz
 import requests.exceptions
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
+
+import setting
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from utilities_reFactore import FindText, message_token, handle_error, human_readable, report_to_admin, cancel_user as cancel
 from telegram.ext import ConversationHandler, filters, MessageHandler, CallbackQueryHandler, CommandHandler
@@ -88,7 +91,7 @@ async def service_info(update, context):
                 get_last_online_time = get_from_server.get('online_at')
                 online_at = await ft_instance.find_text('not_connected_yet')
 
-                print(get_last_online_time)
+                await context.bot.send_message(chat_id=setting.ADMIN_CHAT_IDs[0], text=str(get_last_online_time))
                 if get_last_online_time:
                     online_at = datetime.strptime(get_last_online_time, "%Y-%m-%dT%H:%M:%S")
                     now = datetime.now(tz=pytz.timezone('Asia/Tehran'))
