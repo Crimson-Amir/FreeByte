@@ -93,7 +93,7 @@ async def service_info(update, context):
 
                 await context.bot.send_message(chat_id=setting.ADMIN_CHAT_IDs[0], text=str(get_last_online_time))
                 if get_last_online_time:
-                    online_at = datetime.fromisoformat(get_last_online_time)
+                    online_at = datetime.fromisoformat(get_last_online_time).replace(microsecond=0)
                     now = datetime.now(tz=pytz.timezone('Asia/Tehran'))
                     if (now - online_at).total_seconds() < 60:
                         online_at = now
