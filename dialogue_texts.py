@@ -286,6 +286,10 @@ text_transaction = {
         "en": "",
         "fa": "",
     },
+    "first_purchase_referral": {
+        "en": "Referral for the first purchase of your subcategory",
+        "fa": "رفرال اولین خرید زیرمجموعه شما",
+    },
 }
 
 keyboard_transaction = {
