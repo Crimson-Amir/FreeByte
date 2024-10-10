@@ -104,7 +104,7 @@ async def view_product_main_server_info(update, context):
     with SessionLocal() as session:
         with session.begin():
             product = admin_crud.get_product(session, int(product_id))
-            system = panel_api.marzban_api.get_system_stats(product.main_server.server_ip)
+            system = await panel_api.marzban_api.get_system_stats(product.main_server.server_ip)
 
             text = (
                 f'Version: {system.get("version")}'
