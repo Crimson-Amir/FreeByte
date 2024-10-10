@@ -146,13 +146,14 @@ async def admin_xray_core(update, context):
             get_xray_confg = await panel_api.marzban_api.get_core_config(product.main_server.server_ip)
             text = (f'Version: {get_state.get("version")}'
                     f'\nStarted: {get_state.get("started")}'
-                    f'\nLogs Websocket: {get_state.get("logs_websocket")}')
+                    f'\nLogs Websocket: {get_state.get("logs_websocket")}'
+                    f'\n\n{get_xray_confg}')
             keyboard = [
                 [InlineKeyboardButton('Restart Core', callback_data=f'admin_restart_core__{product_id}')],
                 [InlineKeyboardButton('Refresh', callback_data=f'admin_view_core__{product_id}__{page}'),
                 InlineKeyboardButton('Back', callback_data=f'admin_view_product__{product_id}__{page}')]
             ]
-            return await query.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(keyboard))
+            return await query.edit_message_text(text=text[:4096], reply_markup=InlineKeyboardMarkup(keyboard))
 
 
 @vpn_utilities.handle_functions_error
