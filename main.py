@@ -1,4 +1,5 @@
-import logging, sys
+import logging, sys, pytz
+from datetime import time
 from utilities_reFactore import FindText, message_token, handle_error
 import start_reFactore
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
@@ -99,8 +100,10 @@ if __name__ == '__main__':
 
     application.job_queue.run_repeating(vpn_notification.notification_timer, interval=10 * 60, first=0)
     application.job_queue.run_repeating(statistics.statistics_timer, interval=180 * 60, first=0)
-    application.job_queue.run_repeating(vpn_notification.tasks_schedule, interval=720 * 60, first=0)
-    application.job_queue.run_repeating(statistics.aggregate_daily_usage, interval=10 * 60, first=0)
+    application.job_queue.run_daily(
+        vpn_notification.tasks_schedule,
+        time(hour=0, minute=0, second=0, tzinfo=pytz.timezone('Asia/Tehran'))
+    )
 
     # Admin
     application.add_handler(CallbackQueryHandler(admin_page.admin_page, pattern='admin_page'))

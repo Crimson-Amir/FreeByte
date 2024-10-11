@@ -64,7 +64,7 @@ async def statistics_timer(context):
                f'\nTraceBack:\n{tb}')
         await report_to_admin('error', 'statistics_timer', msg)
 
-async def aggregate_daily_usage(context):
+async def aggregate_daily_usage():
     try:
         with SessionLocal() as session:
             yesterday = datetime.now(tz=pytz.timezone('Asia/Tehran')) - timedelta(days=2)
