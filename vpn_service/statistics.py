@@ -203,7 +203,7 @@ async def reports_func(session, ft_instance, chat_id, get_purchased, period):
                     date_ = our_date.strftime(period_value['date_format'])
                     get_usage, get_traff = {}, 0
                     for _ in user_usage_dict.items():
-                        time = datetime.strptime(_[0], '%Y-%m-%d %H:%M:%S').strftime(period_value['date_format'])
+                        time = _[0].strftime(period_value['date_format'])
                         if time == date_:
                             for usage in _[1]:
                                 usage_name, usage_traffic = next(iter(usage.items()))
