@@ -67,7 +67,7 @@ async def statistics_timer(context):
 async def aggregate_daily_usage(context):
     try:
         with SessionLocal() as session:
-            yesterday = datetime.now() - timedelta(days=2)
+            yesterday = datetime.now(tz=pytz.timezone('Asia/Tehran')) - timedelta(days=2)
             start_time = datetime(yesterday.year, yesterday.month, yesterday.day)
             end_time = start_time + timedelta(days=1)
 
