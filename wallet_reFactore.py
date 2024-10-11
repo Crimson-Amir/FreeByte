@@ -124,7 +124,9 @@ async def buy_credit_volume(update, context):
         text = await ft_instance.find_text('add_credit_to_wallet_title')
 
         keyboard = [
-            [InlineKeyboardButton(f"50,000 {await ft_instance.find_text('irt')}", callback_data="create_invoice__increase_wallet_balance__50000"),
+            [InlineKeyboardButton(f"25,000 {await ft_instance.find_text('irt')}", callback_data="create_invoice__increase_wallet_balance__25000"),
+             InlineKeyboardButton(f"50,000 {await ft_instance.find_text('irt')}", callback_data="create_invoice__increase_wallet_balance__50000")],
+            [InlineKeyboardButton(f"75,000 {await ft_instance.find_text('irt')}", callback_data="create_invoice__increase_wallet_balance__75000"),
              InlineKeyboardButton(f"100,000 {await ft_instance.find_text('irt')}", callback_data="create_invoice__increase_wallet_balance__100000")],
             [InlineKeyboardButton(f"200,000 {await ft_instance.find_text('irt')}", callback_data="create_invoice__increase_wallet_balance__200000"),
              InlineKeyboardButton(f"500,000 {await ft_instance.find_text('irt')}", callback_data="create_invoice__increase_wallet_balance__500000")],
