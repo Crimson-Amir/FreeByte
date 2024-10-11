@@ -100,6 +100,7 @@ if __name__ == '__main__':
     application.job_queue.run_repeating(vpn_notification.notification_timer, interval=10 * 60, first=0)
     application.job_queue.run_repeating(statistics.statistics_timer, interval=180 * 60, first=0)
     application.job_queue.run_repeating(vpn_notification.tasks_schedule, interval=720 * 60, first=0)
+    application.job_queue.run_repeating(statistics.aggregate_daily_usage, interval=10 * 60, first=0)
 
     # Admin
     application.add_handler(CallbackQueryHandler(admin_page.admin_page, pattern='admin_page'))

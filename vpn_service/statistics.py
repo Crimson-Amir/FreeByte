@@ -8,6 +8,7 @@ from vpn_service import panel_api, plot, vpn_utilities
 from crud import vpn_crud
 from utilities_reFactore import FindText, handle_error, report_to_admin
 from database_sqlalchemy import SessionLocal
+import models_sqlalchemy as model
 
 STATISTICS_TIMER_HORSE = 3
 
@@ -62,6 +63,50 @@ async def statistics_timer(context):
                f'\n\nerror type: {type(e)}'
                f'\nTraceBack:\n{tb}')
         await report_to_admin('error', 'statistics_timer', msg)
+
+async def aggregate_daily_usage(context):
+    try:
+        with SessionLocal() as session:
+            yesterday = datetime.now() - timedelta(days=2)
+            start_time = datetime(yesterday.year, yesterday.month, yesterday.day)
+            end_time = start_time + timedelta(days=1)
+
+            statistics_records = session.query(model.Statistics).filter(
+                model.Statistics.register_date >= start_time,
+                model.Statistics.register_date < end_time
+            ).all()
+
+            if not statistics_records:
+                return
+
+            combined_traffic_usage = {}
+            for record in statistics_records:
+                traffic_usage = json.loads(record.traffic_usage)
+                for service_id, usage in traffic_usage.items():
+                    if service_id not in combined_traffic_usage:
+                        combined_traffic_usage[service_id] = 0
+                    combined_traffic_usage[service_id] += usage
+
+            combined_traffic_usage_json = json.dumps(combined_traffic_usage)
+
+            session.query(model.Statistics).filter(
+                model.Statistics.register_date >= start_time,
+                model.Statistics.register_date < end_time
+            ).delete()
+
+            new_record = model.Statistics(
+                traffic_usage=combined_traffic_usage_json,
+                register_date=start_time
+            )
+            session.add(new_record)
+            session.commit()
+
+    except Exception as e:
+        tb = traceback.format_exc()
+        msg = ('Error in aggregate_daily_usage!'
+               f'\n\nError type: {type(e)}'
+               f'\nTraceBack:\n{tb}')
+        await report_to_admin('error', 'aggregate_daily_usage', msg)
 
 def datetime_range(start, end, delta):
     current = start
