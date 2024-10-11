@@ -26,7 +26,7 @@ async def handle_inviter_referral(session, financial):
         try:
             with session.begin_nested():
                 ft_instance = utilities_reFactore.FindText(None, None)
-                referral_amount = (financial.amount * setting.REFERRAL_PERCENT) / 100
+                referral_amount = int((financial.amount * setting.REFERRAL_PERCENT) / 100)
                 finacial_report = crud.create_financial_report(
                     session, 'recive',
                     chat_id=financial.owner.invited_by,
@@ -38,8 +38,8 @@ async def handle_inviter_referral(session, financial):
                     currency='IRT'
                 )
                 crud.add_credit_to_wallet(session, finacial_report)
-                text = await ft_instance.find_from_database(financial.chat_id, 'recive_money_for_referral')
-                text = text.format(setting.REFERRAL_PERCENT, referral_amount)
+                text = await ft_instance.find_from_database(financial.owner.invited_by, 'recive_money_for_referral')
+                text = text.format(setting.REFERRAL_PERCENT, f"{referral_amount:,}")
                 crud.update_user_config(session, chat_id=financial.chat_id, first_purchase_refreal_for_inviter=True)
                 await utilities_reFactore.report_to_user('success', financial.owner.invited_by, text)
         except Exception as e:
