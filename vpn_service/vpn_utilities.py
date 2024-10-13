@@ -15,9 +15,9 @@ async def calculate_price(traffic, period, chat_id, context=None):
         price_per_gigabyte = partner.partners.list_of_partner[chat_id].vpn_price_per_gigabyte_irt
         price_per_day = partner.partners.list_of_partner[chat_id].vpn_price_per_period_time_irt
 
-    service_price = (int(traffic) * price_per_gigabyte) + (int(period) * price_per_day)
-    user = await find_user(chat_id, context=context if context else type('context', (object,), {'user_data': {}}))
-    price = (service_price * user.config.user_level) / 100
+    price = (int(traffic) * price_per_gigabyte) + (int(period) * price_per_day)
+    # user = await find_user(chat_id, context=context if context else type('context', (object,), {'user_data': {}}))
+    # price = (service_price * user.config.user_level) / 100
     return int(price)
 
 
