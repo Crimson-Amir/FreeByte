@@ -4,7 +4,7 @@ import logging
 from crud import crud
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from database_sqlalchemy import SessionLocal
-from utilities_reFactore import FindText, message_token, handle_error, human_readable, report_to_user, report_to_admin
+from utilities_reFactore import FindText, message_token, handle_error, human_readable, report_to_user, report_to_admin, find_user
 from vpn_service import vpn_utilities
 from API import zarinPalAPI, cryptomusAPI, convert_irt_to_usd
 from WebApp.WebAppDialogue import transaction
@@ -195,10 +195,15 @@ async def create_invoice(update, context):
             ]
             keyboard = [list(filter(None, row)) for row in keyboard]
 
+            get_user = await find_user(session, chat_id)
+            price_text = await ft_instance.find_text('price_with_discount') \
+                if get_user.config.user_level > 1 and pay_by_wallet_satatus else await ft_instance.find_text('price')
+            price_text = price_text.format(vpn_utilities.DiscountPerLevel.descount.get(get_user.config.user_level, 1))
+
             text = (f"<b>{await ft_instance.find_text('invoice_title')}</b>"
                     f"\n\n<b>{await ft_instance.find_text('wallet_credit_label')} {finacial_report.owner.wallet:,} {await ft_instance.find_text('irt')}</b>"
                     f"\n\n{await ft_instance.find_text('invoice_extra_data')}\n{invoice_extra_data}"
-                    f"\n\n<b>{await ft_instance.find_text('price')} {amount:,} {await ft_instance.find_text('irt')}</b>"
+                    f"\n\n<b>{price_text} {amount:,} {await ft_instance.find_text('irt')}</b>"
                     f"\n{await ft_instance.find_text('payment_option_title')}")
 
             await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))

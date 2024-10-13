@@ -5,6 +5,9 @@ import pytz, sys, os, qrcode, string
 from io import BytesIO
 import requests.exceptions
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
+
+import utilities_reFactore
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from utilities_reFactore import FindText, message_token, handle_error, report_to_admin
 from crud import vpn_crud, crud

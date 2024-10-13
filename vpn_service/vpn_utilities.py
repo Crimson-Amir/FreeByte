@@ -10,7 +10,7 @@ from database_sqlalchemy import SessionLocal
 
 class DiscountPerLevel:
     descount = {
-        1: 1,
+        1: 0,
         2: 4,
         3: 7,
         4: 10,

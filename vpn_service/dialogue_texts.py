@@ -190,6 +190,10 @@ text_transaction = {
         "en": "Saturday",
         "fa": "شنبه",
     },
+    "price_with_discount": {
+        "en": "Price With {0}% discount:",
+        "fa": "قیمت با {0}% تخفیف:",
+    },
     "sunday": {
         "en": "Sunday",
         "fa": "یکشنبه",
