@@ -18,6 +18,7 @@ class DiscountPerLevel:
         7: 25,
         8: 30,
         9: 35,
+        10: 40
     }
 
 async def calculate_price(traffic, period, chat_id, context=None):
@@ -31,8 +32,8 @@ async def calculate_price(traffic, period, chat_id, context=None):
         service_price = (int(traffic) * price_per_gigabyte) + (int(period) * price_per_day)
         context = context if context else type('context', (object,), {'user_data': {}})
         user = await find_user(session, chat_id, context=context)
-        discount = DiscountPerLevel.descount.get(user.config.user_level, 1)
-        price = (service_price * discount or 1) / 100
+        discount = (service_price * DiscountPerLevel.descount.get(user.config.user_level, 1)) / 100
+        price = service_price - discount
         return int(price)
 
 
