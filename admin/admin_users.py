@@ -494,8 +494,9 @@ async def admin_assurance_set_purchase_traffic_and_period(update, context):
             f"Period: {period} Day")
 
     keyboard = [
-        [InlineKeyboardButton("Yes", callback_data=f"admin_confirm_set_ptp__{purchase_id}__{page}__{user_info_page}__{period}__{traffic}"),
-        InlineKeyboardButton("Back", callback_data=f'admin_set_time_and_traffic__{purchase_id}__{page}__{user_info_page}__{period}__{traffic}')]
+        [InlineKeyboardButton("Yes And Reset Usage", callback_data=f"admin_confirm_set_ptp__reset__{purchase_id}__{page}__{user_info_page}__{period}__{traffic}"),
+         InlineKeyboardButton("Yes", callback_data=f"admin_confirm_set_ptp__noreset__{purchase_id}__{page}__{user_info_page}__{period}__{traffic}")]
+        [InlineKeyboardButton("Back", callback_data=f'admin_set_time_and_traffic__{purchase_id}__{page}__{user_info_page}__{period}__{traffic}')]
     ]
 
     await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
@@ -505,7 +506,7 @@ from datetime import timedelta
 @admin_access
 async def admin_confirm_set_purchase_traffic_and_period(update, context):
     query = update.callback_query
-    purchase_id, page, user_info_page, period, traffic = query.data.replace('admin_confirm_set_ptp__', '').split('__')
+    reset_usage, purchase_id, page, user_info_page, period, traffic = query.data.replace('admin_confirm_set_ptp__', '').split('__')
     traffic, period = int(traffic), int(period)
     user_detail = update.effective_chat
 
@@ -520,7 +521,8 @@ async def admin_confirm_set_purchase_traffic_and_period(update, context):
             )
 
             main_server_ip = purchase.product.main_server.server_ip
-            await panel_api.marzban_api.reset_user_data_usage(main_server_ip, purchase.username)
+            if reset_usage == 'reset':
+                await panel_api.marzban_api.reset_user_data_usage(main_server_ip, purchase.username)
             traffic_to_byte = int(traffic * (1024 ** 3))
             expire_date = datetime.now(pytz.timezone('Asia/Tehran'))
 
