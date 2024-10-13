@@ -494,8 +494,8 @@ async def admin_assurance_set_purchase_traffic_and_period(update, context):
             f"Period: {period} Day")
 
     keyboard = [
-        [InlineKeyboardButton("Yes And Reset Usage", callback_data=f"admin_confirm_set_ptp__reset__{purchase_id}__{page}__{user_info_page}__{period}__{traffic}"),
-         InlineKeyboardButton("Yes", callback_data=f"admin_confirm_set_ptp__noreset__{purchase_id}__{page}__{user_info_page}__{period}__{traffic}")]
+        [InlineKeyboardButton("Yes And Reset Usage", callback_data=f"admin_confirm_set_ptp__reset__{purchase_id}__{page}__{user_info_page}__{period}__{traffic}")],
+         [InlineKeyboardButton("Yes", callback_data=f"admin_confirm_set_ptp__noreset__{purchase_id}__{page}__{user_info_page}__{period}__{traffic}")],
         [InlineKeyboardButton("Back", callback_data=f'admin_set_time_and_traffic__{purchase_id}__{page}__{user_info_page}__{period}__{traffic}')]
     ]
 
