@@ -99,9 +99,6 @@ async def view_user_info(update, context, chat_id=None, page=None):
             keyboard = [
                 [InlineKeyboardButton('Refresh', callback_data=f'admin_view_user__{chat_id}__{page}'),
                  InlineKeyboardButton('Message', callback_data=f'reply_ticket_private_{chat_id}')],
-                [InlineKeyboardButton('🔰 Set User Status:', callback_data=f'just_for_show')],
-                [InlineKeyboardButton(f"Active", callback_data=f'admin_set_user_status__{chat_id}__active__{page}'),
-                 InlineKeyboardButton(f"Ban", callback_data=f'admin_set_user_status__{chat_id}__ban__{page}')],
 
                 [InlineKeyboardButton('👝 Change Wallet Balance:', callback_data=f'just_for_show')],
                 [InlineKeyboardButton(f"Add", callback_data=f'admin_cuwb__{chat_id}__increase_balance_by_admin'),
@@ -109,10 +106,16 @@ async def view_user_info(update, context, chat_id=None, page=None):
                  InlineKeyboardButton(f"Less", callback_data=f'admin_cuwb__{chat_id}__reduction_balance_by_admin')],
 
                 [InlineKeyboardButton('👑 Set User Level:', callback_data=f'just_for_show')],
-                [InlineKeyboardButton(f"Normal", callback_data=f'admin_set_user_level__{chat_id}__1__{page}'),
-                 InlineKeyboardButton(f"Trustable", callback_data=f'admin_set_user_level__{chat_id}__3__{page}')],
-                [InlineKeyboardButton(f"SuperUser", callback_data=f'admin_set_user_level__{chat_id}__5__{page}'),
-                 InlineKeyboardButton(f"Admin", callback_data=f'admin_set_user_level__{chat_id}__10__{page}')],
+                [InlineKeyboardButton("1", callback_data=f'admin_set_user_level__{chat_id}__1__{page}'),
+                 InlineKeyboardButton("2", callback_data=f'admin_set_user_level__{chat_id}__2__{page}'),
+                InlineKeyboardButton("3", callback_data=f'admin_set_user_level__{chat_id}__3__{page}'),
+                 InlineKeyboardButton("4", callback_data=f'admin_set_user_level__{chat_id}__4__{page}'),
+                 InlineKeyboardButton("5", callback_data=f'admin_set_user_level__{chat_id}__5__{page}')],
+                [InlineKeyboardButton("6", callback_data=f'admin_set_user_level__{chat_id}__6__{page}'),
+                 InlineKeyboardButton("7", callback_data=f'admin_set_user_level__{chat_id}__7__{page}'),
+                 InlineKeyboardButton("8", callback_data=f'admin_set_user_level__{chat_id}__8__{page}'),
+                 InlineKeyboardButton("9", callback_data=f'admin_set_user_level__{chat_id}__9__{page}'),
+                 InlineKeyboardButton("10", callback_data=f'admin_set_user_level__{chat_id}__10__{page}')],
 
                 [InlineKeyboardButton('🎁 VPN Free Test:', callback_data=f'just_for_show')],
                 [InlineKeyboardButton(f"True (received)", callback_data=f'admin_set_vpn_free_test__{chat_id}__true__{page}'),

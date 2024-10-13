@@ -2,11 +2,12 @@ import sys, os, pytz, functools, logging, traceback
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import setting
 from vpn_service import panel_api
-from datetime import datetime, timedelta
+from datetime import datetime
 from crud import crud
 from admin import partner
+from utilities_reFactore import find_user
 
-async def calculate_price(traffic, period, chat_id):
+async def calculate_price(traffic, period, chat_id, context=None):
     price_per_gigabyte = setting.PRICE_PER_GB
     price_per_day = setting.PRICE_PER_DAY
 
@@ -14,7 +15,9 @@ async def calculate_price(traffic, period, chat_id):
         price_per_gigabyte = partner.partners.list_of_partner[chat_id].vpn_price_per_gigabyte_irt
         price_per_day = partner.partners.list_of_partner[chat_id].vpn_price_per_period_time_irt
 
-    price = (int(traffic) * price_per_gigabyte) + (int(period) * price_per_day)
+    service_price = (int(traffic) * price_per_gigabyte) + (int(period) * price_per_day)
+    user = await find_user(chat_id, context=context if context else type('context', (object,), {'user_data': {}}))
+    price = (service_price * user.config.user_level) / 100
     return int(price)
 
 

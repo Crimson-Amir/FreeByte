@@ -126,7 +126,6 @@ if __name__ == '__main__':
     application.add_handler(CallbackQueryHandler(admin_system.admin_view_online_users, pattern='admin_view_online_users__(.*)'))
 
 
-    application.add_handler(CallbackQueryHandler(admin_users.admin_change_user_status, pattern='admin_set_user_status__(.*)'))
     application.add_handler(CallbackQueryHandler(admin_users.admin_set_user_level, pattern='admin_set_user_level__(.*)'))
     application.add_handler(CallbackQueryHandler(admin_users.admin_set_free_vpn_test, pattern='admin_set_vpn_free_test__(.*)'))
     application.add_handler(CallbackQueryHandler(admin_users.admin_user_services, pattern='admin_user_services__(.*)'))

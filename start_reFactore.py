@@ -1,6 +1,6 @@
 import logging
 from crud import crud
-from utilities_reFactore import FindText, UserNotFound, handle_error, message_token, start as ustart, find_user_id
+from utilities_reFactore import FindText, UserNotFound, handle_error, message_token, start as ustart, find_user
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
 import setting
@@ -171,7 +171,8 @@ async def invite_firends(update, context):
     ft_instance = FindText(update, context)
     text = await ft_instance.find_text('invite_firend_text')
     text = text.format(setting.REFERRAL_PERCENT)
-    user_database_id = await find_user_id(user_detail.id, context)
+    user = await find_user(user_detail.id, context)
+    user_database_id = user.user_id
     link = f'https://t.me/Free_Byte_Bot/?start=ref_{user_detail.id}_{user_database_id}'
     invite_text = f'{await ft_instance.find_text("invite_firend_text_link")}\n{link}'
 
