@@ -8,6 +8,18 @@ from admin import partner
 from utilities_reFactore import find_user
 from database_sqlalchemy import SessionLocal
 
+class DiscountPerLevel:
+    descount = {
+        2: 4,
+        3: 7,
+        4: 10,
+        5: 15,
+        6: 20,
+        7: 25,
+        8: 30,
+        9: 35,
+    }
+
 async def calculate_price(traffic, period, chat_id, context=None):
     price_per_gigabyte = setting.PRICE_PER_GB
     price_per_day = setting.PRICE_PER_DAY
@@ -19,7 +31,8 @@ async def calculate_price(traffic, period, chat_id, context=None):
         service_price = (int(traffic) * price_per_gigabyte) + (int(period) * price_per_day)
         context = context if context else type('context', (object,), {'user_data': {}})
         user = await find_user(session, chat_id, context=context)
-        price = (service_price * user.config.user_level or 1) / 100
+        discount = DiscountPerLevel.descount.get(user.config.user_level, 1)
+        price = (service_price * discount or 1) / 100
         return int(price)
 
 

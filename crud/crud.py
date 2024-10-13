@@ -79,7 +79,6 @@ def create_user(session, user_detail, inviter_user_id, selected_language):
 
     user_config = model.UserConfig(
         chat_id=user.chat_id,
-
     )
     session.add(user_config)
 
