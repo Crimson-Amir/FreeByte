@@ -137,8 +137,7 @@ async def admin_set_user_level(update, context):
     with SessionLocal() as session:
         with session.begin():
             crud.update_user_config(session, int(chat_id), user_level=int(level))
-            context = context if context else type('context', (object,), {'user_data': {}})
-            await utilities_reFactore.find_user(session, chat_id, context, reset=True)
+            await utilities_reFactore.user_data_manager.delete_user_data(chat_id)
             await query.answer('+ Changes Saved!')
             return await view_user_info(update, context, chat_id=chat_id, page=page)
 

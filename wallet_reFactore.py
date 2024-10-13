@@ -162,7 +162,7 @@ async def create_invoice(update, context):
 
             elif action == "buy_vpn_service":
                 period, traffic, product_id = extra_data
-                amount = await vpn_utilities.calculate_price(traffic, period, chat_id, context=context)
+                amount = await vpn_utilities.calculate_price(traffic, period, chat_id)
                 back_button_callback= f'vpn_set_period_traffic__30_40_{product_id}'
                 operation = 'spend'
                 invoice_extra_data = (f"{await ft_instance.find_text('buy_vpn_service')}"
@@ -174,7 +174,7 @@ async def create_invoice(update, context):
 
             elif action == "upgrade_vpn_service":
                 upgrade_period, upgrade_traffic, purchase_id = extra_data
-                amount = await vpn_utilities.calculate_price(upgrade_traffic, upgrade_period, chat_id, context=context)
+                amount = await vpn_utilities.calculate_price(upgrade_traffic, upgrade_period, chat_id)
                 back_button_callback, operation = f'vpn_upgrade_service__{upgrade_period}__{upgrade_traffic}__{purchase_id}', 'spend'
                 format_title = await ft_instance.find_text('upgrade_vpn_service')
                 format_title = format_title.format(purchase_id)

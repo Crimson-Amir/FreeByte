@@ -64,13 +64,32 @@ async def start(update, context, in_new_message=False, raise_error=False):
         await context.bot.send_message(chat_id=user_detail.id, text='<b>Sorry, somthing went wrong!</b>', parse_mode='html')
 
 
-async def find_user(session, user_id, context, reset=False):
-    user_database_id = context.user_data.get('user_database_id')
-    if not user_database_id or reset:
-        get_user_user_database_id_from_db = crud.get_user(session, user_id)
-        user_database_id = get_user_user_database_id_from_db
-        context.user_data['user_database_id'] = user_database_id
+class UserDataManager:
+    def __init__(self):
+        self.user_data_store = {}
+
+    def get_user_database_id(self, session, user_id):
+        user_database_id = self.user_data_store.get(user_id)
+        if not user_database_id:
+            get_user_user_database_id_from_db = crud.get_user(session, user_id)
+            user_database_id = get_user_user_database_id_from_db
+            self.user_data_store[user_id] = user_database_id
+        return user_database_id
+
+    def update_user_database_id(self, user_id, new_database_id):
+        self.user_data_store[user_id] = new_database_id
+
+    def delete_user_data(self, user_id):
+        if user_id in self.user_data_store:
+            del self.user_data_store[user_id]
+
+
+user_data_manager = UserDataManager()
+
+async def find_user(session, user_id):
+    user_database_id = user_data_manager.get_user_database_id(session, user_id)
     return user_database_id
+
 
 class FindText:
     def __init__(self, update, context, user_id=None, notify_user=True):

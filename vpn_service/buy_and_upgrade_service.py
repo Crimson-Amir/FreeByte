@@ -23,7 +23,8 @@ async def buy_custom_service(update, context):
     traffic = max(min(int(traffic_callback), 150), 5) or 40
     period = max(min(int(period_callback), 60), 5) or 30
 
-    price = await vpn_utilities.calculate_price(traffic, period, user_detail.id, context=context)
+
+    price = await vpn_utilities.calculate_price(traffic, period, user_detail.id)
     text = (f"{await ft_instance.find_text('vpn_buy_service_title')}"
             f"\n\n{await ft_instance.find_text('price')} {price:,} {await ft_instance.find_text('irt')}")
 
@@ -57,7 +58,7 @@ async def upgrade_service(update, context):
             traffic = max(min(int(traffic_callback), 150), 5) or 40
             period = max(min(int(period_callback), 60), 5) or 30
 
-            price = await vpn_utilities.calculate_price(traffic, period, user_detail.id, context=context)
+            price = await vpn_utilities.calculate_price(traffic, period, user_detail.id)
 
             text = (f"{await ft_instance.find_text('vpn_upgrade_service_title')}"
                     f"\n\n{await ft_instance.find_text('price')} {price:,} {await ft_instance.find_text('irt')}")

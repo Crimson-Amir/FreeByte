@@ -22,7 +22,7 @@ class DiscountPerLevel:
         10: 40
     }
 
-async def calculate_price(traffic, period, chat_id, context=None):
+async def calculate_price(traffic, period, chat_id):
     price_per_gigabyte = setting.PRICE_PER_GB
     price_per_day = setting.PRICE_PER_DAY
     with SessionLocal() as session:
@@ -31,8 +31,7 @@ async def calculate_price(traffic, period, chat_id, context=None):
             price_per_day = partner.partners.list_of_partner[chat_id].vpn_price_per_period_time_irt
 
         service_price = (int(traffic) * price_per_gigabyte) + (int(period) * price_per_day)
-        context = context if context else type('context', (object,), {'user_data': {}})
-        user = await find_user(session, chat_id, context=context)
+        user = await find_user(session, chat_id)
         discount = (service_price * DiscountPerLevel.descount.get(user.config.user_level, 1)) / 100
         price = service_price - discount
         return int(price)
@@ -62,7 +61,7 @@ async def remove_service_in_server(session, purchase, context=None):
         now = datetime.now(pytz.timezone('Asia/Tehran')).replace(tzinfo=None)
         days_left = (expiry - now).days
 
-        returnable_amount = await calculate_price(traffic_left_in_gigabyte, days_left, purchase.chat_id, context=context)
+        returnable_amount = await calculate_price(traffic_left_in_gigabyte, days_left, purchase.chat_id)
 
         finacial_report = crud.create_financial_report(
             session, 'recive',
