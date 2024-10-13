@@ -128,20 +128,6 @@ async def view_user_info(update, context, chat_id=None, page=None):
 
             return await query.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(keyboard))
 
-
-@vpn_utilities.handle_functions_error
-@admin_access
-async def admin_change_user_status(update, context):
-    query = update.callback_query
-    chat_id, status, page = query.data.replace('admin_set_user_status__', '').split('__')
-
-    with SessionLocal() as session:
-        with session.begin():
-            crud.update_user_config(session, int(chat_id), user_status=status)
-            await query.answer('+ Changes Saved!')
-            return await view_user_info(update, context, chat_id=chat_id, page=page)
-
-
 @vpn_utilities.handle_functions_error
 @admin_access
 async def admin_set_user_level(update, context):
@@ -151,6 +137,7 @@ async def admin_set_user_level(update, context):
     with SessionLocal() as session:
         with session.begin():
             crud.update_user_config(session, int(chat_id), user_level=int(level))
+            await utilities_reFactore.find_user(session, chat_id)
             await query.answer('+ Changes Saved!')
             return await view_user_info(update, context, chat_id=chat_id, page=page)
 
@@ -444,6 +431,7 @@ async def admin_user_service_detail(update, context):
             )
 
             keyboard = [
+                [InlineKeyboardButton("Set Traffic And Period",callback_data=f'admin_set_time_and_traffic__{purchase_id}__{page}__{user_info_page}__30__40')],
                 [InlineKeyboardButton("Remove", callback_data=f'admin_assurance_remove_vpn__{purchase_id}__{page}__{user_info_page}'),
                  InlineKeyboardButton("Upgrade", callback_data=f'admin_upgrade_user_vpn_service__{purchase_id}__{page}__{user_info_page}__30__40')],
                 [InlineKeyboardButton("Statistics", callback_data=f'statistics_week_{purchase_id}_hide'),
@@ -462,6 +450,37 @@ async def admin_user_service_detail(update, context):
 
     except Exception as e:
         raise e
+
+
+@vpn_utilities.handle_functions_error
+@admin_access
+async def admin_set_purchase_period_and_traffic(update, context):
+    query = update.callback_query
+    purchase_id, page, user_info_page, period_callback, traffic_callback = query.data.replace('admin_set_time_and_traffic__', '').split('__')
+    user_detail = update.effective_chat
+
+    traffic = max(min(int(traffic_callback), 150), 1) or 40
+    period = max(min(int(period_callback), 90), 1) or 30
+
+    price = await vpn_utilities.calculate_price(traffic, period, user_detail.id)
+
+    text = (f"Customize service for Upgrade:"
+            f"\n\nPrice {price:,} IRT")
+
+    keyboard = [
+        [InlineKeyboardButton('Traffic', callback_data="just_for_show")],
+        [InlineKeyboardButton("➖", callback_data=f"admin_upgrade_user_vpn_service__{purchase_id}__{page}__{user_info_page}__{period}__{traffic - 1}"),
+         InlineKeyboardButton(f"{traffic} GB", callback_data="just_for_show"),
+         InlineKeyboardButton("➕", callback_data=f"admin_upgrade_user_vpn_service__{purchase_id}__{page}__{user_info_page}__{period}__{traffic + 10}")],
+        [InlineKeyboardButton('Period Time', callback_data="just_for_show")],
+        [InlineKeyboardButton("➖", callback_data=f"admin_upgrade_user_vpn_service__{purchase_id}__{page}__{user_info_page}__{period - 1}__{traffic}"),
+         InlineKeyboardButton(f"{period} Days", callback_data="just_for_show"),
+         InlineKeyboardButton("➕", callback_data=f"admin_upgrade_user_vpn_service__{purchase_id}__{page}__{user_info_page}__{period + 10}__{traffic}")],
+        [InlineKeyboardButton("Back", callback_data=f'admin_user_service_detail__{purchase_id}__{page}__{user_info_page}'),
+         InlineKeyboardButton("Confirm", callback_data=f"admin_assurance_upgrade_vpn__{purchase_id}__{page}__{user_info_page}__{period}__{traffic}")]
+    ]
+
+    await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
 
 @vpn_utilities.handle_functions_error
