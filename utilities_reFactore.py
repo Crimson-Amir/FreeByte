@@ -64,13 +64,12 @@ async def start(update, context, in_new_message=False, raise_error=False):
         await context.bot.send_message(chat_id=user_detail.id, text='<b>Sorry, somthing went wrong!</b>', parse_mode='html')
 
 
-async def find_user(user_id, context=None):
+async def find_user(session, user_id, context=None):
     user_database_id = context.user_data.get('user_database_id')
     if not user_database_id:
-        with SessionLocal() as session:
-            get_user_user_database_id_from_db = crud.get_user(session, user_id)
-            user_database_id = get_user_user_database_id_from_db
-            context.user_data['user_database_id'] = user_database_id
+        get_user_user_database_id_from_db = crud.get_user(session, user_id)
+        user_database_id = get_user_user_database_id_from_db
+        context.user_data['user_database_id'] = user_database_id
     return user_database_id
 
 class FindText:

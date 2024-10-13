@@ -6,19 +6,21 @@ from datetime import datetime
 from crud import crud
 from admin import partner
 from utilities_reFactore import find_user
+from database_sqlalchemy import SessionLocal
 
 async def calculate_price(traffic, period, chat_id, context=None):
     price_per_gigabyte = setting.PRICE_PER_GB
     price_per_day = setting.PRICE_PER_DAY
+    with SessionLocal() as session:
+        if chat_id in partner.partners.list_of_partner:
+            price_per_gigabyte = partner.partners.list_of_partner[chat_id].vpn_price_per_gigabyte_irt
+            price_per_day = partner.partners.list_of_partner[chat_id].vpn_price_per_period_time_irt
 
-    if chat_id in partner.partners.list_of_partner:
-        price_per_gigabyte = partner.partners.list_of_partner[chat_id].vpn_price_per_gigabyte_irt
-        price_per_day = partner.partners.list_of_partner[chat_id].vpn_price_per_period_time_irt
-
-    price = (int(traffic) * price_per_gigabyte) + (int(period) * price_per_day)
-    # user = await find_user(chat_id, context=context if context else type('context', (object,), {'user_data': {}}))
-    # price = (service_price * user.config.user_level) / 100
-    return int(price)
+        service_price = (int(traffic) * price_per_gigabyte) + (int(period) * price_per_day)
+        context = context if context else type('context', (object,), {'user_data': {}})
+        user = await find_user(session, chat_id, context=context)
+        price = (service_price * user.config.user_level) / 100
+        return int(price)
 
 
 async def format_traffic_from_megabyte(ft_instance, traffic_in_megabyte):
@@ -30,7 +32,7 @@ async def format_traffic_from_megabyte(ft_instance, traffic_in_megabyte):
         return f"{round(traffic_in_megabyte / 1000, 2)} {await ft_instance.find_text('gigabyte')}"
 
 
-async def remove_service_in_server(session, purchase):
+async def remove_service_in_server(session, purchase, context=None):
     main_server_ip = purchase.product.main_server.server_ip
     user = await panel_api.marzban_api.get_user(main_server_ip, purchase.username)
     returnable_amount = 0
@@ -45,7 +47,7 @@ async def remove_service_in_server(session, purchase):
         now = datetime.now(pytz.timezone('Asia/Tehran')).replace(tzinfo=None)
         days_left = (expiry - now).days
 
-        returnable_amount = await calculate_price(traffic_left_in_gigabyte, days_left, purchase.chat_id)
+        returnable_amount = await calculate_price(traffic_left_in_gigabyte, days_left, purchase.chat_id, context=context)
 
         finacial_report = crud.create_financial_report(
             session, 'recive',

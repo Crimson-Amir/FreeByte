@@ -169,7 +169,7 @@ async def ask_remove_service_for_user(update, context):
                 now = datetime.now(pytz.timezone('Asia/Tehran')).replace(tzinfo=None)
                 days_left = (expiry - now).days
 
-                returnable_amount = await vpn_utilities.calculate_price(traffic_left_in_gigabyte, days_left, purchase.chat_id)
+                returnable_amount = await vpn_utilities.calculate_price(traffic_left_in_gigabyte, days_left, purchase.chat_id, context=context)
 
             text = f"<b>{await ft_instance.find_text('vpn_ask_user_for_removing_service')}</b>"
 
@@ -197,7 +197,7 @@ async def remove_service_for_user(update, context):
         with session.begin():
             purchase = vpn_crud.remove_purchase(session, purchase_id, user_detail.id)
 
-            returnable_amount = await vpn_utilities.remove_service_in_server(session, purchase)
+            returnable_amount = await vpn_utilities.remove_service_in_server(session, purchase, context=context)
 
             text = await ft_instance.find_text('vpn_service_deleted_successfully')
             keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=f'vpn_my_services__1')]]

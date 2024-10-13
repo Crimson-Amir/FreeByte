@@ -166,18 +166,19 @@ async def already_on_this(update, context):
 
 @handle_error.handle_functions_error
 async def invite_firends(update, context):
-    query = update.callback_query
-    user_detail = update.effective_chat
-    ft_instance = FindText(update, context)
-    text = await ft_instance.find_text('invite_firend_text')
-    text = text.format(setting.REFERRAL_PERCENT)
-    user = await find_user(user_detail.id, context)
-    user_database_id = user.user_id
-    link = f'https://t.me/Free_Byte_Bot/?start=ref_{user_detail.id}_{user_database_id}'
-    invite_text = f'{await ft_instance.find_text("invite_firend_text_link")}\n{link}'
+    with SessionLocal() as session:
+        query = update.callback_query
+        user_detail = update.effective_chat
+        ft_instance = FindText(update, context)
+        text = await ft_instance.find_text('invite_firend_text')
+        text = text.format(setting.REFERRAL_PERCENT)
+        user = await find_user(session, user_detail.id, context)
+        user_database_id = user.user_id
+        link = f'https://t.me/Free_Byte_Bot/?start=ref_{user_detail.id}_{user_database_id}'
+        invite_text = f'{await ft_instance.find_text("invite_firend_text_link")}\n{link}'
 
-    main_keyboard = [
-        [InlineKeyboardButton(await ft_instance.find_keyboard('send_invite_link'),  url=f'https://t.me/share/url?text={invite_text}')],
-        [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='start')],
-    ]
-    return await query.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(main_keyboard), parse_mode='html')
+        main_keyboard = [
+            [InlineKeyboardButton(await ft_instance.find_keyboard('send_invite_link'),  url=f'https://t.me/share/url?text={invite_text}')],
+            [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='start')],
+        ]
+        return await query.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(main_keyboard), parse_mode='html')
