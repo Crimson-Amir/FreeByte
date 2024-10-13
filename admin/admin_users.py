@@ -506,6 +506,7 @@ from datetime import timedelta
 async def admin_confirm_set_purchase_traffic_and_period(update, context):
     query = update.callback_query
     purchase_id, page, user_info_page, period, traffic = query.data.replace('admin_confirm_set_ptp__', '').split('__')
+    traffic, period = int(traffic), int(period)
     user_detail = update.effective_chat
 
     with SessionLocal() as session:
