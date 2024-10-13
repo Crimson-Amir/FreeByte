@@ -19,7 +19,7 @@ async def calculate_price(traffic, period, chat_id, context=None):
         service_price = (int(traffic) * price_per_gigabyte) + (int(period) * price_per_day)
         context = context if context else type('context', (object,), {'user_data': {}})
         user = await find_user(session, chat_id, context=context)
-        price = (service_price * user.config.user_level) / 100
+        price = (service_price * user.config.user_level or 1) / 100
         return int(price)
 
 
