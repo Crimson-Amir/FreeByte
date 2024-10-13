@@ -464,23 +464,90 @@ async def admin_set_purchase_period_and_traffic(update, context):
 
     price = await vpn_utilities.calculate_price(traffic, period, user_detail.id)
 
-    text = (f"Customize service for Upgrade:"
+    text = (f"set purchase traffic andperiod time:"
             f"\n\nPrice {price:,} IRT")
 
     keyboard = [
         [InlineKeyboardButton('Traffic', callback_data="just_for_show")],
-        [InlineKeyboardButton("➖", callback_data=f"admin_upgrade_user_vpn_service__{purchase_id}__{page}__{user_info_page}__{period}__{traffic - 1}"),
+        [InlineKeyboardButton("➖", callback_data=f"admin_set_time_and_traffic__{purchase_id}__{page}__{user_info_page}__{period}__{traffic - 1}"),
          InlineKeyboardButton(f"{traffic} GB", callback_data="just_for_show"),
-         InlineKeyboardButton("➕", callback_data=f"admin_upgrade_user_vpn_service__{purchase_id}__{page}__{user_info_page}__{period}__{traffic + 10}")],
+         InlineKeyboardButton("➕", callback_data=f"admin_set_time_and_traffic__{purchase_id}__{page}__{user_info_page}__{period}__{traffic + 10}")],
         [InlineKeyboardButton('Period Time', callback_data="just_for_show")],
-        [InlineKeyboardButton("➖", callback_data=f"admin_upgrade_user_vpn_service__{purchase_id}__{page}__{user_info_page}__{period - 1}__{traffic}"),
+        [InlineKeyboardButton("➖", callback_data=f"admin_set_time_and_traffic__{purchase_id}__{page}__{user_info_page}__{period - 1}__{traffic}"),
          InlineKeyboardButton(f"{period} Days", callback_data="just_for_show"),
-         InlineKeyboardButton("➕", callback_data=f"admin_upgrade_user_vpn_service__{purchase_id}__{page}__{user_info_page}__{period + 10}__{traffic}")],
+         InlineKeyboardButton("➕", callback_data=f"admin_set_time_and_traffic__{purchase_id}__{page}__{user_info_page}__{period + 10}__{traffic}")],
         [InlineKeyboardButton("Back", callback_data=f'admin_user_service_detail__{purchase_id}__{page}__{user_info_page}'),
-         InlineKeyboardButton("Confirm", callback_data=f"admin_assurance_upgrade_vpn__{purchase_id}__{page}__{user_info_page}__{period}__{traffic}")]
+         InlineKeyboardButton("Confirm", callback_data=f"admin_assurance_set_ptp__{purchase_id}__{page}__{user_info_page}__{period}__{traffic}")]
     ]
 
     await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+
+
+@vpn_utilities.handle_functions_error
+@admin_access
+async def admin_assurance_set_purchase_traffic_and_period(update, context):
+    query = update.callback_query
+    purchase_id, page, user_info_page, period, traffic = query.data.replace('admin_assurance_set_ptp__', '').split('__')
+
+    text = (f"Are you sure you wanna set traffic and period?\nno amount has add or descread!\n\n"
+            f"Traffic: {traffic} GB"
+            f"Period: {period} Day")
+
+    keyboard = [
+        [InlineKeyboardButton("Yes", callback_data=f"admin_confirm_set_ptp__{purchase_id}__{page}__{user_info_page}__{period}__{traffic}"),
+        InlineKeyboardButton("Back", callback_data=f'admin_set_time_and_traffic__{purchase_id}__{page}__{user_info_page}__{period}__{traffic}')]
+    ]
+
+    await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+
+from datetime import timedelta
+@vpn_utilities.handle_functions_error
+@admin_access
+async def admin_confirm_set_purchase_traffic_and_period(update, context):
+    query = update.callback_query
+    payment_status, purchase_id, page, user_info_page, period, traffic = query.data.replace('admin_confirm_set_ptp__', '').split('__')
+    user_detail = update.effective_chat
+
+    with SessionLocal() as session:
+        with session.begin():
+            purchase = vpn_crud.update_purchase(
+                session,
+                purchase_id,
+                traffic=traffic,
+                period=period,
+                register_date=datetime.now(pytz.timezone('Asia/Tehran'))
+            )
+
+            main_server_ip = purchase.product.main_server.server_ip
+            await panel_api.marzban_api.reset_user_data_usage(main_server_ip, purchase.username)
+            traffic_to_byte = int(traffic * (1024 ** 3))
+            expire_date = datetime.now(pytz.timezone('Asia/Tehran'))
+
+            date_in_timestamp = (expire_date + timedelta(days=period)).timestamp()
+
+            json_config = await buy_and_upgrade_service.create_json_config(purchase.username, date_in_timestamp, traffic_to_byte)
+            await panel_api.marzban_api.modify_user(main_server_ip, purchase.username, json_config)
+
+            msg = (
+                f'admin Set Service Traffic and Period For User'
+                f'\npayment_status: {payment_status}'
+                f'\nService ID: {purchase.purchase_id}'
+                f'\nService username: {purchase.username}'
+                f'\nService Traffic Now: {purchase.traffic} GB'
+                f'\nService Period Now: {purchase.period} GB'
+                f'\nProduct Name: {purchase.product.product_name}'
+                f'\nUser chat id: {purchase.chat_id}'
+                f'\nAdmin chat ID: {user_detail.id} ({user_detail.first_name})'
+            )
+
+            await utilities_reFactore.report_to_admin('purchase', 'admin_confirm_upgrade_vpn_service', msg)
+
+            keyboard = [
+                [InlineKeyboardButton("Back", callback_data=f'admin_user_service_detail__{purchase_id}__{page}__{user_info_page}')]
+            ]
+
+            text = 'set Service For User Successful'
+            await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
 
 @vpn_utilities.handle_functions_error
@@ -596,7 +663,7 @@ async def admin_confirm_upgrade_vpn_service(update, context):
             await utilities_reFactore.report_to_admin('purchase', 'admin_confirm_upgrade_vpn_service', msg)
 
             keyboard = [
-                [InlineKeyboardButton("Back", callback_data=f'admin_assurance_upgrade_vpn__{purchase_id}__{page}__{user_info_page}__{period}__{traffic}')]
+                [InlineKeyboardButton("Back", callback_data=f'admin_user_service_detail__{purchase_id}__{page}__{user_info_page}')]
             ]
 
             text = 'Upgrade Service For User Successful'

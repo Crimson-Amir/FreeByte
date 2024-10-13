@@ -290,6 +290,10 @@ text_transaction = {
         "en": "Referral for the first purchase of your subcategory",
         "fa": "رفرال اولین خرید زیرمجموعه شما",
     },
+    "price_with_discount": {
+        "en": "Price With {0}% discount:",
+        "fa": "مبلغ با {0}% تخفیف:",
+    },
 }
 
 keyboard_transaction = {

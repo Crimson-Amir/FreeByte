@@ -143,6 +143,10 @@ if __name__ == '__main__':
     application.add_handler(CallbackQueryHandler(admin_users.admin_assurance_upgrade_vpn_service, pattern='admin_assurance_upgrade_vpn__(.*)'))
     application.add_handler(CallbackQueryHandler(admin_users.admin_confirm_upgrade_vpn_service, pattern='admin_confirm_upvpn__(.*)'))
 
+    application.add_handler(CallbackQueryHandler(admin_users.admin_set_purchase_period_and_traffic, pattern='admin_set_time_and_traffic__(.*)'))
+    application.add_handler(CallbackQueryHandler(admin_users.admin_assurance_set_purchase_traffic_and_period, pattern='admin_assurance_set_ptp__(.*)'))
+    application.add_handler(CallbackQueryHandler(admin_users.admin_confirm_set_purchase_traffic_and_period, pattern='admin_confirm_set_ptp__(.*)'))
+
     application.add_handler(CallbackQueryHandler(admin_users.admin_assurance_remove_vpn_service, pattern='admin_assurance_remove_vpn__(.*)'))
     application.add_handler(CallbackQueryHandler(admin_users.admin_confirm_remove_vpn_service, pattern='admin_confirm_remove_vpn__(.*)'))
 
