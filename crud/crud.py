@@ -1,10 +1,11 @@
 import logging
 from database_sqlalchemy import SessionLocal
 import models_sqlalchemy as model
-from sqlalchemy import update, func, desc, or_
+from sqlalchemy import update, desc, or_
+from sqlalchemy.orm import joinedload
 
 def get_user(session, chat_id):
-    return session.query(model.UserDetail).filter_by(chat_id=chat_id).first()
+    return session.query(model.UserDetail).options(joinedload(model.UserDetail.config)).filter_by(chat_id=chat_id).first()
 
 def get_user_by_chat_id_and_user_id(session, chat_id, user_id):
     return session.query(model.UserDetail).filter(

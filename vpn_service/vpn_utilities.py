@@ -25,6 +25,7 @@ class DiscountPerLevel:
 async def calculate_price(traffic, period, chat_id):
     price_per_gigabyte = setting.PRICE_PER_GB
     price_per_day = setting.PRICE_PER_DAY
+
     with SessionLocal() as session:
         if chat_id in partner.partners.list_of_partner:
             price_per_gigabyte = partner.partners.list_of_partner[chat_id].vpn_price_per_gigabyte_irt
