@@ -42,8 +42,14 @@ async def handle_inviter_referral(session, financial):
                 text = text.format(setting.REFERRAL_PERCENT, f"{referral_amount:,}")
                 crud.update_user_config(session, chat_id=financial.chat_id, first_purchase_refreal_for_inviter=True)
                 await utilities_reFactore.report_to_user('success', financial.owner.invited_by, text)
-                admin_msg = ''
-                await utilities_reFactore.report_to_admin('info', financial.owner.invited_by, text)
+                admin_msg = (f"\nUser Get Refferal"
+                             f"\ninviter ID: {financial.owner.invited_by}"
+                             f"\nSub User ID: {financial.chat_id}"
+                             f"\nSub User Name: {financial.owner.first_name} {financial.owner.last_name}"
+                             f"Amount: {financial.amount}"
+                             )
+
+                await utilities_reFactore.report_to_admin('info', financial.owner.invited_by, admin_msg)
         except Exception as e:
             logging.error(f'error to add referral to inviter wallet:\n{e}')
 
