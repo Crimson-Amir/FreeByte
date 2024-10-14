@@ -70,9 +70,10 @@ class UserDataManager:
 
     def get_user_database_id(self, session, user_id):
         user_database_id = self.user_data_store.get(user_id)
-        if not user_database_id:
-            get_user_user_database_id_from_db = crud.get_user(session, user_id)
-            user_database_id = get_user_user_database_id_from_db
+        if user_database_id:
+            user_database_id = session.merge(user_database_id)
+        else:
+            user_database_id = crud.get_user(session, user_id)
             self.user_data_store[user_id] = user_database_id
         return user_database_id
 
