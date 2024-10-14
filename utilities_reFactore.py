@@ -12,6 +12,7 @@ class UserNotFound(Exception):
 
 
 def human_readable(date, user_language):
+    if not date: return
     get_date = arrow.get(date)
 
     try:

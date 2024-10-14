@@ -180,7 +180,7 @@ async def upgrade_service_for_user(context, session, purchase_id: int):
             traffic_to_byte = int((purchase.upgrade_traffic * (1024 ** 3)) + user['data_limit'])
             expire_date = datetime.fromtimestamp(user['expire'])
             new_traffic = purchase.traffic + purchase.upgrade_traffic
-            new_period = purchase.upgrade_period + purchase.upgrade_period
+            new_period = purchase.period + purchase.upgrade_period
         else:
             await panel_api.marzban_api.reset_user_data_usage(main_server_ip, purchase.username)
             traffic_to_byte = int(purchase.upgrade_traffic * (1024 ** 3))
