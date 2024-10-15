@@ -97,54 +97,54 @@ text_transaction = {
     },
     "vpn_set_notification_status": {
         "en": "🔔 Choose Notification Preferences:"
-        "\n\nYou will receive notifications after:"
-        "\n📊 Using {0}% of your traffic"
-        "\n📅 {1} days before service expiration",
+              "\n\nYou will receive notifications after:"
+              "\n📊 Using {0}% of your traffic"
+              "\n📅 {1} days before service expiration",
         "fa": "🔔 تنظیم وضعیت نوتیفیکیشن سرویس:"
-        "\n\nدریافت نوتیفیکیشن پس از:"
-        "\n📊 مصرف {0}% حجم سرویس"
-        "\n📅 {1} روز مانده به انقضای سرویس",
+              "\n\nدریافت نوتیفیکیشن پس از:"
+              "\n📊 مصرف {0}% حجم سرویس"
+              "\n📅 {1} روز مانده به انقضای سرویس",
     },
     "vpn_android_guide": {
         "en": "💡 How to Connect on Android:"
-        '\n\nCopy the link provided by the bot, open v2rayNG, tap the + icon, and choose "Import config from clipboard".'
-        '\n\n🔄 Use the "Update Subscription" option anytime to get the latest server list.'
-        "\n\n📱 Download v2rayNG here:",
+              '\n\nCopy the link provided by the bot, open v2rayNG, tap the + icon, and choose "Import config from clipboard".'
+              '\n\n🔄 Use the "Update Subscription" option anytime to get the latest server list.'
+              "\n\n📱 Download v2rayNG here:",
         "fa": "💡 راهنمای اتصال در اندروید:"
-        '\n\nلینک دریافت شده از ربات را کپی کنید، برنامه v2rayNG را باز کرده و روی علامت + کلیک کنید، سپس گزینه "وارد کردن کانفیگ از کلیپ‌بورد" را بزنید.'
-        '\n\n🔄 با گزینه "Update Subscription" می‌توانید هر زمان لیست جدید سرورها را دریافت کنید.'
-        "\n\n📱 لینک دانلود v2rayNG:",
+              '\n\nلینک دریافت شده از ربات را کپی کنید، برنامه v2rayNG را باز کرده و روی علامت + کلیک کنید، سپس گزینه "وارد کردن کانفیگ از کلیپ‌بورد" را بزنید.'
+              '\n\n🔄 با گزینه "Update Subscription" می‌توانید هر زمان لیست جدید سرورها را دریافت کنید.'
+              "\n\n📱 لینک دانلود v2rayNG:",
     },
     "vpn_ios_guide": {
         "en": "💡 How to Connect on iOS:"
-        "\n\nStreisand:"
-        '\n\nIn the app, tap the + icon, select "Configure Manually", and in the Type section, choose "Subscription".'
-        "\n\nEnter a name and paste the link provided by the bot in the URL field. Set Auto-Update to every 6 hours."
-        '\n\n🔄 To refresh your subscription, hold on the service name and tap "Update".'
-        "\n\nV2Box:"
-        "\n\nCopy the link from the robot and select the + sign inside the program and click on the Add Subscription option. Choose the desired name and enter the subscription link in the url field."
-        "\n\n📱 Download links:",
+              "\n\nStreisand:"
+              '\n\nIn the app, tap the + icon, select "Configure Manually", and in the Type section, choose "Subscription".'
+              "\n\nEnter a name and paste the link provided by the bot in the URL field. Set Auto-Update to every 6 hours."
+              '\n\n🔄 To refresh your subscription, hold on the service name and tap "Update".'
+              "\n\nV2Box:"
+              "\n\nCopy the link from the robot and select the + sign inside the program and click on the Add Subscription option. Choose the desired name and enter the subscription link in the url field."
+              "\n\n📱 Download links:",
         "fa": "💡 راهنمای اتصال در ios:"
-        "\n\nStreisand:"
-        '\n\nداخل برنامه روی + کلیک کنید و گزینه "Configure Manually" را انتخاب کنید. در بخش Type گزینه Subscription را انتخاب کنید.'
-        "\n\nنام دلخواه خود را وارد کنید و لینک داده شده را در قسمت URL وارد کنید. Auto-Update را روی هر ۶ ساعت یکبار تنظیم کنید."
-        '\n\n🔄 برای آپدیت اشتراک، روی نام سرویس نگه دارید و "Update" را بزنید.'
-        "\n\nV2Box:"
-        "\n\nلینک رو از ربات کپی کنید و داخل برنامه علامت + رو انتخاب کنید و روی گزینه Add Subscription بزنید. نام دلخواه رو انتخاب کنید و در قسمت url لینک اشتراک رو وارد کنید."
-        "\n\n🔄 برای آپدیت لینک اشتراکتون به قسمت Configs بروید روی + بالا سمت راست بزنید، سپس گزینه Update all subscriptions را انتخاب کنید."
-        "\n\n📱 لینک دانلود:",
+              "\n\nStreisand:"
+              '\n\nداخل برنامه روی + کلیک کنید و گزینه "Configure Manually" را انتخاب کنید. در بخش Type گزینه Subscription را انتخاب کنید.'
+              "\n\nنام دلخواه خود را وارد کنید و لینک داده شده را در قسمت URL وارد کنید. Auto-Update را روی هر ۶ ساعت یکبار تنظیم کنید."
+              '\n\n🔄 برای آپدیت اشتراک، روی نام سرویس نگه دارید و "Update" را بزنید.'
+              "\n\nV2Box:"
+              "\n\nلینک رو از ربات کپی کنید و داخل برنامه علامت + رو انتخاب کنید و روی گزینه Add Subscription بزنید. نام دلخواه رو انتخاب کنید و در قسمت url لینک اشتراک رو وارد کنید."
+              "\n\n🔄 برای آپدیت لینک اشتراکتون به قسمت Configs بروید روی + بالا سمت راست بزنید، سپس گزینه Update all subscriptions را انتخاب کنید."
+              "\n\n📱 لینک دانلود:",
     },
     "vpn_windows_guide": {
         "en": "💡 How to Connect on Windows:"
-        '\n\nOpen v2rayN, go to "Subscription Group", then "Subscription Group Setting".'
-        '\n\nClick "Add", name it as you wish, and paste the subscription link from the bot. Confirm and click "Update Subscription".'
-        '\n\n🔄 You can update the link anytime by selecting "Update Subscription" from the Subscription Group section.'
-        "\n\n💻 Download v2rayN here:",
+              '\n\nOpen v2rayN, go to "Subscription Group", then "Subscription Group Setting".'
+              '\n\nClick "Add", name it as you wish, and paste the subscription link from the bot. Confirm and click "Update Subscription".'
+              '\n\n🔄 You can update the link anytime by selecting "Update Subscription" from the Subscription Group section.'
+              "\n\n💻 Download v2rayN here:",
         "fa": "💡 راهنمای اتصال در ویندوز:"
-        '\n\nبرنامه v2rayN را باز کرده، به بخش "Subscription Group" بروید، سپس "Subscription Group Setting" را انتخاب کنید.'
-        '\n\nروی "Add" کلیک کرده، نام دلخواه را وارد و لینک اشتراک را از ربات کپی کرده و تایید کنید. سپس "Update Subscription" را بزنید.'
-        '\n\n🔄 برای آپدیت لینک، از بخش Subscription Group گزینه "Update Subscription" را انتخاب کنید.'
-        "\n\n💻 لینک دانلود v2rayN:",
+              '\n\nبرنامه v2rayN را باز کرده، به بخش "Subscription Group" بروید، سپس "Subscription Group Setting" را انتخاب کنید.'
+              '\n\nروی "Add" کلیک کرده، نام دلخواه را وارد و لینک اشتراک را از ربات کپی کرده و تایید کنید. سپس "Update Subscription" را بزنید.'
+              '\n\n🔄 برای آپدیت لینک، از بخش Subscription Group گزینه "Update Subscription" را انتخاب کنید.'
+              "\n\n💻 لینک دانلود v2rayN:",
     },
     "online_at": {
         "en": "🟢 Online:",
@@ -172,11 +172,11 @@ text_transaction = {
     },
     "vpn_test_sevice_test": {
         "en": "🎁 You can get free service for test our quality."
-        "\n\nTraffic: {0} GB"
-        "\nPeriod Time: {1}Days",
+              "\n\nTraffic: {0} GB"
+              "\nPeriod Time: {1}Days",
         "fa": "🎁 شما میتوانید برای بررسی کیفیت، یک بار سرویس تست تهیه کنید."
-        "\n\nترافیک: {0} گیگابایت"
-        "\nدوره زمانی: {1} روز",
+              "\n\nترافیک: {0} گیگابایت"
+              "\nدوره زمانی: {1} روز",
     },
     "vpn_you_already_recive_this_service": {
         "en": "You Already Recive This Service!",
@@ -280,29 +280,29 @@ text_transaction = {
     },
     "vpn_service_termination_notification": {
         "en": "🟡 Your service named {0} has ended!"
-        "\nIf you want to check or renew the service."
-        "\nIf not renewed within the next 5 days, the service will be removed.",
+              "\nIf you want to check or renew the service."
+              "\nIf not renewed within the next 5 days, the service will be removed.",
         "fa": "🟡 سرویس شما با نام {0} به پایان رسید!"
-        "\nدر صورتی که تمایل دارید نسبت به بررسی و یا تمدید سرویس اقدام کنید."
-        "\nدر صورت عدم تمدید تا 5 روز آینده، سرویس حذف خواهد شد.",
+              "\nدر صورتی که تمایل دارید نسبت به بررسی و یا تمدید سرویس اقدام کنید."
+              "\nدر صورت عدم تمدید تا 5 روز آینده، سرویس حذف خواهد شد.",
     },
     "vpn_service_days_notification": {
         "en": "🔵 Service Expiration Date Notification"
-        "\nYour service named {0} has less than {1} days left."
-        "\nIf you want to check or renew the service.",
+              "\nYour service named {0} has less than {1} days left."
+              "\nIf you want to check or renew the service.",
         "fa": "🔵 اطلاع رسانی تاریخ انقضا سرویس"
-        "\nاز سرویس شما با نام {0} کمتر از {1} روز باقی مونده."
-        "\nدر صورتی که تمایل دارید نسبت به بررسی و یا تمدید سرویس اقدام کنید.",
+              "\nاز سرویس شما با نام {0} کمتر از {1} روز باقی مونده."
+              "\nدر صورتی که تمایل دارید نسبت به بررسی و یا تمدید سرویس اقدام کنید.",
     },
     "vpn_service_gigabyte_percent_notification": {
         "en": "🔵 Service Traffic Notification"
-        "\nYou have consumed {0} percent of the traffic volume of {1}."
-        "\nThe remaining volume of the service is {2}."
-        "\nIf you want to check or renew the service.",
+              "\nYou have consumed {0} percent of the traffic volume of {1}."
+              "\nThe remaining volume of the service is {2}."
+              "\nIf you want to check or renew the service.",
         "fa": "🔵 اطلاع رسانی حجم سرویس"
-        "\nشما {0} درصد حجم ترافیک سرویس {1} رو مصرف کردید."
-        "\nحجم باقی مونده از سرویس {2} است."
-        "\nدر صورتی که تمایل دارید نسبت به بررسی و یا تمدید سرویس اقدام کنید.",
+              "\nشما {0} درصد حجم ترافیک سرویس {1} رو مصرف کردید."
+              "\nحجم باقی مونده از سرویس {2} است."
+              "\nدر صورتی که تمایل دارید نسبت به بررسی و یا تمدید سرویس اقدام کنید.",
     },
     "check_service_detail": {
         "en": "Check Service Detail",
@@ -310,13 +310,15 @@ text_transaction = {
     },
     "upgrade_service_successfuly": {
         "en": "Your service named {0} has been upgraded successfully."
-        "\nDetails added to the service:"
-        "\nTraffic: {1} GB"
-        "\nPeriod Time: {2} Day",
+              "\nDetails added to the service:"
+              "\nTraffic: {1} GB"
+              "\nPeriod Time: {2} Day"
+              "\n\n🔺 Be sure to update the subscription in order to activate the service again",
         "fa": "🟢 سرویس شما با نام {0} با موفقیت ارتقاء یافت."
-        "\nمشصخات اضافه شده به سرویس:"
-        "\nترافیک: {1} گیگابایت"
-        "\nدوره زمانی: {2} روز",
+              "\nمشخصات اضافه شده به سرویس:"
+              "\nترافیک: {1} گیگابایت"
+              "\nدوره زمانی: {2} روز"
+              "\n\n🔺 برای اینکه سرویس مجدد فعال بشه حتما اشتراک رو آپدیت کنید",
     },
 }
 

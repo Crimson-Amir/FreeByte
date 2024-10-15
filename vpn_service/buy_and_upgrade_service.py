@@ -1,4 +1,4 @@
-import logging, copy
+import logging, copy, uuid
 import random
 from _datetime import datetime, timedelta
 import pytz, sys, os, qrcode, string
@@ -81,11 +81,13 @@ async def upgrade_service(update, context):
 
             await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
-async def create_json_config(username, expiration_in_day, traffic_in_byte, status="active"):
+async def create_json_config(username, expiration_in_day, traffic_in_byte, service_uuid, status="active"):
     return {
         "username": username,
         "proxies": {
-            "vless": {}
+            "vless": {
+                "id": service_uuid
+            }
         },
         "inbounds": {
             "vless": [
@@ -116,8 +118,9 @@ async def create_service_in_servers(session, purchase_id: int):
     traffic_to_byte = int(get_purchase.traffic * (1024 ** 3))
     now = datetime.now(pytz.timezone('Asia/Tehran'))
     date_in_timestamp = (now + timedelta(days=get_purchase.period)).timestamp()
+    service_uuid = uuid.uuid4().hex
 
-    json_config = await create_json_config(username, date_in_timestamp, traffic_to_byte)
+    json_config = await create_json_config(username, date_in_timestamp, traffic_to_byte, service_uuid=service_uuid)
     create_user = await panel_api.marzban_api.add_user(get_purchase.product.main_server.server_ip, json_config)
 
     vpn_crud.update_purchase(
@@ -125,7 +128,8 @@ async def create_service_in_servers(session, purchase_id: int):
         username=username,
         subscription_url=create_user['subscription_url'],
         status='active',
-        register_date=datetime.now(pytz.timezone('Asia/Tehran'))
+        register_date=datetime.now(pytz.timezone('Asia/Tehran')),
+        service_uuid=service_uuid
     )
     session.refresh(get_purchase)
     return get_purchase
@@ -189,7 +193,7 @@ async def upgrade_service_for_user(context, session, purchase_id: int):
 
         date_in_timestamp = (expire_date + timedelta(days=purchase.upgrade_period)).timestamp()
 
-        json_config = await create_json_config(purchase.username, date_in_timestamp, traffic_to_byte)
+        json_config = await create_json_config(purchase.username, date_in_timestamp, traffic_to_byte, service_uuid=purchase.service_uuid)
         await panel_api.marzban_api.modify_user(main_server_ip, purchase.username, json_config)
 
         success_text = await ft_instance.find_from_database(purchase.chat_id, 'upgrade_service_successfuly')
@@ -224,7 +228,7 @@ async def handle_http_error(purchase, main_server_ip, purchase_id, original_erro
         traffic_to_byte = int(purchase.traffic * (1024 ** 3))
         expire_date = purchase.register_date
         date_in_timestamp = (expire_date + timedelta(days=purchase.period)).timestamp()
-        json_config = await create_json_config(purchase.username, date_in_timestamp, traffic_to_byte)
+        json_config = await create_json_config(purchase.username, date_in_timestamp, traffic_to_byte, service_uuid=purchase.service_uuid)
         await panel_api.marzban_api.modify_user(main_server_ip, purchase.username, json_config)
     except requests.exceptions.HTTPError as e:
         logging.error(f'failed to rollback user service!\n{str(e)}\nid: {purchase_id}')

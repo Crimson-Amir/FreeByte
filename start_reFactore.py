@@ -42,7 +42,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE, in_new_messa
         else:
             if user_detail.id in user_data_store.user_data:
                 return await context.bot.send_message(chat_id=user_detail.id, text='You already send a join request!\nشما قبلا درخواست عضویت ارسال کردید!')
-            text = ('This bot is private, please return with the invite link. Or send a request to join the admin.'
+            text = ('This bot is private, please return with the invite link. Or send a request to join'
                     '\nاین ربات خصوصی است، لطفا با لینک دعوت برگردید یا درخواست عضویت ارسال کنید.')
             keyboard = [[InlineKeyboardButton('درخواست عضویت | Reques to Join', callback_data=f'user_requested_to_join')]]
             await context.bot.send_message(chat_id=user_detail.id, text=text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
