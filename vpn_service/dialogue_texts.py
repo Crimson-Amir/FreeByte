@@ -20,8 +20,10 @@ text_transaction = {
         "fa": "🔄 درصورتی که سرویس شما به پایان رسیده است، مشخصات زیر جایگزین مشخصات قبلی می‌شوند.",
     },
     "vpn_service_activated": {
-        "en": "✅ Your VPN service naemd {0} has been successfully activated!",
-        "fa": "✅ سرویس VPN شما با نام {0} فعال شد!",
+        "en": "✅ Your VPN service naemd {0} has been successfully activated!"
+              "\n\n🔺 Please update your subscription from client app every day.",
+        "fa": "✅ سرویس VPN شما با نام {0} فعال شد!"
+              "\n\n🔺 .لطفا هر روز اشتراک رو از طریق برنامه کلاینت آپدیت کنید",
     },
     "vpn_service_name": {
         "en": "🔷 Service Name:",
@@ -312,13 +314,11 @@ text_transaction = {
         "en": "Your service named {0} has been upgraded successfully."
               "\nDetails added to the service:"
               "\nTraffic: {1} GB"
-              "\nPeriod Time: {2} Day"
-              "\n\n🔺 Be sure to update the subscription in order to activate the service again",
+              "\nPeriod Time: {2} Day",
         "fa": "🟢 سرویس شما با نام {0} با موفقیت ارتقاء یافت."
               "\nمشخصات اضافه شده به سرویس:"
               "\nترافیک: {1} گیگابایت"
-              "\nدوره زمانی: {2} روز"
-              "\n\n🔺 برای اینکه سرویس مجدد فعال بشه حتما اشتراک رو آپدیت کنید",
+              "\nدوره زمانی: {2} روز",
     },
 }
 
