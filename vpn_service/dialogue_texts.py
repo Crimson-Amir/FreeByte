@@ -23,7 +23,7 @@ text_transaction = {
         "en": "✅ Your VPN service naemd {0} has been successfully activated!"
               "\n\n🔺 Please update your subscription from client app every day.",
         "fa": "✅ سرویس VPN شما با نام {0} فعال شد!"
-              "\n\n🔺 .لطفا هر روز اشتراک رو از طریق برنامه کلاینت آپدیت کنید",
+              "\n\n🔺 لطفا هر روز اشتراک رو از طریق برنامه کلاینت آپدیت کنید.",
     },
     "vpn_service_name": {
         "en": "🔷 Service Name:",
