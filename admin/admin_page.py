@@ -84,8 +84,10 @@ async def say_to_every_one(update, context):
     with SessionLocal() as session:
         all_user = admin_crud.get_all_purchase(session)
         for user in all_user:
+
             if user.chat_id in chat_lists:
                 continue
+
             try:
                 await context.bot.send_message(chat_id=user.chat_id, text=message, parse_mode='html')
                 chat_lists.append(user.chat_id)
