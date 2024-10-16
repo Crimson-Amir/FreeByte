@@ -84,7 +84,7 @@ async def manage_request_to_join_by_admin(update, context):
     await query.answer('✅')
     await query.edit_message_text(
         text='• We will check your request and announce the result through this robot.'
-             '\n• ما درخواست شمارو بررسی مکینیم و نتیجه رو از طریق همین ربات اعلام میکنیم.',
+             '\n• ما درخواست شمارو بررسی میکنیم و نتیجه رو از طریق همین ربات اعلام میکنیم.',
         reply_markup=InlineKeyboardMarkup([])
     )
 
