@@ -142,7 +142,6 @@ async def remove_inactive_purchase(context, session):
     inactive_purchases = vpn_crud.get_all_inactive_purchase(session)
     for purchase in inactive_purchases:
         try:
-
             user = await panel_api.marzban_api.get_user(purchase.product.main_server.server_ip, purchase.username)
             date_time_obj = datetime.strptime(user.get('online_at', '2000-12-12T00:00:00.898039'), '%Y-%m-%dT%H:%M:%S.%f')
             days_past_after_expired = (datetime.now() - date_time_obj).days
@@ -155,6 +154,7 @@ async def remove_inactive_purchase(context, session):
                 text = await ft_instance.find_from_database(purchase.chat_id, 'vpn_expired_service_deleted')
                 text = text.format(purchase.purchase_id)
                 await context.bot.send_message(chat_id=purchase.chat_id, text=text)
+
         except Exception as e:
             tb = traceback.format_exc()
             msg = ('Failed to remove user expired service!'

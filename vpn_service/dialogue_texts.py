@@ -320,6 +320,10 @@ text_transaction = {
               "\nترافیک: {1} گیگابایت"
               "\nدوره زمانی: {2} روز",
     },
+    "please_set_id": {
+        "en": "Please specify the service ID",
+        "fa": "لطفا آیدی سرویس مورد نظر رو بعد از دستور قرار بدید.",
+    },
 }
 
 keyboard_transaction = {

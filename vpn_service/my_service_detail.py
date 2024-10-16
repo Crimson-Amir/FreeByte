@@ -383,6 +383,9 @@ async def find_my_service(update, context):
     ft_instance = FindText(update, context)
     user_detail = update.effective_chat
 
+    if not service_id:
+        return await context.bot.send_message(chat_id=user_detail.id, text=await ft_instance.find_text('please_set_id'))
+
     with SessionLocal() as session:
         with session.begin():
             service = vpn_crud.get_purchase_with_chat_id(session, int(service_id[0]), user_detail.id)
