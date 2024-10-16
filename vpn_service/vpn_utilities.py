@@ -8,6 +8,12 @@ from admin import partner
 from utilities_reFactore import find_user
 from database_sqlalchemy import SessionLocal
 
+service_status = {
+    'active': '✅',
+    'limited': '🟡',
+    'ban': '🔴'
+}
+
 class DiscountPerLevel:
     descount = {
         1: 0,

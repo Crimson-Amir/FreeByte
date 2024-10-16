@@ -12,12 +12,6 @@ from vpn_service import vpn_utilities, buy_and_upgrade_service, panel_api
 DEFAULT_PRODUCT_ID = 1
 ADD_CREDIT_BAlANCE = 0
 
-service_status = {
-    'active': '✅',
-    'limited': '🟡',
-    'ban': '🔴'
-}
-
 @vpn_utilities.handle_functions_error
 @admin_access
 async def all_users_list(update, context):
@@ -33,7 +27,7 @@ async def all_users_list(update, context):
             end = start + item_per_page
             current_users = users[start:end]
             text = 'select user to manage:'
-            keyboard = [[InlineKeyboardButton(f"{user.first_name} {user.chat_id} {service_status.get(user.config.user_status)}", callback_data=f'admin_view_user__{user.chat_id}__{page}')] for user in current_users]
+            keyboard = [[InlineKeyboardButton(f"{user.first_name} {user.chat_id} {vpn_utilities.service_status.get(user.config.user_status)}", callback_data=f'admin_view_user__{user.chat_id}__{page}')] for user in current_users]
             nav_buttons = []
             if page > 1:
                 nav_buttons.append(InlineKeyboardButton('<- previous', callback_data=f'admin_manage_users__{page - 1}'))
@@ -57,7 +51,7 @@ async def find_user(update, context):
             if not user: return await context.bot.send_message(chat_id=user_detail.id, text='there is no user with this chat id')
             text = 'select user to manage:'
 
-            keyboard = [[InlineKeyboardButton(f"{user.first_name} {user.chat_id} {service_status.get(user.config.user_status)}", callback_data=f'admin_view_user__{user.chat_id}__1')],
+            keyboard = [[InlineKeyboardButton(f"{user.first_name} {user.chat_id} {vpn_utilities.service_status.get(user.config.user_status)}", callback_data=f'admin_view_user__{user.chat_id}__1')],
                         [InlineKeyboardButton('Back', callback_data='admin_page')]]
 
             return await context.bot.send_message(chat_id=user_detail.id, text=text, reply_markup=InlineKeyboardMarkup(keyboard))
@@ -260,7 +254,7 @@ async def admin_user_services(update, context):
             current_services = purchases[start:end]
 
             text = 'Select the service to view info:'
-            keyboard = [[InlineKeyboardButton(f"{service.username} {service_status.get(service.status)}", callback_data=f'admin_user_service_detail__{service.purchase_id}__{page}__{user_info_page}')]
+            keyboard = [[InlineKeyboardButton(f"{service.username} {vpn_utilities.service_status.get(service.status)}", callback_data=f'admin_user_service_detail__{service.purchase_id}__{page}__{user_info_page}')]
                         for service in current_services]
 
             nav_buttons = []
@@ -418,7 +412,7 @@ async def admin_user_service_detail(update, context):
                 f"\n\nUsername: {purchase.username}"
                 f"\n\nOnline at: {onlien_at}"
                 f"\nSub Last User Agent: {get_from_server.get('sub_last_user_agent')}"
-                f"\nStatus: {service_status.get(get_from_server.get('status'), get_from_server.get('status'))} {get_from_server.get('status')}"
+                f"\nStatus: {vpn_utilities.service_status.get(get_from_server.get('status'), get_from_server.get('status'))} {get_from_server.get('status')}"
                 f"\nUsed Traffic: {used_traffic}GB"
                 f"\nData Limit: {data_limit}GB"
                 f"\nLifeTime Used Traffic: {lifetime_used_traffic}GB"
@@ -758,12 +752,13 @@ async def find_service(update, context):
 
     with SessionLocal() as session:
         with session.begin():
+
             service = vpn_crud.get_purchase(session, int(service_id[0]))
             if not service:
                 return await context.bot.send_message(chat_id=user_detail.id, text='there is no service with this chat id')
             text = 'select service to manage:'
 
-            keyboard = [[InlineKeyboardButton(f"{service.username} {service_status.get(service.status)}", callback_data=f'admin_user_service_detail__{service.purchase_id}__1__1')],
+            keyboard = [[InlineKeyboardButton(f"{service.username} {vpn_utilities.service_status.get(service.status)}", callback_data=f'admin_user_service_detail__{service.purchase_id}__1__1')],
                         [InlineKeyboardButton('Back', callback_data='admin_page')]]
 
             return await context.bot.send_message(chat_id=user_detail.id, text=text, reply_markup=InlineKeyboardMarkup(keyboard))

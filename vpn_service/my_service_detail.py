@@ -376,3 +376,21 @@ change_ownership_conversation = ConversationHandler(
     conversation_timeout=600
 
 )
+
+@handle_error.handle_conversetion_error
+async def find_my_service(update, context):
+    service_id = context.args
+    ft_instance = FindText(update, context)
+    user_detail = update.effective_chat
+
+    with SessionLocal() as session:
+        with session.begin():
+            service = vpn_crud.get_purchase_with_chat_id(session, int(service_id[0]), user_detail.id)
+
+            if not service:
+                return await context.bot.send_message(chat_id=user_detail.id, text=await ft_instance.find_text('no_service_available'))
+
+            keyboard = [[InlineKeyboardButton(f"{service.username} {vpn_utilities.service_status.get(service.status)}", callback_data=f'vpn_my_service_detail__{service.purchase_id}')],
+                        [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='start_in_new_message')]]
+
+            return await context.bot.send_message(chat_id=user_detail.id, text=await ft_instance.find_text('vpn_select_service_for_info'), reply_markup=InlineKeyboardMarkup(keyboard))
