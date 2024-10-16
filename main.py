@@ -60,6 +60,7 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler('add_partner', admin_page.add_partner))
     application.add_handler(CommandHandler('find_user', admin_users.find_user))
     application.add_handler(CommandHandler('find_service', admin_users.find_service))
+    application.add_handler(CommandHandler('send_to_everyone', admin_page.say_to_every_one))
 
 
     # Bot Main Menu
