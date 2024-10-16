@@ -197,8 +197,8 @@ async def create_invoice(update, context):
 
             get_user = await find_user(session, chat_id)
             price_text = await ft_instance.find_text('price_with_discount') \
-                if get_user.config.user_level > 1 and pay_by_wallet_satatus else await ft_instance.find_text('price')
-            price_text = price_text.format(vpn_utilities.DiscountPerLevel.descount.get(get_user.config.user_level, 1))
+                if get_user.user_level > 1 and pay_by_wallet_satatus else await ft_instance.find_text('price')
+            price_text = price_text.format(vpn_utilities.DiscountPerLevel.descount.get(get_user.user_level, 1))
 
             text = (f"<b>{await ft_instance.find_text('invoice_title')}</b>"
                     f"\n\n<b>{await ft_instance.find_text('wallet_credit_label')} {finacial_report.owner.wallet:,} {await ft_instance.find_text('irt')}</b>"

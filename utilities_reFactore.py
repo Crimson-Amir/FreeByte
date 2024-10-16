@@ -78,10 +78,10 @@ class UserDataManager:
                 (object, ),
                 {
                     'user_id': user_database_id.user_id,
-                    'user_level': user_database_id.user_level
+                    'user_level': user_database_id.config.user_level
                 }
             )
-        return user_database_id
+        return self.user_data_store[user_id]
 
     def update_user_database_id(self, user_id, new_database_id):
         self.user_data_store[user_id] = new_database_id

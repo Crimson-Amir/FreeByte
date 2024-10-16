@@ -32,7 +32,7 @@ async def calculate_price(traffic, period, chat_id, session):
 
     service_price = (int(traffic) * price_per_gigabyte) + (int(period) * price_per_day)
     user = await find_user(session, chat_id)
-    discount = (service_price * DiscountPerLevel.descount.get(user.config.user_level, 1)) / 100
+    discount = (service_price * DiscountPerLevel.descount.get(user.user_level, 1)) / 100
     price = service_price - discount
     return int(price)
 
