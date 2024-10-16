@@ -417,6 +417,7 @@ async def admin_user_service_detail(update, context):
             text = (
                 f"\n\nUsername: {purchase.username}"
                 f"\n\nOnline at: {onlien_at}"
+                f"\nSub Last User Agent: {get_from_server.get('sub_last_user_agent')}"
                 f"\nStatus: {service_status.get(get_from_server.get('status'), get_from_server.get('status'))} {get_from_server.get('status')}"
                 f"\nUsed Traffic: {used_traffic}GB"
                 f"\nData Limit: {data_limit}GB"

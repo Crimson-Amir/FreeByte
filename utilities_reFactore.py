@@ -74,8 +74,7 @@ class UserDataManager:
         if not user_database_id:
             user_database_id = crud.get_user(session, user_id)
             self.user_data_store[user_id] = type(
-                'user_detail',
-                (object, ),
+                'user_detail', (object, ),
                 {
                     'user_id': user_database_id.user_id,
                     'user_level': user_database_id.config.user_level

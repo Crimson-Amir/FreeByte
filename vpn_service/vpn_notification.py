@@ -1,3 +1,4 @@
+import asyncio
 import traceback, pytz, sys, os, logging
 from datetime import datetime, timedelta
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
@@ -141,7 +142,11 @@ async def remove_inactive_purchase(context, session):
     inactive_purchases = vpn_crud.get_all_inactive_purchase(session)
     for purchase in inactive_purchases:
         try:
-            days_past_after_expired = (datetime.now() - (purchase.register_date + timedelta(days=purchase.period))).days
+
+            user = await panel_api.marzban_api.get_user(purchase.product.main_server.server_ip, purchase.username)
+            date_time_obj = datetime.strptime(user.get('online_at', '2000-12-12T00:00:00.898039'), '%Y-%m-%dT%H:%M:%S.%f')
+            days_past_after_expired = (datetime.now() - date_time_obj).days
+
             if days_past_after_expired >= setting.delete_purchase_after_days:
                 remove_purchase = vpn_crud.remove_purchase(session, purchase.purchase_id, purchase.chat_id)
                 session.commit()
