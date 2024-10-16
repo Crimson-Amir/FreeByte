@@ -15,6 +15,10 @@ def get_all_products(session):
     return session.query(model.Product).all()
 
 
+def get_all_purchase(session):
+    return session.query(model.Purchase).all()
+
+
 def get_product(session, product_id):
     return session.query(model.Product).filter(model.Product.product_id == product_id).first()
 
