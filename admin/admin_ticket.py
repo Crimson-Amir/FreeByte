@@ -78,7 +78,7 @@ async def answer_ticket(update, context):
         else:
             new_message = await context.bot.send_message(chat_id=int(user_id), text=user_text, reply_markup=InlineKeyboardMarkup(keyboard))
 
-        text = f'Message Recived And Send to User {user_id} | delete_message_assurance__{user_id}__{new_message.message_id}'
+        text = f'Message Recived And Send to User {user_id}'
         keyboard = [
             [InlineKeyboardButton('Send New Message +', callback_data=f"reply_ticket_{user_id}")],
             [InlineKeyboardButton('Delete message for User', callback_data=f"dell_mess_asu__{user_id}__{new_message.message_id}")]

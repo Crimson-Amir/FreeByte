@@ -26,25 +26,25 @@ async def buy_custom_service(update, context):
     traffic = max(min(int(traffic_callback), 150), 5) or 40
     period = max(min(int(period_callback), 60), 5) or 30
 
+    with SessionLocal() as session:
+        price = await vpn_utilities.calculate_price(traffic, period, user_detail.id, session)
+        text = (f"{await ft_instance.find_text('vpn_buy_service_title')}"
+                f"\n\n{await ft_instance.find_text('price')} {price:,} {await ft_instance.find_text('irt')}")
 
-    price = await vpn_utilities.calculate_price(traffic, period, user_detail.id)
-    text = (f"{await ft_instance.find_text('vpn_buy_service_title')}"
-            f"\n\n{await ft_instance.find_text('price')} {price:,} {await ft_instance.find_text('irt')}")
+        keyboard = [
+            [InlineKeyboardButton(await ft_instance.find_keyboard('vpn_traffic_lable'), callback_data="just_for_show")],
+            [InlineKeyboardButton("➖", callback_data=f"vpn_set_period_traffic__{period}_{traffic - 5}_{product_id}"),
+             InlineKeyboardButton(f"{traffic} {await ft_instance.find_keyboard('gb_lable')}", callback_data="just_for_show"),
+             InlineKeyboardButton("➕", callback_data=f"vpn_set_period_traffic__{period}_{traffic + 10}_{product_id}")],
+            [InlineKeyboardButton(await ft_instance.find_keyboard('period_traffic_lable'), callback_data="just_for_show")],
+            [InlineKeyboardButton("➖", callback_data=f"vpn_set_period_traffic__{period - 5}_{traffic}_{product_id}"),
+             InlineKeyboardButton(f"{period} {await ft_instance.find_keyboard('day_lable')}", callback_data="just_for_show"),
+             InlineKeyboardButton("➕", callback_data=f"vpn_set_period_traffic__{period + 10}_{traffic}_{product_id}")],
+            [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='menu_services'),
+             InlineKeyboardButton(await ft_instance.find_keyboard('confirm'), callback_data=f"create_invoice__buy_vpn_service__{period}__{traffic}__{product_id}")]
+        ]
 
-    keyboard = [
-        [InlineKeyboardButton(await ft_instance.find_keyboard('vpn_traffic_lable'), callback_data="just_for_show")],
-        [InlineKeyboardButton("➖", callback_data=f"vpn_set_period_traffic__{period}_{traffic - 5}_{product_id}"),
-         InlineKeyboardButton(f"{traffic} {await ft_instance.find_keyboard('gb_lable')}", callback_data="just_for_show"),
-         InlineKeyboardButton("➕", callback_data=f"vpn_set_period_traffic__{period}_{traffic + 10}_{product_id}")],
-        [InlineKeyboardButton(await ft_instance.find_keyboard('period_traffic_lable'), callback_data="just_for_show")],
-        [InlineKeyboardButton("➖", callback_data=f"vpn_set_period_traffic__{period - 5}_{traffic}_{product_id}"),
-         InlineKeyboardButton(f"{period} {await ft_instance.find_keyboard('day_lable')}", callback_data="just_for_show"),
-         InlineKeyboardButton("➕", callback_data=f"vpn_set_period_traffic__{period + 10}_{traffic}_{product_id}")],
-        [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='menu_services'),
-         InlineKeyboardButton(await ft_instance.find_keyboard('confirm'), callback_data=f"create_invoice__buy_vpn_service__{period}__{traffic}__{product_id}")]
-    ]
-
-    await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+        await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
 
 @handle_error.handle_functions_error
@@ -61,7 +61,7 @@ async def upgrade_service(update, context):
             traffic = max(min(int(traffic_callback), 150), 5) or 40
             period = max(min(int(period_callback), 60), 5) or 30
 
-            price = await vpn_utilities.calculate_price(traffic, period, user_detail.id)
+            price = await vpn_utilities.calculate_price(traffic, period, user_detail.id, session)
 
             text = (f"{await ft_instance.find_text('vpn_upgrade_service_title')}"
                     f"\n\n{await ft_instance.find_text('price')} {price:,} {await ft_instance.find_text('irt')}")

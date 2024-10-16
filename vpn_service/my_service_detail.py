@@ -169,7 +169,7 @@ async def ask_remove_service_for_user(update, context):
                 now = datetime.now(pytz.timezone('Asia/Tehran')).replace(tzinfo=None)
                 days_left = (expiry - now).days
 
-                returnable_amount = await vpn_utilities.calculate_price(traffic_left_in_gigabyte, days_left, purchase.chat_id)
+                returnable_amount = await vpn_utilities.calculate_price(traffic_left_in_gigabyte, days_left, purchase.chat_id, session)
 
             text = f"<b>{await ft_instance.find_text('vpn_ask_user_for_removing_service')}</b>"
 

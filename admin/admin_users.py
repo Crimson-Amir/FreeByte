@@ -288,25 +288,26 @@ async def admin_buy_service_for_user(update, context):
     traffic = max(min(int(traffic_callback), 150), 1) or 40
     period = max(min(int(period_callback), 90), 1) or 30
 
-    price = await vpn_utilities.calculate_price(traffic, period, user_detail.id)
+    with SessionLocal() as session:
+        price = await vpn_utilities.calculate_price(traffic, period, user_detail.id, session)
 
-    text = (f"Customize service for user:"
-            f"\n\nPrice {price:,} IRT")
+        text = (f"Customize service for user:"
+                f"\n\nPrice {price:,} IRT")
 
-    keyboard = [
-        [InlineKeyboardButton('Traffic', callback_data="just_for_show")],
-        [InlineKeyboardButton("➖", callback_data=f"admin_bv_for_user__{chat_id}__{page}__{user_info_page}__{period}__{traffic - 1}"),
-         InlineKeyboardButton(f"{traffic} GB", callback_data="just_for_show"),
-         InlineKeyboardButton("➕", callback_data=f"admin_bv_for_user__{chat_id}__{page}__{user_info_page}__{period}__{traffic + 10}")],
-        [InlineKeyboardButton('Period Time', callback_data="just_for_show")],
-        [InlineKeyboardButton("➖", callback_data=f"admin_bv_for_user__{chat_id}__{page}__{user_info_page}__{period - 1}__{traffic}"),
-         InlineKeyboardButton(f"{period} Days", callback_data="just_for_show"),
-         InlineKeyboardButton("➕", callback_data=f"admin_bv_for_user__{chat_id}__{page}__{user_info_page}__{period + 10}__{traffic}")],
-        [InlineKeyboardButton("Back", callback_data=f'admin_user_services__{chat_id}__{page}__{user_info_page}'),
-         InlineKeyboardButton("Confirm", callback_data=f"admin_assurance_bv__{chat_id}__{page}__{user_info_page}__{period}__{traffic}")]
-    ]
+        keyboard = [
+            [InlineKeyboardButton('Traffic', callback_data="just_for_show")],
+            [InlineKeyboardButton("➖", callback_data=f"admin_bv_for_user__{chat_id}__{page}__{user_info_page}__{period}__{traffic - 1}"),
+             InlineKeyboardButton(f"{traffic} GB", callback_data="just_for_show"),
+             InlineKeyboardButton("➕", callback_data=f"admin_bv_for_user__{chat_id}__{page}__{user_info_page}__{period}__{traffic + 10}")],
+            [InlineKeyboardButton('Period Time', callback_data="just_for_show")],
+            [InlineKeyboardButton("➖", callback_data=f"admin_bv_for_user__{chat_id}__{page}__{user_info_page}__{period - 1}__{traffic}"),
+             InlineKeyboardButton(f"{period} Days", callback_data="just_for_show"),
+             InlineKeyboardButton("➕", callback_data=f"admin_bv_for_user__{chat_id}__{page}__{user_info_page}__{period + 10}__{traffic}")],
+            [InlineKeyboardButton("Back", callback_data=f'admin_user_services__{chat_id}__{page}__{user_info_page}'),
+             InlineKeyboardButton("Confirm", callback_data=f"admin_assurance_bv__{chat_id}__{page}__{user_info_page}__{period}__{traffic}")]
+        ]
 
-    await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+        await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
 
 @vpn_utilities.handle_functions_error
@@ -315,7 +316,7 @@ async def admin_assurance_buy_vpn_service(update, context):
     query = update.callback_query
     chat_id, page, user_info_page, period, traffic = query.data.replace('admin_assurance_bv__', '').split('__')
     with SessionLocal() as session:
-        price = await vpn_utilities.calculate_price(traffic, period, chat_id)
+        price = await vpn_utilities.calculate_price(traffic, period, chat_id, session)
         get_user = crud.get_user(session, chat_id)
 
         text = (f"Are you sure you wanna buy this service for user?"
@@ -344,7 +345,7 @@ async def admin_confirm_buy_vpn_service(update, context):
 
     with SessionLocal() as session:
         with session.begin():
-            amount = await vpn_utilities.calculate_price(traffic, period, chat_id)
+            amount = await vpn_utilities.calculate_price(traffic, period, chat_id, session)
             purchase = crud.create_purchase(session, DEFAULT_PRODUCT_ID, chat_id, traffic, period)
 
             if payment_status == 'reduce':
@@ -458,26 +459,26 @@ async def admin_set_purchase_period_and_traffic(update, context):
 
     traffic = max(min(int(traffic_callback), 150), 1) or 40
     period = max(min(int(period_callback), 90), 1) or 30
+    with SessionLocal() as session:
+        price = await vpn_utilities.calculate_price(traffic, period, user_detail.id, session)
 
-    price = await vpn_utilities.calculate_price(traffic, period, user_detail.id)
+        text = (f"set purchase traffic andperiod time:"
+                f"\n\nPrice {price:,} IRT")
 
-    text = (f"set purchase traffic andperiod time:"
-            f"\n\nPrice {price:,} IRT")
+        keyboard = [
+            [InlineKeyboardButton('Traffic', callback_data="just_for_show")],
+            [InlineKeyboardButton("➖", callback_data=f"admin_set_time_and_traffic__{purchase_id}__{page}__{user_info_page}__{period}__{traffic - 1}"),
+             InlineKeyboardButton(f"{traffic} GB", callback_data="just_for_show"),
+             InlineKeyboardButton("➕", callback_data=f"admin_set_time_and_traffic__{purchase_id}__{page}__{user_info_page}__{period}__{traffic + 10}")],
+            [InlineKeyboardButton('Period Time', callback_data="just_for_show")],
+            [InlineKeyboardButton("➖", callback_data=f"admin_set_time_and_traffic__{purchase_id}__{page}__{user_info_page}__{period - 1}__{traffic}"),
+             InlineKeyboardButton(f"{period} Days", callback_data="just_for_show"),
+             InlineKeyboardButton("➕", callback_data=f"admin_set_time_and_traffic__{purchase_id}__{page}__{user_info_page}__{period + 10}__{traffic}")],
+            [InlineKeyboardButton("Back", callback_data=f'admin_user_service_detail__{purchase_id}__{page}__{user_info_page}'),
+             InlineKeyboardButton("Confirm", callback_data=f"admin_assurance_set_ptp__{purchase_id}__{page}__{user_info_page}__{period}__{traffic}")]
+        ]
 
-    keyboard = [
-        [InlineKeyboardButton('Traffic', callback_data="just_for_show")],
-        [InlineKeyboardButton("➖", callback_data=f"admin_set_time_and_traffic__{purchase_id}__{page}__{user_info_page}__{period}__{traffic - 1}"),
-         InlineKeyboardButton(f"{traffic} GB", callback_data="just_for_show"),
-         InlineKeyboardButton("➕", callback_data=f"admin_set_time_and_traffic__{purchase_id}__{page}__{user_info_page}__{period}__{traffic + 10}")],
-        [InlineKeyboardButton('Period Time', callback_data="just_for_show")],
-        [InlineKeyboardButton("➖", callback_data=f"admin_set_time_and_traffic__{purchase_id}__{page}__{user_info_page}__{period - 1}__{traffic}"),
-         InlineKeyboardButton(f"{period} Days", callback_data="just_for_show"),
-         InlineKeyboardButton("➕", callback_data=f"admin_set_time_and_traffic__{purchase_id}__{page}__{user_info_page}__{period + 10}__{traffic}")],
-        [InlineKeyboardButton("Back", callback_data=f'admin_user_service_detail__{purchase_id}__{page}__{user_info_page}'),
-         InlineKeyboardButton("Confirm", callback_data=f"admin_assurance_set_ptp__{purchase_id}__{page}__{user_info_page}__{period}__{traffic}")]
-    ]
-
-    await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+        await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
 
 @vpn_utilities.handle_functions_error
@@ -558,26 +559,26 @@ async def admin_upgrade_service_for_user(update, context):
 
     traffic = max(min(int(traffic_callback), 150), 1) or 40
     period = max(min(int(period_callback), 90), 1) or 30
+    with SessionLocal() as session:
+        price = await vpn_utilities.calculate_price(traffic, period, user_detail.id, session)
 
-    price = await vpn_utilities.calculate_price(traffic, period, user_detail.id)
+        text = (f"Customize service for Upgrade:"
+                f"\n\nPrice {price:,} IRT")
 
-    text = (f"Customize service for Upgrade:"
-            f"\n\nPrice {price:,} IRT")
+        keyboard = [
+            [InlineKeyboardButton('Traffic', callback_data="just_for_show")],
+            [InlineKeyboardButton("➖", callback_data=f"admin_upgrade_user_vpn_service__{purchase_id}__{page}__{user_info_page}__{period}__{traffic - 1}"),
+             InlineKeyboardButton(f"{traffic} GB", callback_data="just_for_show"),
+             InlineKeyboardButton("➕", callback_data=f"admin_upgrade_user_vpn_service__{purchase_id}__{page}__{user_info_page}__{period}__{traffic + 10}")],
+            [InlineKeyboardButton('Period Time', callback_data="just_for_show")],
+            [InlineKeyboardButton("➖", callback_data=f"admin_upgrade_user_vpn_service__{purchase_id}__{page}__{user_info_page}__{period - 1}__{traffic}"),
+             InlineKeyboardButton(f"{period} Days", callback_data="just_for_show"),
+             InlineKeyboardButton("➕", callback_data=f"admin_upgrade_user_vpn_service__{purchase_id}__{page}__{user_info_page}__{period + 10}__{traffic}")],
+            [InlineKeyboardButton("Back", callback_data=f'admin_user_service_detail__{purchase_id}__{page}__{user_info_page}'),
+             InlineKeyboardButton("Confirm", callback_data=f"admin_assurance_upgrade_vpn__{purchase_id}__{page}__{user_info_page}__{period}__{traffic}")]
+        ]
 
-    keyboard = [
-        [InlineKeyboardButton('Traffic', callback_data="just_for_show")],
-        [InlineKeyboardButton("➖", callback_data=f"admin_upgrade_user_vpn_service__{purchase_id}__{page}__{user_info_page}__{period}__{traffic - 1}"),
-         InlineKeyboardButton(f"{traffic} GB", callback_data="just_for_show"),
-         InlineKeyboardButton("➕", callback_data=f"admin_upgrade_user_vpn_service__{purchase_id}__{page}__{user_info_page}__{period}__{traffic + 10}")],
-        [InlineKeyboardButton('Period Time', callback_data="just_for_show")],
-        [InlineKeyboardButton("➖", callback_data=f"admin_upgrade_user_vpn_service__{purchase_id}__{page}__{user_info_page}__{period - 1}__{traffic}"),
-         InlineKeyboardButton(f"{period} Days", callback_data="just_for_show"),
-         InlineKeyboardButton("➕", callback_data=f"admin_upgrade_user_vpn_service__{purchase_id}__{page}__{user_info_page}__{period + 10}__{traffic}")],
-        [InlineKeyboardButton("Back", callback_data=f'admin_user_service_detail__{purchase_id}__{page}__{user_info_page}'),
-         InlineKeyboardButton("Confirm", callback_data=f"admin_assurance_upgrade_vpn__{purchase_id}__{page}__{user_info_page}__{period}__{traffic}")]
-    ]
-
-    await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+        await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
 
 @vpn_utilities.handle_functions_error
@@ -588,7 +589,7 @@ async def admin_assurance_upgrade_vpn_service(update, context):
 
     with SessionLocal() as session:
         purchase = vpn_crud.get_purchase(session, purchase_id)
-        price = await vpn_utilities.calculate_price(traffic, period, purchase.chat_id)
+        price = await vpn_utilities.calculate_price(traffic, period, purchase.chat_id, session)
 
         text = (f"Are you sure you wanna Upgrade this service for user?"
                 f"\nSelect payment status."
@@ -623,7 +624,7 @@ async def admin_confirm_upgrade_vpn_service(update, context):
                 upgrade_period=period,
                 register_date=datetime.now(pytz.timezone('Asia/Tehran'))
             )
-            amount = await vpn_utilities.calculate_price(traffic, period, purchase.chat_id)
+            amount = await vpn_utilities.calculate_price(traffic, period, purchase.chat_id, session)
 
             if payment_status == 'reduce':
                 finacial_report = crud.create_financial_report(
@@ -690,7 +691,7 @@ async def admin_assurance_remove_vpn_service(update, context):
             now = datetime.now(pytz.timezone('Asia/Tehran')).replace(tzinfo=None)
             days_left = (expiry - now).days
 
-            returnable_amount = await vpn_utilities.calculate_price(traffic_left_in_gigabyte, days_left, purchase.chat_id)
+            returnable_amount = await vpn_utilities.calculate_price(traffic_left_in_gigabyte, days_left, purchase.chat_id, session)
 
         text = (f"Are you sure you wanna Remove this service for user?"
                 f"\nSelect payment status."
