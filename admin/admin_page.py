@@ -80,16 +80,11 @@ async def add_partner(update, context):
 async def say_to_every_one(update, context):
     user_detail = update.effective_chat
     message = update.message.reply_to_message.text
-    chat_lists = []
+
     with SessionLocal() as session:
         all_user = admin_crud.get_all_purchase(session)
         for user in all_user:
-
-            if user.chat_id in chat_lists:
-                continue
-
             try:
                 await context.bot.send_message(chat_id=user.chat_id, text=message, parse_mode='html')
-                chat_lists.append(user.chat_id)
             except Exception as e:
                 await context.bot.send_message(chat_id=user_detail.id, text=f'- failed to send message.\n{str(e)}')
