@@ -254,9 +254,6 @@ async def admin_user_services(update, context):
         with session.begin():
             purchases = vpn_crud.get_purchase_by_chat_id(session, chat_id)
 
-            if not purchases:
-                return await query.answer('there is no service for this user')
-
             total_pages = math.ceil(len(purchases) / item_per_page)
             start = (page - 1) * item_per_page
             end = start + item_per_page
