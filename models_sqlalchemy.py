@@ -34,6 +34,7 @@ class UserConfig(Base):
     get_vpn_free_service = Column(Boolean, default=False)
     chat_id = Column(BigInteger, ForeignKey('user_detail.chat_id'), unique=True)
     first_purchase_refreal_for_inviter = Column(Boolean, default=False)
+    webapp_password = Column(String)
     owner = relationship("UserDetail", back_populates="config")
 
 
