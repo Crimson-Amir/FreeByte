@@ -115,6 +115,7 @@ class Purchase(Base):
     chat_id = Column(BigInteger, ForeignKey('user_detail.chat_id'))
     owner = relationship("UserDetail", back_populates="services")
 
+    expired_at = Column(DateTime)
     register_date = Column(DateTime, default=datetime.now())
 
 

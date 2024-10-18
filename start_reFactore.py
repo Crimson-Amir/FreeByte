@@ -1,4 +1,10 @@
+import hashlib
 import logging
+import uuid
+
+import requests
+
+import utilities_reFactore
 from crud import crud
 from utilities_reFactore import FindText, UserNotFound, handle_error, message_token, start as ustart, find_user
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
@@ -110,6 +116,27 @@ async def check_new_user_request_by_admin(update, context):
     await query.edit_message_reply_markup(InlineKeyboardMarkup([]))
 
 
+async def register_user_in_webapp(user):
+    try:
+        password = hashlib.sha256(f'{user.id}.{uuid.uuid4().hex}'.encode()).hexdigest()[:8]
+        json_data = {
+            'email': user.id,
+            'name': user.first_name,
+            'password':password,
+            'active': True,
+            'private_token': hashlib.sha256(setting.webapp_private_token.encode()).hexdigest(),
+        }
+        requests.post(url=setting.webapp_url, json=json_data)
+
+    except Exception as e:
+        text = ('failed to create webapp account for user.'
+                f'\n\nuser ID: {user.id}'
+                f'\nuser name: {user.first_name} {user.last_name}'
+                f'\nError Type: {type(e)}'
+                f'\nError Reason: {str(e)}')
+        await utilities_reFactore.report_to_admin('error', 'register_user_in_webapp', text)
+
+
 @handle_error.handle_functions_error
 @message_token.check_token
 async def register_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -148,6 +175,7 @@ async def register_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     await context.bot.send_message(chat_id=setting.ADMIN_CHAT_IDs[0], text=start_text_notif + '\n\n• Without profile picture (or not public)', parse_mode='HTML', message_thread_id=setting.new_user_thread_id)
                 context.user_data.pop(f'inviter_{user_detail.id}', None)
                 user_data_store.user_data.pop(user_detail.id, None)
+                await register_user_in_webapp(user_detail)
 
     return await start(update, context)
 

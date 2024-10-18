@@ -208,6 +208,7 @@ async def upgrade_service_for_user(context, session, purchase_id: int):
             upgrade_period=0,
             status='active',
             register_date=datetime.now(pytz.timezone('Asia/Tehran')),
+            expire_at=None,
             day_notification_status=False,
             traffic_notification_status=False
         )

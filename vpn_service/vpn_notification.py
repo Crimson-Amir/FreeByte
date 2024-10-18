@@ -114,7 +114,11 @@ async def notification_timer(context):
                                 await report_service_expired_in_days(context, purchase, ft_instanc, days_left)
 
                             elif traffic_percent >= purchase.owner.config.traffic_notification_percent and not purchase.traffic_notification_status:
-                                vpn_crud.update_purchase(session, purchase.purchase_id, traffic_notification_status=True)
+                                vpn_crud.update_purchase(
+                                    session, purchase.purchase_id,
+                                    traffic_notification_status=True,
+                                    expired_at=datetime.now()
+                                )
                                 await report_service_expired_in_gigabyte(
                                     context,
                                     purchase,
@@ -142,9 +146,9 @@ async def remove_inactive_purchase(context, session):
     inactive_purchases = vpn_crud.get_all_inactive_purchase(session)
     for purchase in inactive_purchases:
         try:
-            user = await panel_api.marzban_api.get_user(purchase.product.main_server.server_ip, purchase.username)
-            date_time_obj = datetime.strptime(user.get('online_at', '2000-12-12T00:00:00.898039'), '%Y-%m-%dT%H:%M:%S.%f')
-            days_past_after_expired = (datetime.now() - date_time_obj).days
+            if not inactive_purchases.expired_at: continue
+
+            days_past_after_expired = (datetime.now() - purchase.expired_at).days
 
             if days_past_after_expired >= setting.delete_purchase_after_days:
                 remove_purchase = vpn_crud.remove_purchase(session, purchase.purchase_id, purchase.chat_id)
