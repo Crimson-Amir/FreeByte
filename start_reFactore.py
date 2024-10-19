@@ -210,3 +210,21 @@ async def invite_firends(update, context):
         return await query.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(main_keyboard), parse_mode='html')
 
 
+@handle_error.handle_functions_error
+async def web_application(update, context):
+    with SessionLocal() as session:
+        query = update.callback_query
+        user_detail = update.effective_chat
+        ft_instance = FindText(update, context)
+        get_config = crud.get_user_config(session, user_detail.id)
+
+        text = await ft_instance.find_text('web_application_text')
+        text = text.format(get_config.chat_id, get_config.webapp_password)
+
+        main_keyboard = [
+            [InlineKeyboardButton(await ft_instance.find_keyboard('open_web_application'),  url=setting.webapp_url)],
+            [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='start')],
+        ]
+        return await query.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(main_keyboard), parse_mode='html')
+
+

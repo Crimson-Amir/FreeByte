@@ -294,6 +294,26 @@ text_transaction = {
         "en": "Price With {0}% discount:",
         "fa": "مبلغ با {0}% تخفیف:",
     },
+    "web_application": {
+        "en": "Web Application",
+        "fa": "وب اپلیکیشن",
+    },
+    "open_web_application": {
+        "en": "Go to WebApp",
+        "fa": "برو به وب اپلیکیشن",
+    },
+    "web_application_text": {
+        "en": "You can easily purchase a new service or renew your current one through the web application without needing a VPN." 
+              "\n\nYour login information is kept strictly confidential. Please refrain from sharing it with others." 
+              "\nSave this information so you can use it when needed." 
+              "\n\nUsername: {0}" 
+              "\nPassword: {1}",
+        "fa": "شما می‌توانید بدون نیاز به VPN از طریق وب‌اپلیکیشن به راحتی سرویس جدید خریداری کنید یا سرویس فعلی خود را تمدید نمایید." 
+              "\n\nاطلاعات ورود شما به‌صورت کاملاً محرمانه نگهداری می‌شود. لطفاً از ‌اشتراک‌گذاری آن با دیگران خودداری کنید." 
+              "\nاین اطلاعات را ذخیره کرده تا در مواقع ضروری از آن استفاده کنید." 
+              "\n\nنام کاربری: {0}" 
+              "\nرمز عبور: {1}",
+    },
 }
 
 keyboard_transaction = {

@@ -66,6 +66,7 @@ if __name__ == '__main__':
 
     # Bot Main Menu
     application.add_handler(CallbackQueryHandler(start_reFactore.start, pattern='start(.*)'))
+    application.add_handler(CallbackQueryHandler(start_reFactore.web_application, pattern='web_application'))
     application.add_handler(CallbackQueryHandler(start_reFactore.register_user, pattern='register_user_(.*)'))
     application.add_handler(CallbackQueryHandler(services, pattern='menu_services'))
     application.add_handler(CallbackQueryHandler(start_reFactore.just_for_show, pattern='just_for_show'))

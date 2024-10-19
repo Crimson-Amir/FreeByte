@@ -98,7 +98,6 @@ async def crypto_receive_payment_result(data: WebAppUtilities.CryptomusPaymentWe
                 session.rollback()
                 await WebAppUtilities.handle_failed_payment(session, financial, e, dialogues, data.order_id, 'CryptomusWebApp')
 
-
 @app.post('/send_telegram_notification/')
 async def send_telegram_notification(
     chat_id: int = Form(...),
