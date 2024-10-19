@@ -1,5 +1,5 @@
 import requests
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Form
 from fastapi.templating import Jinja2Templates
 import utilities_reFactore
 from crud import crud
@@ -100,6 +100,11 @@ async def crypto_receive_payment_result(data: WebAppUtilities.CryptomusPaymentWe
 
 
 @app.post('/send_telegram_notification/')
-async def crypto_receive_payment_result(chat_id: int, text: str, message_thread_id: int, bot_token: str):
+async def send_telegram_notification(
+    chat_id: int = Form(...),
+    text: str = Form(...),
+    message_thread_id: int = Form(...),
+    bot_token: str = Form(...)
+):
     telegram_bot_url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
     requests.post(telegram_bot_url, data={'chat_id': chat_id, 'text': text, 'message_thread_id': message_thread_id}, timeout=5)
