@@ -119,7 +119,7 @@ async def register_user_in_webapp(user):
         password = hashlib.sha256(f'{user.id}.{uuid.uuid4().hex}'.encode()).hexdigest()[:8]
         json_data = {
             'email': str(user.id),
-            'name': user.first_name or '',
+            'name': user.first_name or 'unknown',
             'password':password,
             'active': True,
             'private_token': hashlib.sha256(setting.webapp_private_token.encode()).hexdigest(),
