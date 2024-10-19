@@ -294,10 +294,6 @@ text_transaction = {
         "en": "Price With {0}% discount:",
         "fa": "مبلغ با {0}% تخفیف:",
     },
-    "web_application": {
-        "en": "Web Application",
-        "fa": "وب اپلیکیشن",
-    },
     "open_web_application": {
         "en": "Go to WebApp",
         "fa": "برو به وب اپلیکیشن",
@@ -317,6 +313,10 @@ text_transaction = {
 }
 
 keyboard_transaction = {
+    "web_application": {
+        "en": "Web Application",
+        "fa": "وب اپلیکیشن",
+    },
     "invite_firend": {
         "en": "🔗 Invite Firends",
         "fa": "🔗 دعوت از دوستان",
