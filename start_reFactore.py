@@ -219,7 +219,7 @@ async def web_application(update, context):
         get_config = crud.get_user_config(session, user_detail.id)
 
         text = await ft_instance.find_text('web_application_text')
-        text = text.format(get_config.chat_id, get_config.webapp_password)
+        text = text.format(f"<code>{get_config.chat_id}</code>", f"<code>{get_config.webapp_password}</code>")
 
         main_keyboard = [
             [InlineKeyboardButton(await ft_instance.find_keyboard('open_web_application'),  url=setting.webapp_url)],
