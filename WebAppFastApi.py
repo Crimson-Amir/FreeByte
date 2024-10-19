@@ -1,3 +1,4 @@
+import requests
 from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
 import utilities_reFactore
@@ -96,3 +97,9 @@ async def crypto_receive_payment_result(data: WebAppUtilities.CryptomusPaymentWe
             except Exception as e:
                 session.rollback()
                 await WebAppUtilities.handle_failed_payment(session, financial, e, dialogues, data.order_id, 'CryptomusWebApp')
+
+
+@app.post('/send_telegram_notification/')
+async def crypto_receive_payment_result(chat_id: int, text: str, message_thread_id: int, bot_token: str):
+    telegram_bot_url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+    requests.post(telegram_bot_url, data={'chat_id': chat_id, 'text': text, 'message_thread_id': message_thread_id}, timeout=5)

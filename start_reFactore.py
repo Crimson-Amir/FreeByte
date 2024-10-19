@@ -1,9 +1,7 @@
 import hashlib
 import logging
 import uuid
-
 import requests
-
 import utilities_reFactore
 from crud import crud
 from utilities_reFactore import FindText, UserNotFound, handle_error, message_token, start as ustart, find_user
@@ -120,13 +118,13 @@ async def register_user_in_webapp(user):
     try:
         password = hashlib.sha256(f'{user.id}.{uuid.uuid4().hex}'.encode()).hexdigest()[:8]
         json_data = {
-            'email': user.id,
-            'name': user.first_name,
+            'email': str(user.id),
+            'name': user.first_name or '',
             'password':password,
             'active': True,
             'private_token': hashlib.sha256(setting.webapp_private_token.encode()).hexdigest(),
         }
-        requests.post(url=setting.webapp_url, json=json_data)
+        requests.post(url=f"{setting.webapp_url}/sign-up/", json=json_data)
 
     except Exception as e:
         text = ('failed to create webapp account for user.'
@@ -210,3 +208,5 @@ async def invite_firends(update, context):
             [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='start')],
         ]
         return await query.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(main_keyboard), parse_mode='html')
+
+
