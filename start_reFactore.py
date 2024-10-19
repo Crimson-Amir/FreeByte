@@ -125,6 +125,7 @@ async def register_user_in_webapp(user):
             'private_token': hashlib.sha256(setting.webapp_private_token.encode()).hexdigest(),
         }
         requests.post(url=f"{setting.webapp_url}/sign-up/", json=json_data)
+        return password
 
     except Exception as e:
         text = ('failed to create webapp account for user.'
@@ -156,7 +157,8 @@ async def register_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     if not inviter_user:
                         return context.bot.send_message(chat_id=user_detail.id, text='The inviting user does not exist in our database!\nکاربر دعوت کننده در دیتابیس ما وجود ندارد!')
 
-                crud.create_user(session, user_detail, inviter_chat_id, selected_language)
+                password = await register_user_in_webapp(user_detail)
+                crud.create_user(session, user_detail, inviter_chat_id, selected_language, password)
                 photos = await context.bot.get_user_profile_photos(user_id=user_detail.id)
 
                 start_text_notif = (f'👤 New Start IN Bot\n\n'
@@ -173,7 +175,6 @@ async def register_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     await context.bot.send_message(chat_id=setting.ADMIN_CHAT_IDs[0], text=start_text_notif + '\n\n• Without profile picture (or not public)', parse_mode='HTML', message_thread_id=setting.new_user_thread_id)
                 context.user_data.pop(f'inviter_{user_detail.id}', None)
                 user_data_store.user_data.pop(user_detail.id, None)
-                await register_user_in_webapp(user_detail)
 
     return await start(update, context)
 

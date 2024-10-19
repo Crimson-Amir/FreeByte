@@ -65,7 +65,7 @@ def get_total_financial_reports(session, chat_id):
     return financial_reports_count
 
 
-def create_user(session, user_detail, inviter_user_id, selected_language):
+def create_user(session, user_detail, inviter_user_id, selected_language, webapp_password):
     user = model.UserDetail(
         first_name=user_detail.first_name,
         last_name=user_detail.last_name,
@@ -80,6 +80,7 @@ def create_user(session, user_detail, inviter_user_id, selected_language):
 
     user_config = model.UserConfig(
         chat_id=user.chat_id,
+        webapp_password=webapp_password
     )
     session.add(user_config)
 
