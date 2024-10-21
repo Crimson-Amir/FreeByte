@@ -87,12 +87,33 @@ async def create_json_config(username, expiration_in_day, traffic_in_byte, servi
         "proxies": {
             "vless": {
                 "id": service_uuid
-            }
+            },
+            "vmess": {
+                "id": service_uuid
+            },
+            "trojan": {
+                "password": service_uuid
+            },
+            "shadowsocks": {
+                "password": service_uuid
+            },
         },
         "inbounds": {
             "vless": [
-                "VLESS TCP"
-            ]
+                "VLESS TCP",
+                "VLESS TCP REALITY",
+                "VLESS GRPC REALITY"
+            ],
+            "vmess": [
+                "VMess TCP",
+                "VMess Websocket",
+            ],
+            "trojan": [
+                "Trojan Websocket TLS",
+            ],
+            "shadowsocks": [
+                "Shadowsocks TCP",
+            ],
         },
         "expire": expiration_in_day,
         "data_limit": traffic_in_byte,
