@@ -193,7 +193,10 @@ async def upgrade_service_for_user(context, session, purchase_id: int):
 
         date_in_timestamp = (expire_date + timedelta(days=purchase.upgrade_period)).timestamp()
 
-        json_config = await create_json_config(purchase.username, date_in_timestamp, traffic_to_byte, service_uuid=purchase.service_uuid)
+        json_config = await create_json_config(
+            purchase.username, date_in_timestamp, traffic_to_byte,
+            service_uuid=purchase.service_uuid if purchase.service_uuid else uuid.uuid4().hex
+        )
         await panel_api.marzban_api.modify_user(main_server_ip, purchase.username, json_config)
 
         success_text = await ft_instance.find_from_database(purchase.chat_id, 'upgrade_service_successfuly')
