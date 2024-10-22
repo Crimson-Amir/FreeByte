@@ -10,6 +10,10 @@ from WebApp.WebAppDialogue import transaction
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
+@app.get('/')
+async def send_telegram_notification():
+    return {'status': 'ok'}
+
 @app.get('/zarinpal_receive_payment_result/')
 async def receive_payment_result(Authority: str, Status: str, request: Request):
     """Handles the Zarinpal payment result webhook."""
