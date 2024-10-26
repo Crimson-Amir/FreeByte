@@ -203,7 +203,7 @@ async def vn_buy_number(update, context):
                 f"\n{await ft_instance.find_text('wallet_credit_label')} {user.wallet:,} {await ft_instance.find_text('irt')}")
 
         if user.wallet < price:
-            text += f'\n\n{await ft_instance.find_text('not_enough_credit')}'
+            text += f'\n\n{await ft_instance.find_text("not_enough_credit")}'
             keyboard = [
                 [InlineKeyboardButton(await ft_instance.find_keyboard('increase_balance'), callback_data='buy_credit_volume')],
             ]
