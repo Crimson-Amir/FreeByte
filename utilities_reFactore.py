@@ -2,7 +2,7 @@ import datetime, json, arrow
 from database_sqlalchemy import SessionLocal
 import setting, logging, traceback
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-from dialogue_texts import text_transaction, keyboard_transaction
+from dialogues.dialogue_texts import text_transaction, keyboard_transaction
 from setting import default_language, ADMIN_CHAT_IDs, telegram_bot_token
 from telegram.ext import ConversationHandler
 import functools, requests
@@ -278,12 +278,13 @@ class MessageToken:
         @functools.wraps(func)
         async def wrapper(update, context, **kwargs):
 
-            if update.message:
-                message_id = update.message.message_id
-            elif update.callback_query and update.callback_query.message:
-                message_id = update.callback_query.message.message_id
-            else:
-                return await func(update, context, **kwargs)
+            #if update.message:
+
+                #message_id = update.message.message_id
+                #elif update.callback_query and update.callback_query.message:
+                #    message_id = update.callback_query.message.message_id
+                #else:
+            return await func(update, context, **kwargs)
 
             timer_exist_in_message_timer = cls.message_timer.get(message_id)
 

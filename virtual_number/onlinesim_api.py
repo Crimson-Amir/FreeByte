@@ -1,7 +1,8 @@
-import os, sys, requests, pprint
+import os, sys, requests
 from urllib.parse import urlparse, parse_qsl, urlunparse, urlencode
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import setting
+import asyncio
 
 class OnlineSim:
     def __init__(self, api_key):
@@ -25,58 +26,55 @@ class OnlineSim:
         new_url = urlunparse(parsed_url._replace(query=new_queris))
         return new_url
 
-    def get_tariffs(self, **params):
+    async def get_tariffs(self, **params):
         endpoint = self.init_requests(f"getTariffs.php", **params)
         return self.make_request('get', endpoint)
 
-    def get_number(self, service_name, country_code, number=True, **params):
+    async def get_number(self, service_name, country_code, number=True, **params):
         endpoint = self.init_requests(
             "getNum.php", service=service_name, country=country_code, number=number, **params
         )
         return self.make_request('get', endpoint)
 
-    def get_state(self, **params):
+    async def get_state(self, **params):
         endpoint = self.init_requests(f"getState.php", **params)
         return self.make_request('get', endpoint)
 
-    def set_operation_ok(self, **params):
+    async def set_operation_ok(self, **params):
         endpoint = self.init_requests(f"setOperationOk.php", **params)
         return self.make_request('get', endpoint)
 
-    def get_free_list(self, **params):
+    async def get_free_list(self, **params):
         endpoint = self.init_requests(f"getFreeList", **params)
         return self.make_request('get', endpoint)
 
 
-    def get_rent_tariffs(self, **params):
+    async def get_rent_tariffs(self, **params):
         endpoint = self.init_requests(f"tariffsRent.php", **params)
         return self.make_request('get', endpoint)
 
-    def get_rent_number(self, country_code, days, **params):
+    async def get_rent_number(self, country_code, days, **params):
         endpoint = self.init_requests(
             "getRentNum.php", country=country_code, days=days, **params
         )
         return self.make_request('get', endpoint)
 
-    def get_rent_state(self, tzid, **params):
+    async def get_rent_state(self, tzid, **params):
         endpoint = self.init_requests(
             "getRentState.php", tzid=tzid, **params
         )
         return self.make_request('get', endpoint)
 
-    def extend_rent_state(self, tzid, days, **params):
+    async def extend_rent_state(self, tzid, days, **params):
         endpoint = self.init_requests(
             "extendRentState.php", tzid=tzid, days=days, **params
         )
         return self.make_request('get', endpoint)
 
-    def close_rent_number(self, tzid, **params):
+    async def close_rent_number(self, tzid, **params):
         endpoint = self.init_requests(
             "closeRentNum.php", tzid=tzid, **params
         )
         return self.make_request('get', endpoint)
 
-a = OnlineSim(setting.onlinesim_api)
-# b = a.get_number('facebook', 7)
-b = a.get_free_list(country=7)
-pprint.pprint(b)
+onlinesim = OnlineSim(setting.onlinesim_api)

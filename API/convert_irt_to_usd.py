@@ -1,23 +1,45 @@
 import requests, logging
+from datetime import datetime, timedelta
 usd_default_price = 60_000
 
-headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36'
-}
+price = {}
 
-def convert_irt_to_usd_by_teter(irt: int):
+def get_from_api():
+    url = 'https://api.nobitex.ir/market/stats'
+    headers = {'UserAgent': 'TraderBot/FreeByte'}
+    response = requests.post(url, headers=headers, data={'srcCurrency': "usdt", 'dstCurrency': "rls"})
+    response.raise_for_status()
+    response_json = response.json()
+    return int(response_json.get('stats', {}).get('usdt-rls', {}).get('bestSell', usd_default_price * 10)) / 10
 
-    response = requests.get(
-        'https://api.ompfinex.com/v2/udf/real/history?symbol=USDTIRT&resolution=60&from=1717100000&to=1717134009&countback=320',
-        headers=headers,
-        verify=False
-    )
+def get_tether_price():
+    if price.get('tether_price'):
+        register_date = price.get('tether_price').get('register_date')
+        if register_date + timedelta(hours=12) < datetime.now():
+            get_price = get_from_api()
+            price['tether_price'] = {'price': get_price, 'register_date': datetime.now()}
+        return price['tether_price']['price']
+    else:
+        get_price = get_from_api()
+        price['tether_price'] = {'price': get_price, 'register_date': datetime.now()}
+        return price['tether_price']['price']
 
+def convert_irt_to_usd(irt_value: int):
     try:
-        response.raise_for_status()
-        usd_value = int(float(response.json().get('o', [0])[-1]))
-        return round(irt / usd_value, 2)
+        usd_in_irt = get_tether_price()
+        return int(irt_value / usd_in_irt)
+
     except Exception as e:
         logging.error(f'Error in get teter price.\n{e}')
-        return round(irt / usd_default_price, 2)
+        return int(irt_value / usd_default_price)
+
+
+def convert_usd_to_irt(usd_value: float):
+    try:
+        usd_in_irt = get_tether_price()
+        return int(usd_value * usd_in_irt)
+
+    except Exception as e:
+        logging.error(f'Error in get teter price.\n{e}')
+        return int(usd_value * usd_default_price)
 

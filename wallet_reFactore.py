@@ -269,7 +269,7 @@ async def pay_by_cryptomus(update, context):
     with SessionLocal() as session:
         with session.begin():
             get_financial = crud.get_financial_report_by_id(session, financial_id)
-            amount = convert_irt_to_usd.convert_irt_to_usd_by_teter(get_financial.amount)
+            amount = convert_irt_to_usd.convert_irt_to_usd(get_financial.amount)
 
             instance = cryptomusAPI.CreateInvoice(setting.cryptomus_api_key, setting.cryptomus_merchant_id)
             create_cryptomus_invoice = await instance.execute(

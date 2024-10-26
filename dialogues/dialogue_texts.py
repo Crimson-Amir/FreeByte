@@ -1,4 +1,5 @@
-import vpn_service.dialogue_texts as vpn_service_dialogues
+import dialogues.vpn_dialogues as vpn_service_dialogues
+import dialogues.virtual_number_dialogues as virtual_number_service_dialogues
 
 
 text_transaction = {
@@ -34,6 +35,14 @@ text_transaction = {
         "en": "IRT",
         "fa": "تومان",
     },
+    "available": {
+        "en": "are available",
+        "fa": "عدد مانده",
+    },
+    "search_result": {
+        "en": "🔍 Search Result:",
+        "fa": "🔍 نتیجه جستجو:",
+    },
     "usd": {
         "en": "USD",
         "fa": "دلار",
@@ -41,6 +50,14 @@ text_transaction = {
     "no_transaction_yet": {
         "en": "You haven’t made any transactions yet!",
         "fa": "شما تا به حال تراکنشی نداشتید!",
+    },
+    "no_service_found": {
+        "en": "There is no Service find!",
+        "fa": "هیچ سرویسی پیدا نشد!",
+    },
+    "no_country_found": {
+        "en": "There is no Country find!",
+        "fa": "هیچ کشوری پیدا نشد!",
     },
     "wallet_page_title": {
         "en": "Your Wallet Overview:",
@@ -141,6 +158,12 @@ text_transaction = {
     "not_enough_credit": {
         "en": "You don’t have enough credit to pay this invoice!",
         "fa": "اعتبار شما برای پرداخت این فاکتور کافی نیست!",
+    },
+    "user_balance_vs_amount": {
+        "en": "Price: {0}"
+              "\nYour Balance: {1}",
+        "fa": "مبلغ: {0}"
+              "\nاعتبار کیف پول: {1}",
     },
     "invoice_paid_by_wallet_message": {
         "en": "The invoice has been paid successfully ✅",
@@ -318,6 +341,10 @@ keyboard_transaction = {
         "en": "Web Application",
         "fa": "وب اپلیکیشن",
     },
+    "virtual_number": {
+        "en": "Virtual Number",
+        "fa": "شماره مجازی",
+    },
     "invite_firend": {
         "en": "🔗 Invite Firends",
         "fa": "🔗 دعوت از دوستان",
@@ -383,8 +410,8 @@ keyboard_transaction = {
         "fa": "⟳ تازه‌سازی",
     },
     "buy_vpn_service_label": {
-        "en": "🛍️ Buy VPN Service",
-        "fa": "🛍️ خرید سرویس VPN",
+        "en": "Buy VPN Service",
+        "fa": "خرید سرویس VPN",
     },
     "vpn_services_label": {
         "en": "VPN Services",
@@ -447,8 +474,8 @@ keyboard_transaction = {
         "fa": "دریافت سرویس ↧",
     },
     "get_vpn_test_label": {
-        "en": "🎁 Get VPN Test",
-        "fa": "🎁 دریافت تست VPN",
+        "en": "Get VPN Test",
+        "fa": "دریافت تست VPN",
     },
     "ticket_new_message": {
         "en": "New Message 🆕",
@@ -461,4 +488,8 @@ keyboard_transaction = {
 }
 
 text_transaction.update(vpn_service_dialogues.text_transaction)
+text_transaction.update(virtual_number_service_dialogues.text_transaction)
+
 keyboard_transaction.update(vpn_service_dialogues.keyboard_transaction)
+keyboard_transaction.update(virtual_number_service_dialogues.keyboard_transaction)
+
