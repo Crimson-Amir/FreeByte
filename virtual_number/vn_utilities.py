@@ -49,7 +49,7 @@ async def report_recive_code(vn_instance):
 
 async def report_remove_vn(vn_instance, financial):
     try:
-        msg = 'Remove Virtual Number!'
+        msg = 'User Remove Virtual Number!'
 
         if isinstance(vn_instance, int):
             msg += f'\ntzid: {vn_instance}'
@@ -61,10 +61,10 @@ async def report_remove_vn(vn_instance, financial):
                     f'\ncountry code: {vn_instance.country_code}'
                     f'\nnumber: {vn_instance.number}')
             owner = vn_instance.owner
-        msg += (f'\n\nAmount: {financial.amount:,} IRT'
-                f'\n\nFinancial Status: {financial.payment_status}')
+        msg += (f'\nAmount: {financial.amount:,} IRT'
+                f'\nFinancial Status: {financial.payment_status}')
 
-        await utilities_reFactore.report_to_admin('info', 'report_remove_hold_vn', msg, owner)
+        await utilities_reFactore.report_to_admin('info', 'report_remove_vn', msg, owner)
     except Exception as e:
         logging.error(f'error in send report to admin in report_remove_hold_vn:\n{e}')
 

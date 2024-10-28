@@ -12,7 +12,7 @@ class OnlineSim:
     def make_request(self, method, endpoint, **kwargs):
         """Make an HTTP request and return JSON response."""
         url = f'https://onlinesim.io/api/{endpoint}'
-        response = self.session.request(method, url, **kwargs)
+        response = self.session.request(method, url, **kwargs, timeout=10)
         response.raise_for_status()
         return response.json()
 

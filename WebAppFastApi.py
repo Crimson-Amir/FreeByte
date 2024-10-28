@@ -120,12 +120,12 @@ async def send_telegram_notification(
 async def onlinesim_receive_sms(request: Request):
     query_params = request.query_params
     data = {key: value for key, value in query_params.items()}
-    tzid = data.get('virtual_number')
+    tzid = data.get('operation_id')
     with SessionLocal() as session:
         session.begin()
         virtual_number = vn_crud.get_virtual_number_by_tzid(session, int(tzid))
         try:
-            data = vn_notification.read_json()
+            json_data = vn_notification.read_json()
 
             message = (
                 f'{data.get("number")}:'
@@ -135,10 +135,10 @@ async def onlinesim_receive_sms(request: Request):
             )
             await utilities_reFactore.report_to_user('success', virtual_number.chat_id, message)
 
-            vn_json = data.get(tzid, {})
+            vn_json = json_data.get(tzid, {})
 
             if vn_json:
-                modified_queue = data.copy()
+                modified_queue = json_data.copy()
                 financial_id = vn_json.get('financial_id')
                 modified_queue[tzid]['recived_code_count'] = vn_json.get('recived_code_count', 1) + 1
                 with open(vn_notification.file_path, "w") as f:
