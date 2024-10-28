@@ -279,7 +279,6 @@ async def set_operation_ok_api(session, tzid, vn_id, financial_id, refund_money=
             financial = vn_utilities.set_virtual_number_answer(session, vn_id, financial_id)
 
         vn_notification.modify_json(key_to_remove=str(tzid))
-        vn_notification.vn_notification_instance.refresh_json()
 
         return financial
     elif response == 'NO_COMPLETE_TZID':
@@ -348,7 +347,6 @@ async def vn_recive_number(update, context):
             }
 
             vn_notification.modify_json(key_to_add=virtual_number.tzid, value_to_add=data)
-            vn_notification.vn_notification_instance.refresh_json()
 
             await vn_utilities.report_buy_number(virtual_number, financial)
 

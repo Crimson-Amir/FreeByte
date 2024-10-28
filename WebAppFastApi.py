@@ -146,7 +146,6 @@ async def onlinesim_receive_sms(request: Request):
                 print(modified_queue)
                 with open(vn_notification.file_path, "w") as f:
                     json.dump(modified_queue, f, indent=4)
-                vn_notification.vn_notification_instance.refresh_json()
 
             else:
                 financial = vn_crud.get_financial_by_vn_id(session, virtual_number.virtual_number_id)

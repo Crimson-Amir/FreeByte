@@ -41,6 +41,7 @@ class VNotification:
         self.queue = read_json()
 
     async def vn_timer(self, context):
+        self.refresh_json()
         if self.queue:
 
             get_all_number = await onlinesim_api.onlinesim.get_state(message_to_code=1, msg_list=1)
