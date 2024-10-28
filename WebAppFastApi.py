@@ -111,3 +111,14 @@ async def send_telegram_notification(
 ):
     telegram_bot_url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
     requests.post(telegram_bot_url, data={'chat_id': chat_id, 'text': text, 'message_thread_id': message_thread_id}, timeout=5)
+
+
+@app.get("/onlinesim")
+async def receive_sms(request: Request):
+    query_params = request.query_params
+    data = {key: value for key, value in query_params.items()}
+
+    await utilities_reFactore.report_to_admin('info', 'a', str(data))
+    print("Received data:", data)
+
+    return {"status": "success", "data_received": data}
