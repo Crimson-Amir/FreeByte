@@ -70,6 +70,16 @@ def delete_virtual_number_record(session, vn_id, chat_id):
 
 def get_virtual_number_by_tzid(session, tzid):
     vn_ = session.query(model.VirtualNumber).where(
-            model.VirtualNumber.tzid == tzid,
+        model.VirtualNumber.tzid == tzid,
         ).first()
     return vn_
+
+
+def get_financial_by_vn_id(session, vn_id):
+    financial = session.query(model.FinancialReport).where(
+        and_(
+            model.FinancialReport.id_holder == vn_id,
+            model.FinancialReport.action == 'buy_vn_number_for_sms'
+            )
+    ).first()
+    return financial

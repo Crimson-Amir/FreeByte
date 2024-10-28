@@ -254,7 +254,7 @@ async def report_to_user(level, user_id, msg):
 
         requests.post(
             url=f"https://api.telegram.org/bot{telegram_bot_token}/sendMessage",
-            json={'chat_id': user_id, 'text': message}
+            json={'chat_id': user_id, 'text': message, 'parse_mode': 'HTML'}
         )
 
     except Exception as e:

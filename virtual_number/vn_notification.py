@@ -1,11 +1,7 @@
-import logging
-import sys, os, json
-import traceback
-
+import sys, os, json, traceback, logging
 import utilities_reFactore
-
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from virtual_number import onlinesim_api
+from virtual_number import onlinesim_api, vn_utilities
 from utilities_reFactore import FindText
 from crud import crud, vn_crud
 from database_sqlalchemy import SessionLocal
@@ -63,16 +59,14 @@ class VNotification:
 
                             if not get_number:
                                 if get_vn.status == 'hold':
-                                    vn_crud.update_virtual_number_record(session, vn_id=get_vn.virtual_number_id, status='canceled')
-                                    financial = crud.update_financial_report_status(
-                                        session=session, financial_id=values.get('financial_id'),
-                                        new_status='refund',
-                                        operation='recive', authority=values.get('financial_id')
+                                    financial = vn_utilities.cancel_virtual_number(
+                                        session, get_vn.virtual_number_id, values.get('financial_id')
                                     )
-                                    vn_crud.add_credit_to_wallet(session, financial)
+
                                     msg = await ft_instance.find_from_database(financial.chat_id, 'vn_refund_money_timer')
                                     msg = msg.format(get_vn.number, f"{financial.amount:,}")
                                     await context.bot.send_message(chat_id=financial.chat_id, text=msg)
+                                    await vn_utilities.report_remove_vn(get_vn, financial)
 
                                 modified_queue.pop(tzid)
                                 continue
@@ -91,12 +85,12 @@ class VNotification:
                                     await context.bot.send_message(chat_id=values.get('chat_id'), text=msg, parse_mode='html')
 
                                     if values.get('recived_code_count', 0) == 0:
-                                        vn_crud.update_virtual_number_record(session, vn_id=get_vn.virtual_number_id, status='answer')
-                                        crud.update_financial_report_status(
-                                            session=session, financial_id=values.get('financial_id'),
-                                            new_status='paid', authority=values.get('financial_id')
+                                        vn_utilities.set_virtual_number_answer(
+                                            session, get_vn.virtual_number_id, values.get('financial_id')
                                         )
+
                                     modified_queue[tzid]['recived_code_count'] = values.get('recived_code_count', 1) + 1
+                                    await vn_utilities.report_recive_code(get_vn)
 
                 except Exception as e:
                     logging.error(f'error in vn timer:\n{e}')

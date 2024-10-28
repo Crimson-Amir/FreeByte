@@ -274,19 +274,9 @@ async def set_operation_ok_api(session, tzid, vn_id, financial_id, refund_money=
 
     if response == 1:
         if refund_money:
-            vn_crud.update_virtual_number_record(session, vn_id=vn_id, status='canceled')
-            financial = crud.update_financial_report_status(
-                session=session, financial_id=financial_id,
-                new_status='refund',
-                operation='recive', authority=financial_id
-            )
-            vn_crud.add_credit_to_wallet(session, financial)
+            financial = vn_utilities.cancel_virtual_number(session, vn_id, financial_id)
         else:
-            vn_crud.update_virtual_number_record(session, vn_id=vn_id, status='answer')
-            financial = crud.update_financial_report_status(
-                session=session, financial_id=financial_id,
-                new_status='paid', authority=financial_id
-            )
+            financial = vn_utilities.set_virtual_number_answer(session, vn_id, financial_id)
 
         vn_notification.modify_json(key_to_remove=str(tzid))
         vn_notification.vn_notification_instance.refresh_json()
@@ -319,11 +309,8 @@ async def get_state_api(tzid, vn_id, financial_id):
     elif response == 'TZ_NUM_ANSWER':
         with SessionLocal() as session:
             with session.begin():
-                vn_crud.update_virtual_number_record(session, vn_id=vn_id, status='answer')
-                crud.update_financial_report_status(
-                    session=session, financial_id=financial_id,
-                    new_status='paid', authority=financial_id
-                )
+                vn_utilities.set_virtual_number_answer(session, vn_id, financial_id)
+
         return True, get_number[0]
 
 
@@ -363,6 +350,8 @@ async def vn_recive_number(update, context):
             vn_notification.modify_json(key_to_add=virtual_number.tzid, value_to_add=data)
             vn_notification.vn_notification_instance.refresh_json()
 
+            await vn_utilities.report_buy_number(virtual_number, financial)
+
             await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
         except LOWBALANCE:
@@ -391,15 +380,16 @@ async def vn_cancel_number(update, context):
                 refund_money = False
                 text_key = 'vn_remove_number_successful_witout_refund'
 
-            remove_number = await set_operation_ok_api(session, tzid, vn_id, int(financial_id), refund_money)
+            financial = await set_operation_ok_api(session, tzid, vn_id, int(financial_id), refund_money)
             text = await ft_instance.find_text(text_key)
-            text = text.format(f'{remove_number.amount:,}')
+            text = text.format(f'{financial.amount:,}')
 
             keyboard = [
                 [InlineKeyboardButton(await ft_instance.find_keyboard('bot_main_menu'),callback_data=f'start_in_new_message')],
             ]
             session.commit()
             await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+            await vn_utilities.report_remove_vn(tzid, financial)
 
         except ERRORNOOPERATIONS:
             await query.answer(await ft_instance.find_text("vn_error_wrong_tz_id_error"), show_alert=True)
@@ -417,11 +407,6 @@ async def vn_cancel_number(update, context):
                          InlineKeyboardButton(await ft_instance.find_keyboard('bot_main_menu'),callback_data=f'start_in_new_message')]]
             await query.edit_message_reply_markup(reply_markup=InlineKeyboardMarkup(keyboard))
 
-def seconds_to_minutes(seconds):
-    minutes = seconds // 60
-    remaining_seconds = seconds % 60
-    return f"{minutes:02}:{remaining_seconds:02}"
-
 
 @handle_error.handle_functions_error
 async def vn_update_number(update, context):
@@ -435,7 +420,7 @@ async def vn_update_number(update, context):
         status, data = await get_state_api(tzid, vn_id, financial_id)
 
         text = await ft_instance.find_text('buy_vn_number_page')
-        text = text.format(f"<code>{data.get('number')}</code>", seconds_to_minutes(data.get('time', '00:00')))
+        text = text.format(f"<code>{data.get('number')}</code>", vn_utilities.seconds_to_minutes(data.get('time', '00:00')))
         if status:
             for msg in data['msg']:
                 service = vn_utilities.social_media.get(data.get("service"), {}).get("name_in_other_language", {}).get(user_lang, data.get("service"))

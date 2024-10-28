@@ -1,11 +1,14 @@
-import requests
+import traceback
+
+import requests, json
 from fastapi import FastAPI, Request, Form
 from fastapi.templating import Jinja2Templates
 import utilities_reFactore
-from crud import crud
+from crud import crud, vn_crud
 from WebApp import WebAppUtilities
 from database_sqlalchemy import SessionLocal
 from WebApp.WebAppDialogue import transaction
+from virtual_number import vn_utilities, vn_notification
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
@@ -104,21 +107,67 @@ async def crypto_receive_payment_result(data: WebAppUtilities.CryptomusPaymentWe
 
 @app.post('/send_telegram_notification/')
 async def send_telegram_notification(
-    chat_id: int = Form(...),
-    text: str = Form(...),
-    message_thread_id: int = Form(...),
-    bot_token: str = Form(...)
+        chat_id: int = Form(...),
+        text: str = Form(...),
+        message_thread_id: int = Form(...),
+        bot_token: str = Form(...)
 ):
     telegram_bot_url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
     requests.post(telegram_bot_url, data={'chat_id': chat_id, 'text': text, 'message_thread_id': message_thread_id}, timeout=5)
 
 
 @app.get("/onlinesim")
-async def receive_sms(request: Request):
+async def onlinesim_receive_sms(request: Request):
     query_params = request.query_params
     data = {key: value for key, value in query_params.items()}
+    tzid = data.get('virtual_number')
+    with SessionLocal() as session:
+        session.begin()
+        virtual_number = vn_crud.get_virtual_number_by_tzid(session, int(tzid))
+        try:
+            data = vn_notification.read_json()
 
-    await utilities_reFactore.report_to_admin('info', 'a', str(data))
-    print("Received data:", data)
+            message = (
+                f'{data.get("number")}:'
+                f'\n\nMessage:\n{data.get("message")}'
+                f'\n\nCode: <code>{data.get("code")}</code>'
+                f'\n\nTime Left: {vn_utilities.seconds_to_minutes(int(data.get("time_left", 0)))}'
+            )
+            await utilities_reFactore.report_to_user('success', virtual_number.chat_id, message)
 
-    return {"status": "success", "data_received": data}
+            vn_json = data.get(tzid, {})
+
+            if vn_json:
+                modified_queue = data.copy()
+                financial_id = vn_json.get('financial_id')
+                modified_queue[tzid]['recived_code_count'] = vn_json.get('recived_code_count', 1) + 1
+                with open(vn_notification.file_path, "w") as f:
+                    json.dump(modified_queue, f, indent=4)
+                vn_notification.vn_notification_instance.refresh_json()
+
+            else:
+                financial = vn_crud.get_financial_by_vn_id(session, virtual_number.virtual_number_id)
+                financial_id = financial.financial_id
+
+            if financial_id:
+                vn_utilities.set_virtual_number_answer(
+                    session, virtual_number.virtual_number_id, financial_id
+                )
+            else:
+                vn_crud.update_virtual_number_record(session, vn_id=virtual_number.virtual_number_id, status='answer')
+
+            await vn_utilities.report_recive_code(virtual_number)
+
+            session.commit()
+            return {"status": "success"}
+        except Exception as e:
+            session.rollback()
+            tb = traceback.format_exc()
+            msg = (
+                f'tzid: {tzid}'
+                f'\n\ndata: {data}'
+                f'\n\nError Type: {type(e)}'
+                f'\nError Reason: {str(e)}'
+                f'\n\nTB:\n{tb}'
+            )
+            await utilities_reFactore.report_to_admin('error', 'onlinesim_receive_sms', msg, virtual_number.owner)

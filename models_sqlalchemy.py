@@ -129,7 +129,6 @@ class VirtualNumber(Base):
     service_name = Column(String)
     country_code = Column(Integer)
     number = Column(String)
-    recived_code = Column(String)
 
     chat_id = Column(BigInteger, ForeignKey('user_detail.chat_id'))
     owner = relationship("UserDetail", back_populates="virtual_numbers")

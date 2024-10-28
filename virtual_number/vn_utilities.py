@@ -1,3 +1,88 @@
+import logging
+import sys, os, json
+import traceback
+import utilities_reFactore
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from virtual_number import onlinesim_api
+from utilities_reFactore import FindText
+from crud import crud, vn_crud
+from database_sqlalchemy import SessionLocal
+
+
+def cancel_virtual_number(session, virtual_number_id, financial_id):
+    vn_crud.update_virtual_number_record(session, vn_id=virtual_number_id, status='canceled')
+    financial = crud.update_financial_report_status(
+        session=session, financial_id=financial_id,
+        new_status='refund',
+        operation='recive', authority=financial_id
+    )
+    vn_crud.add_credit_to_wallet(session, financial)
+    return financial
+
+def set_virtual_number_answer(session, virtual_number_id, financial_id):
+    vn_crud.update_virtual_number_record(session, vn_id=virtual_number_id, status='answer')
+    financial = crud.update_financial_report_status(
+        session=session, financial_id=financial_id,
+        new_status='paid', authority=financial_id
+    )
+    return financial
+
+def seconds_to_minutes(seconds):
+    minutes = seconds // 60
+    remaining_seconds = seconds % 60
+    return f"{minutes:02}:{remaining_seconds:02}"
+
+
+async def report_recive_code(vn_instance):
+    try:
+        msg = ('Recive Code For Virtual Number!'
+               f'\n\nstatus: {vn_instance.status}'
+               f'\ntzid: {vn_instance.tzid}'
+               f'\nservice_name: {vn_instance.service_name}'
+               f'\ncountry_code: {vn_instance.country_code}'
+               f'\nnumber: {vn_instance.number}')
+
+        await utilities_reFactore.report_to_admin('info', 'report_recive_code', msg, vn_instance.owner)
+    except Exception as e:
+        logging.error(f'error in send report to admin in report_recive_code:\n{e}')
+
+
+async def report_remove_vn(vn_instance, financial):
+    try:
+        msg = 'Remove Virtual Number!'
+
+        if isinstance(vn_instance, int):
+            msg += f'\ntzid: {vn_instance}'
+        else:
+            msg += ('Remove Hold Virtual Number And Return Money!'
+                    f'\ntzid: {vn_instance.tzid}'
+                    f'\nstatus: {vn_instance.status}'
+                    f'\nservice name: {vn_instance.service_name}'
+                    f'\ncountry code: {vn_instance.country_code}'
+                    f'\nnumber: {vn_instance.number}')
+
+        msg += (f'\n\nAmount: {financial.amount:,} IRT'
+                f'\n\nFinancial Status: {financial.payment_status}')
+
+        await utilities_reFactore.report_to_admin('info', 'report_remove_hold_vn', msg, vn_instance.owner)
+    except Exception as e:
+        logging.error(f'error in send report to admin in report_remove_hold_vn:\n{e}')
+
+
+async def report_buy_number(vn_instance, financial):
+    try:
+        msg = ('User Buy Number!'
+               '\nRemove Hold Virtual Number And Return Money!'
+               f'\ntzid: {vn_instance.tzid}'
+               f'\nservice name: {vn_instance.service_name}'
+               f'\ncountry code: {vn_instance.country_code}'
+               f'\nnumber: {vn_instance.number}'
+               f'\n\nAmount: {financial.amount:,} IRT')
+
+        await utilities_reFactore.report_to_admin('purchase', 'report_buy_number', msg, vn_instance.owner)
+    except Exception as e:
+        logging.error(f'error in send report to admin in report_buy_number:\n{e}')
+
 countries = {
     'tunis': {
         'flag': '🇹🇳',
