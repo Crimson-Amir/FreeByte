@@ -54,8 +54,7 @@ async def report_remove_vn(vn_instance, financial):
         if isinstance(vn_instance, int):
             msg += f'\ntzid: {vn_instance}'
         else:
-            msg += ('Remove Hold Virtual Number And Return Money!'
-                    f'\ntzid: {vn_instance.tzid}'
+            msg += (f'\ntzid: {vn_instance.tzid}'
                     f'\nstatus: {vn_instance.status}'
                     f'\nservice name: {vn_instance.service_name}'
                     f'\ncountry code: {vn_instance.country_code}'
@@ -72,7 +71,6 @@ async def report_remove_vn(vn_instance, financial):
 async def report_buy_number(vn_instance, financial):
     try:
         msg = ('User Buy Number!'
-               '\nRemove Hold Virtual Number And Return Money!'
                f'\ntzid: {vn_instance.tzid}'
                f'\nservice name: {vn_instance.service_name}'
                f'\ncountry code: {vn_instance.country_code}'
