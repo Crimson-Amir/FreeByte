@@ -442,7 +442,7 @@ async def vn_update_number(update, context):
                 text += f"\n\n{await ft_instance.find_text('service_label')} {service}\n{await ft_instance.find_text('sended_code')} <code>{msg['msg']}</code>"
 
         keyboard = [
-            [InlineKeyboardButton(await ft_instance.find_keyboard('vn_cancel_number'), callback_data=f'vncn__{vn_id}__{financial_id}'),
+            [InlineKeyboardButton(await ft_instance.find_keyboard('vn_cancel_number'), callback_data=f'vncn__{vn_id}__{tzid}__{financial_id}'),
              InlineKeyboardButton(await ft_instance.find_keyboard('vn_update_state'), callback_data=f'vn_update_number__{tzid}__{vn_id}__{financial_id}')],
             [InlineKeyboardButton(await ft_instance.find_keyboard('bot_main_menu'), callback_data=f'start_in_new_message')],
         ]
