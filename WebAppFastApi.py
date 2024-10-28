@@ -136,21 +136,17 @@ async def onlinesim_receive_sms(request: Request):
             await utilities_reFactore.report_to_user('success', virtual_number.chat_id, message)
 
             vn_json = json_data.get(tzid, {})
-            print(vn_json)
 
             if vn_json:
                 modified_queue = json_data.copy()
                 financial_id = vn_json.get('financial_id')
-                print('yes', str(financial_id))
                 modified_queue[tzid]['recived_code_count'] = vn_json.get('recived_code_count', 1) + 1
-                print(modified_queue)
                 with open(vn_notification.file_path, "w") as f:
                     json.dump(modified_queue, f, indent=4)
 
             else:
                 financial = vn_crud.get_financial_by_vn_id(session, virtual_number.virtual_number_id)
                 financial_id = financial.financial_id
-                print('no', str(financial_id))
 
             if financial_id:
                 vn_utilities.set_virtual_number_answer(

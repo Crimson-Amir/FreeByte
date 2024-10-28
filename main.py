@@ -36,7 +36,7 @@ async def services(update: Update, context: ContextTypes.DEFAULT_TYPE):
         config = crud.get_user_config(session, user.id)
 
         keyboard = [
-            [InlineKeyboardButton(await ft_instance.find_keyboard('virtual_number'), callback_data='virtual_number_menu')],
+            [InlineKeyboardButton(await ft_instance.find_keyboard('virtual_number'), callback_data='recive_sms_select_country__1')],
             [InlineKeyboardButton(await ft_instance.find_keyboard('get_vpn_test_label'), callback_data='vpn_recive_test_service') if not config.get_vpn_free_service else None,
              InlineKeyboardButton(await ft_instance.find_keyboard('buy_vpn_service_label'), callback_data='vpn_set_period_traffic__30_40_1')],
             [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='start')]
@@ -71,7 +71,6 @@ if __name__ == '__main__':
     application.add_handler(CallbackQueryHandler(start_reFactore.manage_request_to_join_by_admin, pattern='user_requested_to_join'))
     application.add_handler(CallbackQueryHandler(start_reFactore.check_new_user_request_by_admin, pattern='user_join_request_(.*)'))
     application.add_handler(CallbackQueryHandler(start_reFactore.invite_firends, pattern='invite_firends'))
-
 
     # Wallet
     application.add_handler(CallbackQueryHandler(wallet_reFactore.wallet_page, pattern='wallet_page'))
@@ -128,7 +127,7 @@ if __name__ == '__main__':
     application.add_handler(CallbackQueryHandler(onlinesim_recive_sms.vn_recive_number, pattern='vn_recive_number__(.*)'))
     application.add_handler(CallbackQueryHandler(onlinesim_recive_sms.vn_cancel_number, pattern='vncn__(.*)'))
     application.add_handler(CallbackQueryHandler(onlinesim_recive_sms.vn_update_number, pattern='vn_update_number__(.*)'))
-    application.job_queue.run_repeating(vn_notification.vn_notification_instance.vn_timer, interval=60, first=0)
+    application.job_queue.run_repeating(vn_notification.vn_notification_instance.vn_timer, interval=5 * 60, first=0)
     application.add_handler(onlinesim_recive_sms.vn_search_conversation)
 
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, unknown_message))
