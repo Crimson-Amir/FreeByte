@@ -220,6 +220,7 @@ async def report_to_admin(level, fun_name, msg, user_table=None):
             'info': {'thread_id': setting.info_thread_id, 'emoji': '🔵'},
             'warning': {'thread_id': setting.info_thread_id, 'emoji': '🟡'},
             'error': {'thread_id': setting.error_thread_id, 'emoji': '🔴'},
+            'notification': {'thread_id': setting.notification_thread_id, 'emoji': '⚖️'},
             'emergency_error': {'thread_id': setting.error_thread_id, 'emoji': '🔴🔴'},
         }
 

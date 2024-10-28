@@ -35,7 +35,7 @@ async def handle_inviter_referral(session, financial):
                     service_id=financial.financial_id,
                     payment_status='not paid',
                     payment_getway='wallet',
-                    currency='IRT'
+                    currency='IRT',
                 )
                 crud.add_credit_to_wallet(session, finacial_report)
                 text = await ft_instance.find_from_database(financial.owner.invited_by, 'recive_money_for_referral')

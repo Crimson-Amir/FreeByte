@@ -49,7 +49,8 @@ def get_financial_reports(session, chat_id, offset, limit=5, only_paid_financial
         financial_reports = financial_reports.filter(
             or_(
                 model.FinancialReport.payment_status == 'paid',
-                model.FinancialReport.payment_status == 'refund'
+                model.FinancialReport.payment_status == 'refund',
+                model.FinancialReport.payment_status == 'hold',
             )
         )
 
@@ -132,7 +133,7 @@ def less_from_wallet(session, financial_db, payment_status='paid'):
             .where(model.FinancialReport.financial_id == financial_id)
             .values(
                 payment_status=payment_status,
-                operation='paid'
+                operation='spend'
             )
         )
         session.execute(stmt_2)
@@ -157,16 +158,18 @@ def update_financial_report(session, financial_id: int, payment_getway, authorit
     session.execute(stmt)
 
 
-def update_financial_report_status(session, financial_id: int, new_status):
+def update_financial_report_status(session, financial_id: int, new_status, **kwargs):
     stmt = (
         update(model.FinancialReport)
         .where(model.FinancialReport.financial_id == financial_id)
         .values(
-            payment_status = new_status
-        )
+            payment_status = new_status,
+            **kwargs
+        ).returning(model.FinancialReport)
     )
-
-    session.execute(stmt)
+    result = session.execute(stmt)
+    financial = result.scalar()
+    return financial
 
 
 def create_purchase(session, product_id, chat_id, traffic, period):

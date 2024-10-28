@@ -27,11 +27,11 @@ def get_tether_price():
 def convert_irt_to_usd(irt_value: int):
     try:
         usd_in_irt = get_tether_price()
-        return int(irt_value / usd_in_irt)
+        return round(irt_value / usd_in_irt, 2)
 
     except Exception as e:
         logging.error(f'Error in get teter price.\n{e}')
-        return int(irt_value / usd_default_price)
+        return round(irt_value / usd_default_price, 2)
 
 
 def convert_usd_to_irt(usd_value: float):

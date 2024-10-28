@@ -187,7 +187,7 @@ async def admin_change_wallet_balance(update, context):
                     service_id=None,
                     payment_status='not paid',
                     payment_getway='wallet',
-                    currency='IRT'
+                    currency='IRT',
                 )
 
                 text = f'+ Operation Successfull.\namoutn: {amount:,} IRT\nchat id: {chat_id}\naction: {action}'
@@ -351,7 +351,7 @@ async def admin_confirm_buy_vpn_service(update, context):
                     service_id=purchase.purchase_id,
                     payment_status='not paid',
                     payment_getway='wallet',
-                    currency='IRT'
+                    currency='IRT',
                 )
                 crud.less_from_wallet(session, finacial_report)
 
@@ -630,7 +630,7 @@ async def admin_confirm_upgrade_vpn_service(update, context):
                     service_id=purchase.purchase_id,
                     payment_status='not paid',
                     payment_getway='wallet',
-                    currency='IRT'
+                    currency='IRT',
                 )
                 crud.less_from_wallet(session, finacial_report)
 

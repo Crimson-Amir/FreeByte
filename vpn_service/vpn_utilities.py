@@ -77,7 +77,7 @@ async def remove_service_in_server(session, purchase, context=None):
             service_id=purchase.purchase_id,
             payment_status='not paid',
             payment_getway='wallet',
-            currency='IRT'
+            currency='IRT',
         )
 
         crud.add_credit_to_wallet(session, finacial_report)

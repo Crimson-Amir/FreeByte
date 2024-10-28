@@ -42,7 +42,9 @@ async def wallet_page(update, context):
                 f"\n\n{lasts_report}"
             )
 
-            await query.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
+            if query:
+                return await query.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
+            await context.bot.send_message(chat_id=chat_id, text=text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
 
     except Exception as e:
         logging.error(f'error in wallet page: {e}')
@@ -73,7 +75,8 @@ async def financial_transactions_wallet(update, context):
                     payment_status = {
                         'not paid': await ft_instance.find_text('not_paid'),
                         'paid': await ft_instance.find_text('paid'),
-                        'refund': await ft_instance.find_text('refund')
+                        'refund': await ft_instance.find_text('refund'),
+                        'hold': await ft_instance.find_text('hold'),
                     }
                     payment_action = {
                         'upgrade_vpn_service': await ft_instance.find_text('upgrade_vpn_service_action'),
@@ -83,6 +86,7 @@ async def financial_transactions_wallet(update, context):
                         'increase_balance_by_admin': await ft_instance.find_text('increase_balance_by_admin'),
                         'reduction_balance_by_admin': await ft_instance.find_text('reduction_balance_by_admin'),
                         'first_purchase_referral': await ft_instance.find_text('first_purchase_referral'),
+                        'buy_vn_number_for_sms': await ft_instance.find_text('buy_vn_number_for_sms'),
 
                     }
                     payment_gateway = {
@@ -119,6 +123,8 @@ async def financial_transactions_wallet(update, context):
 async def buy_credit_volume(update, context):
     query = update.callback_query
     ft_instance = FindText(update, context)
+    chat_id = update.effective_chat.id
+    in_new_message = query.data.replace('buy_credit_volume', '') == '__in_new_message'
 
     try:
         text = await ft_instance.find_text('add_credit_to_wallet_title')
@@ -133,6 +139,8 @@ async def buy_credit_volume(update, context):
             [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='wallet_page')]
         ]
 
+        if in_new_message:
+            return await context.bot.send_message(chat_id=chat_id ,text=text, parse_mode='markdown', reply_markup=InlineKeyboardMarkup(keyboard))
         await query.edit_message_text(text=text, parse_mode='markdown', reply_markup=InlineKeyboardMarkup(keyboard))
 
     except Exception as e:

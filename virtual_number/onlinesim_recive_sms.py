@@ -2,13 +2,12 @@ import logging
 import sys, os
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from utilities_reFactore import FindText, message_token, handle_error
-from virtual_number import onlinesim_api, vn_utilities
+from utilities_reFactore import FindText, handle_error, report_to_admin, cancel_user as cancel
+from virtual_number import onlinesim_api, vn_utilities, vn_notification
 import math
 from telegram.ext import ConversationHandler, filters, MessageHandler, CallbackQueryHandler, CommandHandler
 from API import convert_irt_to_usd
-from utilities_reFactore import cancel_user as cancel
-from crud import crud
+from crud import crud, vn_crud
 from database_sqlalchemy import SessionLocal
 
 SEARCH_VN = 0
@@ -38,7 +37,6 @@ async def create_country_pagination(countries, ft_instance, keyboard, page, item
         keyboard.append(row_keyboard)
 
 @handle_error.handle_functions_error
-@message_token.check_token
 async def recive_sms_select_country(update, context):
     query = update.callback_query
     ft_instance = FindText(update, context)
@@ -83,11 +81,10 @@ async def create_service_keyboard(services, country_code, country_name, ft_insta
             available = f'- {service.get("count", 0)} {await ft_instance.find_text("available")}' if service.get("count", 0) < 50 else ''
 
         name = f'{service_name} - {service_price:,} {await ft_instance.find_text("irt")} {available}'
-        keyboard.append([InlineKeyboardButton(name[:45], callback_data=f'vn_buy_number__{service.get("service")}__{country_code}__{country_name}__{page}__{previous_page}')])
+        keyboard.append([InlineKeyboardButton(name[:45], callback_data=f'vbn__{service.get("service")}__{country_code}__{country_name}__{page}__{previous_page}')])
 
 
 @handle_error.handle_functions_error
-@message_token.check_token
 async def chooice_service_from_country(update, context):
     query = update.callback_query
     ft_instance = FindText(update, context)
@@ -97,10 +94,8 @@ async def chooice_service_from_country(update, context):
     country_data = vn_utilities.countries.get(country_name, {})
     country_flag = country_data.get("flag", "")
     text_template = await ft_instance.find_text('vt_select_service_text')
-    text = text_template.format(country_flag)
-
+    text = text_template.format(country_flag, f'+{country_code}')
     get_tariffs = await onlinesim_api.onlinesim.get_tariffs(count=item_per_page, country=country_code, page=page)
-
     services = get_tariffs.get('services', {})
     total_pages = math.ceil(len(services) + 1 / item_per_page)
 
@@ -138,15 +133,16 @@ async def get_search_key(update, context):
 async def find_search_result(update, context):
     user_detail = update.effective_chat
     ft_instance = FindText(update, context)
-    search_type, country_id, country_name = context.user_data.get('user_search_vn', ['service', 1])
-    filter_text = update.message.text
+    search_type, country_id, country_name = context.user_data.get('user_search_vn', ['service', 1, 'usa'])
+    filter_text = update.message.text.lower()
     keyboard = []
     text = await ft_instance.find_text('search_result')
 
     if search_type == 'country':
         get_tariffs = await onlinesim_api.onlinesim.get_tariffs(filter_country=filter_text)
         countries = get_tariffs.get('countries', {})
-        if int(country_id) != 7: countries.pop('_7')
+
+        if filter_text != 'russia': countries.pop('_7')
         if not countries:
             text = await ft_instance.find_text('no_country_found')
         else:
@@ -187,12 +183,11 @@ async def calculate_service_price(service_name, country_code):
 
 
 @handle_error.handle_functions_error
-@message_token.check_token
 async def vn_buy_number(update, context):
     query = update.callback_query
     ft_instance = FindText(update, context)
     user_detail = update.effective_chat
-    service_name, country_code, country_name, page, previous_page = query.data.replace('vn_buy_number__', '').split('__')
+    service_name, country_code, country_name, page, previous_page = query.data.replace('vbn__', '').split('__')
     price, service_name = await calculate_service_price(service_name, country_code)
 
 
@@ -205,11 +200,257 @@ async def vn_buy_number(update, context):
         if user.wallet < price:
             text += f'\n\n{await ft_instance.find_text("not_enough_credit")}'
             keyboard = [
-                [InlineKeyboardButton(await ft_instance.find_keyboard('increase_balance'), callback_data='buy_credit_volume')],
+                [InlineKeyboardButton(await ft_instance.find_keyboard('refresh'), callback_data=query.data),
+                 InlineKeyboardButton(await ft_instance.find_keyboard('increase_balance'), callback_data='buy_credit_volume__in_new_message')],
             ]
         else:
             keyboard = [
-                [InlineKeyboardButton(await ft_instance.find_keyboard('vn_recive_number.'), callback_data='buy_credit_volume')],
+                [InlineKeyboardButton(await ft_instance.find_keyboard('vn_recive_number'), callback_data=f'vn_recive_number__{service_name}__{country_code}')],
             ]
+
         keyboard.append([InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=f'vn_chsfc__{page}__{country_name}__{country_code}__{previous_page}')])
         await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+
+
+class LOWBALANCE(Exception):
+    pass
+
+class NoCompletedTzid(Exception):
+    pass
+
+class ErrorWrongTzid(Exception):
+    pass
+
+class ErrorNoService(Exception):
+    pass
+
+class ERRORNOOPERATIONS(Exception):
+    pass
+
+async def get_number_api(session, service_name, country_code, user, price):
+    get_number = await onlinesim_api.onlinesim.get_number(service_name, country_code)
+    response = get_number['response']
+
+    if response == 1:
+        virtual_number = vn_crud.create_virtual_number_record(
+            session,
+            chat_id=user.chat_id,
+            service_name=service_name,
+            country_code=country_code,
+            number=get_number['number'],
+            tzid=get_number['tzid'],
+        )
+        financial = crud.create_financial_report(
+            session,
+            operation='spend',
+            chat_id=user.chat_id,
+            amount=price,
+            action='buy_vn_number_for_sms',
+            service_id=virtual_number.virtual_number_id,
+            payment_status='hold',
+            payment_getway='wallet',
+            currency='IRT',
+        )
+
+        vn_crud.less_credit_from_wallet(session, financial)
+        return financial, virtual_number
+    elif response == 'WARNING_LOW_BALANCE':
+        msg = ('onlinesim balance not enoght for user purchase!'
+               f'\n\npurchase amount: {price:,} IRT ($ {convert_irt_to_usd.convert_irt_to_usd(price)})')
+        await report_to_admin('notification', 'get_number_api', msg, user)
+        raise LOWBALANCE
+    elif response == 'ERROR_NO_SERVICE':
+        raise ErrorNoService
+    elif response == 'NO_NUMBER':
+        raise ErrorNoService
+    else:
+        raise Exception(response)
+
+
+async def set_operation_ok_api(session, tzid, vn_id, financial_id, refund_money=True):
+
+    get_number = await onlinesim_api.onlinesim.set_operation_ok(tzid=tzid)
+    response = get_number['response']
+
+    if response == 1:
+        if refund_money:
+            vn_crud.update_virtual_number_record(session, vn_id=vn_id, status='canceled')
+            financial = crud.update_financial_report_status(
+                session=session, financial_id=financial_id,
+                new_status='refund',
+                operation='recive', authority=financial_id
+            )
+            vn_crud.add_credit_to_wallet(session, financial)
+        else:
+            vn_crud.update_virtual_number_record(session, vn_id=vn_id, status='answer')
+            financial = crud.update_financial_report_status(
+                session=session, financial_id=financial_id,
+                new_status='paid', authority=financial_id
+            )
+
+        vn_notification.modify_json(key_to_remove=str(tzid))
+        vn_notification.vn_notification_instance.refresh_json()
+
+        return financial
+    elif response == 'NO_COMPLETE_TZID':
+        raise NoCompletedTzid
+    elif response == 'TRY_AGAIN_LATER':
+        raise NoCompletedTzid
+    elif response == 'ERROR_WRONG_TZID':
+        raise ErrorWrongTzid
+    else:
+        raise Exception(response)
+
+
+async def get_state_api(tzid, vn_id, financial_id):
+    get_number = await onlinesim_api.onlinesim.get_state(tzid=tzid, message_to_code=1, msg_list=1)
+
+    if isinstance(get_number, list):
+        response = get_number[0]['response']
+    else:
+        response = get_number['response']
+
+    if response == 'ERROR_NO_OPERATIONS':
+        raise ERRORNOOPERATIONS
+
+    elif response == 'TZ_NUM_WAIT':
+        return False, get_number[0]
+
+    elif response == 'TZ_NUM_ANSWER':
+        with SessionLocal() as session:
+            with session.begin():
+                vn_crud.update_virtual_number_record(session, vn_id=vn_id, status='answer')
+                crud.update_financial_report_status(
+                    session=session, financial_id=financial_id,
+                    new_status='paid', authority=financial_id
+                )
+        return True, get_number[0]
+
+
+@handle_error.handle_functions_error
+async def vn_recive_number(update, context):
+    query = update.callback_query
+    ft_instance = FindText(update, context)
+    user_detail = update.effective_chat
+    service_name, country_code = query.data.replace('vn_recive_number__', '').split('__')
+    price, service_name = await calculate_service_price(service_name, country_code)
+
+    with SessionLocal() as session:
+        session.begin()
+        user = crud.get_user(session, user_detail.id)
+
+        if user.wallet < price:
+            return await query.answer(await ft_instance.find_text("not_enough_credit"), show_alert=True)
+
+        try:
+            financial, virtual_number = await get_number_api(session, service_name, country_code, user, price)
+            text = await ft_instance.find_text('buy_vn_number_page')
+            text = text.format(f"<code>{virtual_number.number}</code>", '15:00')
+
+            keyboard = [
+                [InlineKeyboardButton(await ft_instance.find_keyboard('vn_cancel_number'), callback_data=f'vncn__{financial.id_holder}__{virtual_number.tzid}__{financial.financial_id}'),
+                 InlineKeyboardButton(await ft_instance.find_keyboard('vn_update_state'), callback_data=f'vn_update_number__{virtual_number.tzid}__{financial.id_holder}__{financial.financial_id}')],
+                [InlineKeyboardButton(await ft_instance.find_keyboard('bot_main_menu'),callback_data=f'start_in_new_message')],
+            ]
+            session.commit()
+
+            data = {
+                'financial_id': financial.financial_id,
+                'recived_code_count': 0,
+                'chat_id': user_detail.id
+            }
+
+            vn_notification.modify_json(key_to_add=virtual_number.tzid, value_to_add=data)
+            vn_notification.vn_notification_instance.refresh_json()
+
+            await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+
+        except LOWBALANCE:
+            session.rollback()
+            return await query.answer(await ft_instance.find_text("vn_our_balance_is_low"), show_alert=True)
+
+        except ErrorNoService:
+            session.rollback()
+            return await query.answer(await ft_instance.find_text("vn_error_no_service"), show_alert=True)
+
+
+@handle_error.handle_functions_error
+async def vn_cancel_number(update, context):
+    query = update.callback_query
+    ft_instance = FindText(update, context)
+    vn_id, tzid, financial_id = query.data.replace('vncn__', '').split('__')
+    tzid = int(tzid)
+
+    with SessionLocal() as session:
+        session.begin()
+        try:
+            status, data = await get_state_api(tzid, vn_id, financial_id)
+            refund_money, text_key = True, 'vn_remove_number_successful'
+
+            if status:
+                refund_money = False
+                text_key = 'vn_remove_number_successful_witout_refund'
+
+            remove_number = await set_operation_ok_api(session, tzid, vn_id, int(financial_id), refund_money)
+            text = await ft_instance.find_text(text_key)
+            text = text.format(f'{remove_number.amount:,}')
+
+            keyboard = [
+                [InlineKeyboardButton(await ft_instance.find_keyboard('bot_main_menu'),callback_data=f'start_in_new_message')],
+            ]
+            session.commit()
+            await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+
+        except ERRORNOOPERATIONS:
+            await query.answer(await ft_instance.find_text("vn_error_wrong_tz_id_error"), show_alert=True)
+            keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('bot_main_menu'), callback_data=f'start_in_new_message')]]
+            await query.edit_message_reply_markup(reply_markup=InlineKeyboardMarkup(keyboard))
+
+        except NoCompletedTzid:
+            session.rollback()
+            return await query.answer(await ft_instance.find_text("vn_no_completed_tzid_error"), show_alert=True)
+
+        except ErrorWrongTzid:
+            session.rollback()
+            await query.answer(await ft_instance.find_text("vn_error_wrong_tz_id_error"), show_alert=True)
+            keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('vn_update_state'), callback_data=f'vn_update_number__{vn_id}__{financial_id}'),
+                         InlineKeyboardButton(await ft_instance.find_keyboard('bot_main_menu'),callback_data=f'start_in_new_message')]]
+            await query.edit_message_reply_markup(reply_markup=InlineKeyboardMarkup(keyboard))
+
+def seconds_to_minutes(seconds):
+    minutes = seconds // 60
+    remaining_seconds = seconds % 60
+    return f"{minutes:02}:{remaining_seconds:02}"
+
+
+@handle_error.handle_functions_error
+async def vn_update_number(update, context):
+    query = update.callback_query
+    ft_instance = FindText(update, context)
+    tzid, vn_id, financial_id = query.data.replace('vn_update_number__', '').split('__')
+    tzid = int(tzid)
+    user_lang = await ft_instance.find_user_language()
+
+    try:
+        status, data = await get_state_api(tzid, vn_id, financial_id)
+
+        text = await ft_instance.find_text('buy_vn_number_page')
+        text = text.format(f"<code>{data.get('number')}</code>", seconds_to_minutes(data.get('time', '00:00')))
+        if status:
+            for msg in data['msg']:
+                service = vn_utilities.social_media.get(data.get("service"), {}).get("name_in_other_language", {}).get(user_lang, data.get("service"))
+                text += f"\n\n{await ft_instance.find_text('service_label')} {service}\n{await ft_instance.find_text('sended_code')} <code>{msg['msg']}</code>"
+
+        keyboard = [
+            [InlineKeyboardButton(await ft_instance.find_keyboard('vn_cancel_number'), callback_data=f'vncn__{vn_id}__{financial_id}'),
+             InlineKeyboardButton(await ft_instance.find_keyboard('vn_update_state'), callback_data=f'vn_update_number__{tzid}__{vn_id}__{financial_id}')],
+            [InlineKeyboardButton(await ft_instance.find_keyboard('bot_main_menu'), callback_data=f'start_in_new_message')],
+        ]
+        await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+
+    except ERRORNOOPERATIONS:
+        await query.answer(await ft_instance.find_text("vn_error_wrong_tz_id_error"), show_alert=True)
+        keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('bot_main_menu'), callback_data=f'start_in_new_message')]]
+        await query.edit_message_reply_markup(reply_markup=InlineKeyboardMarkup(keyboard))
+
+

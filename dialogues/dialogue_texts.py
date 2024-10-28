@@ -4,8 +4,8 @@ import dialogues.virtual_number_dialogues as virtual_number_service_dialogues
 
 text_transaction = {
     "error_message": {
-        "en": "⚠️ Oops, something went wrong!",
-        "fa": "⚠️ خطا در انجام عملیات!",
+        "en": "Oops, something went wrong!",
+        "fa": "خطا در انجام عملیات!",
     },
     "start_menu": {
         "en": "👋 Welcome to FreeByte Bot!",
@@ -214,6 +214,10 @@ text_transaction = {
     "refund": {
         "en": "↩️ Refunded",
         "fa": "↩️ بازپرداخت شده",
+    },
+    "hold": {
+        "en": "⏸️ Hold",
+        "fa": "⏸️ معلق",
     },
     "upgrade_vpn_service_action": {
         "en": "Upgrade VPN Service Number",

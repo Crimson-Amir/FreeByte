@@ -41,7 +41,7 @@ async def add_credit_for_user(update, context):
                     service_id=None,
                     payment_status='not paid',
                     payment_getway='wallet',
-                    currency='IRT'
+                    currency='IRT',
                 )
 
                 crud.add_credit_to_wallet(session, finacial_report)

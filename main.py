@@ -7,7 +7,7 @@ from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, Callb
 import setting, wallet_reFactore, my_service, setting_menu, guidnes_and_support
 from vpn_service import buy_and_upgrade_service, my_service_detail, vpn_setting_menu, vpn_guid, statistics, vpn_notification
 from admin import admin_handlers
-from virtual_number import virtual_number_menu, onlinesim_recive_sms
+from virtual_number import virtual_number_menu, onlinesim_recive_sms, vn_notification
 from database_sqlalchemy import SessionLocal
 from crud import crud
 
@@ -36,7 +36,7 @@ async def services(update: Update, context: ContextTypes.DEFAULT_TYPE):
         config = crud.get_user_config(session, user.id)
 
         keyboard = [
-            #[InlineKeyboardButton(await ft_instance.find_keyboard('virtual_number'), callback_data='virtual_number_menu')],
+            [InlineKeyboardButton(await ft_instance.find_keyboard('virtual_number'), callback_data='virtual_number_menu')],
             [InlineKeyboardButton(await ft_instance.find_keyboard('get_vpn_test_label'), callback_data='vpn_recive_test_service') if not config.get_vpn_free_service else None,
              InlineKeyboardButton(await ft_instance.find_keyboard('buy_vpn_service_label'), callback_data='vpn_set_period_traffic__30_40_1')],
             [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='start')]
@@ -56,6 +56,7 @@ if __name__ == '__main__':
 
     # Commands
     application.add_handler(CommandHandler('start', start_reFactore.start))
+    application.add_handler(CommandHandler('wallet', wallet_reFactore.wallet_page))
     application.add_handler(CommandHandler('vpn_start', start_reFactore.start))
     application.add_handler(CommandHandler('find_my_service', my_service_detail.find_my_service))
 
@@ -123,8 +124,11 @@ if __name__ == '__main__':
     application.add_handler(CallbackQueryHandler(virtual_number_menu.vn_menu, pattern='virtual_number_menu'))
     application.add_handler(CallbackQueryHandler(onlinesim_recive_sms.recive_sms_select_country, pattern='recive_sms_select_country__(.*)'))
     application.add_handler(CallbackQueryHandler(onlinesim_recive_sms.chooice_service_from_country, pattern='vn_chsfc__(.*)'))
-    application.add_handler(CallbackQueryHandler(onlinesim_recive_sms.vn_buy_number, pattern='vn_buy_number__(.*)'))
-
+    application.add_handler(CallbackQueryHandler(onlinesim_recive_sms.vn_buy_number, pattern='vbn__(.*)'))
+    application.add_handler(CallbackQueryHandler(onlinesim_recive_sms.vn_recive_number, pattern='vn_recive_number__(.*)'))
+    application.add_handler(CallbackQueryHandler(onlinesim_recive_sms.vn_cancel_number, pattern='vncn__(.*)'))
+    application.add_handler(CallbackQueryHandler(onlinesim_recive_sms.vn_update_number, pattern='vn_update_number__(.*)'))
+    application.job_queue.run_repeating(vn_notification.vn_notification_instance.vn_timer, interval=60, first=0)
     application.add_handler(onlinesim_recive_sms.vn_search_conversation)
 
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, unknown_message))

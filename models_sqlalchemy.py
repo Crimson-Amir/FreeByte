@@ -20,6 +20,7 @@ class UserDetail(Base):
     register_date = Column(DateTime, default=datetime.now())
     financial_reports = relationship("FinancialReport", back_populates="owner", cascade="all, delete-orphan")
     services = relationship("Purchase", back_populates="owner", cascade="all, delete-orphan")
+    virtual_numbers = relationship("VirtualNumber", back_populates="owner", cascade="all, delete-orphan")
     config = relationship("UserConfig", back_populates="owner", cascade="all, delete-orphan", uselist=False)
     partner = relationship("Partner", back_populates="owner", cascade="all, delete-orphan", uselist=False)
 
@@ -36,7 +37,6 @@ class UserConfig(Base):
     first_purchase_refreal_for_inviter = Column(Boolean, default=False)
     webapp_password = Column(String)
     owner = relationship("UserDetail", back_populates="config")
-
 
 class Partner(Base):
     __tablename__ = 'partner'
@@ -93,7 +93,6 @@ class Product(Base):
     main_server_id = Column(Integer, ForeignKey('main_server.server_id'))
     main_server = relationship("MainServer", back_populates="products")
 
-
 class Purchase(Base):
     __tablename__ = 'purchase'
 
@@ -117,6 +116,23 @@ class Purchase(Base):
     owner = relationship("UserDetail", back_populates="services")
 
     expired_at = Column(DateTime)
+    register_date = Column(DateTime, default=datetime.now())
+
+
+class VirtualNumber(Base):
+    __tablename__ = 'virtual_number'
+
+    virtual_number_id = Column(Integer, primary_key=True)
+
+    status = Column(String)
+    tzid = Column(Integer)
+    service_name = Column(String)
+    country_code = Column(Integer)
+    number = Column(String)
+    recived_code = Column(String)
+
+    chat_id = Column(BigInteger, ForeignKey('user_detail.chat_id'))
+    owner = relationship("UserDetail", back_populates="virtual_numbers")
     register_date = Column(DateTime, default=datetime.now())
 
 

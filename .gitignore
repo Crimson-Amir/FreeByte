@@ -5,3 +5,4 @@ setting.py
 .idea/
 alembic/
 alembic.ini
+virtual_number/numbers_notification.json
