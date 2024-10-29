@@ -462,11 +462,15 @@ async def admin_user_node_usage(update, context):
             return await query.answer('service not found', show_alert=True)
 
         main_server = purchase.product.main_server
-        get_from_server = await panel_api.marzban_api.user_subscription_usage(main_server.server_ip, purchase.subscription_url.replace('/s/', ''))
+        nodes = await panel_api.marzban_api.user_subscription_usage(main_server.server_ip, purchase.subscription_url.replace('/s/', ''))
 
-        text = (
-            f'{get_from_server}'
-        )
+        text = 'Node Usage:'
+
+        for node in nodes.get('usages', []):
+            total_usage = utilities_reFactore.format_traffic_from_byte(node.get("uplink", 0) + node.get("downlink", 0))
+            text += (f'\n\n{node.get("node_id")} - {node.get("node_name")}: {total_usage}GB'
+                     f'\nUpLink: {utilities_reFactore.format_traffic_from_byte(node.get("uplink", 0))}GB'
+                     f'\nDownLink: {utilities_reFactore.format_traffic_from_byte(node.get("downlink", 0))}GB')
 
         keyboard = [
             [InlineKeyboardButton("Refresh", callback_data=f'admin_user_nu__{purchase_id}__{page}__{user_info_page}'),
