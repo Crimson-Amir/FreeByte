@@ -134,12 +134,13 @@ async def view_product_node_usage(update, context):
 
             for node in nodes.get('usages', []):
                 total_usage = format_traffic_from_byte(node.get("uplink", 0) + node.get("downlink", 0))
-                text += (f'\n\n{node.get("node_id")} - {node.get("node_name")}: {total_usage}'
-                         f'\n\nUpLink: {format_traffic_from_byte(node.get("uplink", 0))}'
-                         f'\nDownLink: {format_traffic_from_byte(node.get("downlink", 0))}')
+                text += (f'\n\n{node.get("node_id")} - {node.get("node_name")}: {total_usage}GB'
+                         f'\nUpLink: {format_traffic_from_byte(node.get("uplink", 0))}GB'
+                         f'\nDownLink: {format_traffic_from_byte(node.get("downlink", 0))}GB')
 
             keyboard = [
-                 [InlineKeyboardButton('Back', callback_data=f'admin_view_product__{product_id}__{page}')]
+                 [InlineKeyboardButton('Refresh', callback_data=f'admin_node_usage__{product_id}__{page}'),
+                  InlineKeyboardButton('Back', callback_data=f'admin_view_product__{product_id}__{page}')]
             ]
 
             return await query.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(keyboard))

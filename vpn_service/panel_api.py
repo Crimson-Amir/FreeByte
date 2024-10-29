@@ -47,7 +47,13 @@ class MarzbanAPI:
 
     async def user_subscription_info(self, main_server_ip, token):
         """Retrieve user subscription info."""
-        endpoint = f"/sub/{token}/info"
+        endpoint = f"/s/{token}/info"
+        url, headers = self.initialize_request(main_server_ip, endpoint)
+        return self.make_request('get', url, headers=headers)
+
+    async def user_subscription_usage(self, main_server_ip, token):
+        """Retrieve user subscription info."""
+        endpoint = f"/s/{token}/usage"
         url, headers = self.initialize_request(main_server_ip, endpoint)
         return self.make_request('get', url, headers=headers)
 

@@ -8,6 +8,7 @@ from telegram.ext import ConversationHandler, filters, MessageHandler, CallbackQ
 import utilities_reFactore
 from datetime import datetime
 from vpn_service import vpn_utilities, buy_and_upgrade_service, panel_api
+from datetime import timedelta
 
 DEFAULT_PRODUCT_ID = 1
 ADD_CREDIT_BAlANCE = 0
@@ -429,6 +430,7 @@ async def admin_user_service_detail(update, context):
                  InlineKeyboardButton("Upgrade", callback_data=f'admin_upgrade_user_vpn_service__{purchase_id}__{page}__{user_info_page}__30__40')],
                 [InlineKeyboardButton("Statistics", callback_data=f'statistics_week_{purchase_id}_hide'),
                  InlineKeyboardButton("Refresh", callback_data=f'admin_user_service_detail__{purchase_id}__{page}__{user_info_page}')],
+                [InlineKeyboardButton("Node Usage", callback_data=f'admin_user_nu__{purchase_id}__{page}__{user_info_page}')],
                 [InlineKeyboardButton("Back", callback_data=f'admin_user_services__{purchase.chat_id}__{page}__{user_info_page}')]
             ]
 
@@ -443,6 +445,35 @@ async def admin_user_service_detail(update, context):
 
     except Exception as e:
         raise e
+
+
+@vpn_utilities.handle_functions_error
+@admin_access
+async def admin_user_node_usage(update, context):
+    query = update.callback_query
+    data = query.data
+    user_detail = update.effective_chat
+
+    purchase_id, page, user_info_page = data.replace('admin_user_nu__', '').split('__')
+    with SessionLocal() as session:
+        purchase = vpn_crud.get_purchase(session, purchase_id)
+
+        if not purchase:
+            return await query.answer('service not found', show_alert=True)
+
+        main_server = purchase.product.main_server
+        get_from_server = await panel_api.marzban_api.user_subscription_usage(main_server.server_ip, purchase.subscription_url.replace('/s/', ''))
+
+        text = (
+            f'{get_from_server}'
+        )
+
+        keyboard = [
+            [InlineKeyboardButton("Refresh", callback_data=f'admin_user_nu__{purchase_id}__{page}__{user_info_page}'),
+            InlineKeyboardButton("Back", callback_data=f'admin_user_service_detail__{purchase_id}__{page}__{user_info_page}')]
+        ]
+
+        await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
 
 @vpn_utilities.handle_functions_error
@@ -494,7 +525,7 @@ async def admin_assurance_set_purchase_traffic_and_period(update, context):
 
     await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
-from datetime import timedelta
+
 @vpn_utilities.handle_functions_error
 @admin_access
 async def admin_confirm_set_purchase_traffic_and_period(update, context):
