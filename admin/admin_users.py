@@ -464,7 +464,7 @@ async def admin_user_node_usage(update, context):
         main_server = purchase.product.main_server
         nodes = await panel_api.marzban_api.user_subscription_usage(main_server.server_ip, purchase.subscription_url.replace('/s/', ''))
 
-        text = 'Node Usage:'
+        text = f'Node Usage:\n{nodes}'
 
         for node in nodes.get('usages', []):
             total_usage = utilities_reFactore.format_traffic_from_byte(node.get("uplink", 0) + node.get("downlink", 0))
