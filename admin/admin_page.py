@@ -32,7 +32,7 @@ async def virtual_number_admin(update, context):
     get_balance = await onlinesim_api.onlinesim.get_balance()
 
     text = (f'Currnet Balance: ${get_balance.get("balance")}'
-            f'ZBalance: ${get_balance.get("zbalance")}')
+            f'\nZBalance: ${get_balance.get("zbalance")}')
 
     keyboard = [[InlineKeyboardButton('Back', callback_data='admin_page')]]
 

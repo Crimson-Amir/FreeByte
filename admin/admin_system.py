@@ -107,6 +107,7 @@ async def admin_view_product(update, context, product_id=None, page=None):
             )
 
             keyboard = [
+                [InlineKeyboardButton('Node Usage', callback_data=f'admin_node_usage__{product_id}__{page}')],
                 [InlineKeyboardButton('Refresh', callback_data=f'admin_view_product__{product_id}__{page}'),
                  InlineKeyboardButton('Xray Core', callback_data=f'admin_view_core__{product_id}__{page}')],
                 [InlineKeyboardButton('🔰 Set Product Status:', callback_data=f'just_for_show')],
@@ -117,6 +118,32 @@ async def admin_view_product(update, context, product_id=None, page=None):
             ]
 
             return await query.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(keyboard))
+
+
+@vpn_utilities.handle_functions_error
+@admin_access
+async def view_product_node_usage(update, context):
+    query = update.callback_query
+    product_id, page = query.data.replace('admin_node_usage__', '').split('__')
+
+    with SessionLocal() as session:
+        with session.begin():
+            product = admin_crud.get_product(session, int(product_id))
+            nodes = await panel_api.marzban_api.get_nodes_usage(product.main_server.server_ip)
+            text = 'Node Usage:\n'
+
+            for node in nodes.get('usages', []):
+                total_usage = format_traffic_from_byte(node.get("uplink", 0) + node.get("downlink", 0))
+                text += (f'{node.get("node_id")} - {node.get("node_name")}: {total_usage}'
+                         f'\n\nUpLink: {format_traffic_from_byte(node.get("uplink", 0))}'
+                         f'\nDownLink: {format_traffic_from_byte(node.get("downlink", 0))}')
+
+            keyboard = [
+                 [InlineKeyboardButton('Back', callback_data=f'admin_view_product__{product_id}__{page}')]
+            ]
+
+            return await query.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(keyboard))
+
 
 
 @vpn_utilities.handle_functions_error

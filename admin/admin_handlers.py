@@ -75,4 +75,7 @@ def admin_handler(application):
     application.add_handler(
         CallbackQueryHandler(admin_page.virtual_number_admin, pattern='admin_virtual_number'))
 
+    application.add_handler(
+        CallbackQueryHandler(admin_system.view_product_node_usage, pattern='admin_node_usage__(.*)'))
+
     application.add_handler(admin_users.admin_change_wallet_balance_conversation)
