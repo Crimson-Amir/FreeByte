@@ -77,4 +77,10 @@ class OnlineSim:
         )
         return self.make_request('get', endpoint)
 
+    async def get_balance(self, **params):
+        endpoint = self.init_requests(
+            "getBalance.php", **params
+        )
+        return self.make_request('get', endpoint)
+
 onlinesim = OnlineSim(setting.onlinesim_api)

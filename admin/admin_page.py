@@ -7,6 +7,7 @@ from crud import crud, admin_crud
 from database_sqlalchemy import SessionLocal
 from vpn_service import vpn_utilities
 from admin import partner
+from virtual_number import onlinesim_api
 
 @admin_access
 async def admin_page(update, context):
@@ -14,7 +15,7 @@ async def admin_page(update, context):
 
     keyboard = [
         [InlineKeyboardButton('System', callback_data=f"admin_system__1"),
-         InlineKeyboardButton('Virtual Number', callback_data=f"admin_manage_users__1")],
+         InlineKeyboardButton('Virtual Number', callback_data=f"admin_virtual_number")],
         [InlineKeyboardButton('VPN Section', callback_data=f"admin_vpn"),
          InlineKeyboardButton('Manage Users', callback_data=f"admin_manage_users__1")]
     ]
@@ -28,32 +29,14 @@ async def admin_page(update, context):
 @admin_access
 async def virtual_number_admin(update, context):
     query = update.callback_query
-    item_per_page = 15
-    page = int(query.data.split('__')[1]) if query and query.data.startswith('admin_system') else 1
+    get_balance = await onlinesim_api.onlinesim.get_balance()
 
-    with SessionLocal() as session:
-        with session.begin():
-            products = admin_crud.get_all_products(session)
-            total_pages = math.ceil(len(products) / item_per_page)
-            start = (page - 1) * item_per_page
-            end = start + item_per_page
-            current_products = products[start:end]
-            text = 'select Product to manage:'
+    text = (f'Currnet Balance: ${get_balance.get("balance")}'
+            f'ZBalance: ${get_balance.get("zbalance")}')
 
-            keyboard = [[InlineKeyboardButton('Online Users', callback_data=f'admin_view_online_users__1__{page}')]]
-            product_keyboard = [[InlineKeyboardButton(f"{product.product_id} {product.product_name} {service_status.get(product.active)}", callback_data=f'admin_view_product__{product.product_id}__{page}')] for product in current_products]
-            keyboard.extend(product_keyboard)
+    keyboard = [[InlineKeyboardButton('Back', callback_data='admin_page')]]
 
-            nav_buttons = []
-            if page > 1:
-                nav_buttons.append(InlineKeyboardButton('<- previous', callback_data=f'admin_system__{page - 1}'))
-            if page < total_pages:
-                nav_buttons.append(InlineKeyboardButton('next ->', callback_data=f'admin_system__{page + 1}'))
-            if nav_buttons: keyboard.append(nav_buttons)
-
-            keyboard.append([InlineKeyboardButton('Back', callback_data='admin_page')])
-
-            return await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+    return await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
 
 @admin_access

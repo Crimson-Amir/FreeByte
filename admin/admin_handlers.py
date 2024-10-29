@@ -72,4 +72,7 @@ def admin_handler(application):
     application.add_handler(
         CallbackQueryHandler(admin_users.admin_confirm_remove_vpn_service, pattern='admin_confirm_remove_vpn__(.*)'))
 
+    application.add_handler(
+        CallbackQueryHandler(admin_page.virtual_number_admin, pattern='admin_virtual_number'))
+
     application.add_handler(admin_users.admin_change_wallet_balance_conversation)
