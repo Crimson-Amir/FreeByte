@@ -10,6 +10,7 @@ from API import convert_irt_to_usd
 from crud import crud, vn_crud
 from database_sqlalchemy import SessionLocal
 
+fee_percent = 20
 SEARCH_VN = 0
 
 async def create_country_pagination(countries, ft_instance, keyboard, page, item_per_page):
@@ -64,7 +65,7 @@ async def recive_sms_select_country(update, context):
         nav_buttons.append(InlineKeyboardButton(next_key, callback_data=f'recive_sms_select_country__{page + 1}'))
     if nav_buttons:
         keyboard.append(nav_buttons)
-    keyboard.append([InlineKeyboardButton(back_button_key, callback_data='virtual_number_menu')])
+    keyboard.append([InlineKeyboardButton(back_button_key, callback_data='menu_services')])
 
     await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
@@ -74,7 +75,7 @@ async def create_service_keyboard(services, country_code, country_name, ft_insta
 
     for service in services.values():
         service_name = vn_utilities.social_media.get(service.get("service"), {}).get("name_in_other_language", {}).get(user_lang, service.get("service")) if user_lang != 'en' else service.get("service")
-        service_price = convert_irt_to_usd.convert_usd_to_irt(float(service.get("price", 0)))
+        service_price = convert_irt_to_usd.convert_usd_to_irt(float(service.get("price", 0)), fee_percent)
 
         available = f'- ? {await ft_instance.find_text("available")}'
         if isinstance(service.get("count", 0), int):
@@ -177,7 +178,7 @@ async def calculate_service_price(service_name, country_code):
         raise ValueError('service not found')
     service = next(iter(services.values()))
     print(service)
-    price = convert_irt_to_usd.convert_usd_to_irt(float(service["price"]))
+    price = convert_irt_to_usd.convert_usd_to_irt(float(service["price"]), fee_percent)
     service_name = service["service"]
     return price, service_name
 

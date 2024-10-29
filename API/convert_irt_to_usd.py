@@ -34,7 +34,10 @@ def convert_irt_to_usd(irt_value: int):
         return round(irt_value / usd_default_price, 2)
 
 
-def convert_usd_to_irt(usd_value: float):
+def convert_usd_to_irt(usd_value: float, fee_percent=0):
+    if fee_percent:
+        fee_value = usd_value * fee_percent / 100
+        usd_value += fee_value
     try:
         usd_in_irt = get_tether_price()
         return int(usd_value * usd_in_irt)
