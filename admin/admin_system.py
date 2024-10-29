@@ -130,11 +130,11 @@ async def view_product_node_usage(update, context):
         with session.begin():
             product = admin_crud.get_product(session, int(product_id))
             nodes = await panel_api.marzban_api.get_nodes_usage(product.main_server.server_ip)
-            text = 'Node Usage:\n'
+            text = 'Node Usage:'
 
             for node in nodes.get('usages', []):
                 total_usage = format_traffic_from_byte(node.get("uplink", 0) + node.get("downlink", 0))
-                text += (f'{node.get("node_id")} - {node.get("node_name")}: {total_usage}'
+                text += (f'\n\n{node.get("node_id")} - {node.get("node_name")}: {total_usage}'
                          f'\n\nUpLink: {format_traffic_from_byte(node.get("uplink", 0))}'
                          f'\nDownLink: {format_traffic_from_byte(node.get("downlink", 0))}')
 
