@@ -467,10 +467,7 @@ async def admin_user_node_usage(update, context):
         text = f'Node Usage:\n{nodes}'
 
         for node in nodes.get('usages', []):
-            total_usage = utilities_reFactore.format_traffic_from_byte(node.get("uplink", 0) + node.get("downlink", 0))
-            text += (f'\n\n{node.get("node_id")} - {node.get("node_name")}: {total_usage}GB'
-                     f'\nUpLink: {utilities_reFactore.format_traffic_from_byte(node.get("uplink", 0))}GB'
-                     f'\nDownLink: {utilities_reFactore.format_traffic_from_byte(node.get("downlink", 0))}GB')
+            text += f'\n\n{node.get("node_id")} - {node.get("node_name")}: {utilities_reFactore.format_traffic_from_byte(node.get("used_traffic", 0))}GB'
 
         keyboard = [
             [InlineKeyboardButton("Refresh", callback_data=f'admin_user_nu__{purchase_id}__{page}__{user_info_page}'),
