@@ -46,10 +46,15 @@ async def services(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return await update.callback_query.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
 
 async def unknown_message(update, context):
-    ft_instance = FindText(update, context)
-    text = await ft_instance.find_text('unknown_input')
-    await update.message.reply_text(text)
-
+    try:
+        ft_instance = FindText(update, context)
+        user = update.effective_chat
+        text = await ft_instance.find_text('unknown_input')
+        await context.bot.send_message(chat_id=user.id, text=text, parse_mode='html')
+    except Exception as e:
+        logging.error(f'error in send unknown_message text.'
+                      f'\nText: {update.message.text if update.message else "no Message!"}'
+                      f'\nError: {str(e)}')
 
 if __name__ == '__main__':
     application = ApplicationBuilder().token(setting.telegram_bot_token).build()
