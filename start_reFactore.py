@@ -205,6 +205,7 @@ async def invite_firends(update, context):
         user_database_id = user.user_id
         link = f'https://t.me/Free_Byte_Bot/?start=ref_{user_detail.id}_{user_database_id}'
         invite_text = f'{await ft_instance.find_text("invite_firend_text_link")}\n{link}'
+        text += f'\n\n{invite_text}'
 
         main_keyboard = [
             [InlineKeyboardButton(await ft_instance.find_keyboard('send_invite_link'),  url=f'https://t.me/share/url?text={invite_text}')],
