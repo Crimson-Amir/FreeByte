@@ -173,4 +173,4 @@ async def tasks_schedule(context):
     with SessionLocal() as session:
         panel_api.marzban_api.refresh_connection()
         await statistics.aggregate_daily_usage()
-        await remove_inactive_purchase(session, context)
+        await remove_inactive_purchase(context, session)
