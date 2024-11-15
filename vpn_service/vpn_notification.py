@@ -152,7 +152,8 @@ async def remove_inactive_purchase(context, session):
             if days_past_after_expired >= setting.delete_purchase_after_days:
                 remove_purchase = vpn_crud.remove_purchase(session, purchase.purchase_id, purchase.chat_id)
                 session.commit()
-                await vpn_utilities.remove_service_in_server(session, remove_purchase)
+                main_server_ip = remove_purchase.product.main_server.server_ip
+                await panel_api.marzban_api.remove_user(main_server_ip, remove_purchase.username)
                 ft_instance = FindText(None, None)
                 text = await ft_instance.find_from_database(purchase.chat_id, 'vpn_expired_service_deleted')
                 text = text.format(purchase.purchase_id)
