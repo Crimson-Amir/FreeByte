@@ -98,7 +98,7 @@ async def view_user_info(update, context, chat_id=None, page=None):
                 [InlineKeyboardButton('👝 Change Wallet Balance:', callback_data=f'just_for_show')],
                 [InlineKeyboardButton(f"Add", callback_data=f'admin_cuwb__{chat_id}__increase_balance_by_admin'),
                  InlineKeyboardButton(f"Set", callback_data=f'admin_cuwb__{chat_id}__set'),
-                 InlineKeyboardButton(f"Less", callback_data=f'admin_cuwb__{chat_id}__reduction_balance_by_admin')],
+                 InlineKeyboardButton(f"Reduce", callback_data=f'admin_cuwb__{chat_id}__reduction_balance_by_admin')],
 
                 [InlineKeyboardButton('👑 Set User Level:', callback_data=f'just_for_show')],
                 [InlineKeyboardButton("1", callback_data=f'admin_set_user_level__{chat_id}__1__{page}'),
