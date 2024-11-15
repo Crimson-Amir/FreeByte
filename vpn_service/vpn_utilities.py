@@ -11,6 +11,7 @@ from database_sqlalchemy import SessionLocal
 service_status = {
     'active': '✅',
     'limited': '🟡',
+    'expired': '🟡',
     'ban': '🔴'
 }
 

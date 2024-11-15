@@ -34,6 +34,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE, in_new_messa
     try:
         await ustart(update, context, in_new_message, True)
     except UserNotFound:
+
         if context.args:
             text = ('<b>• زبان خود را انتخاب کنید:'
                     '\n• Please choose your language:</b>')
@@ -87,7 +88,7 @@ async def manage_request_to_join_by_admin(update, context):
         await context.bot.send_message(chat_id=setting.ADMIN_CHAT_IDs[0], text=text + '\n\n• No Profile Picture (or not public)',
                                        reply_markup=InlineKeyboardMarkup(admin_keyboard), message_thread_id=setting.new_user_thread_id)
 
-    await query.answer('✅')
+    await query.answer('Done ✅')
     await query.edit_message_text(
         text='• We will check your request and announce the result through this robot.'
              '\n• ما درخواست شمارو بررسی میکنیم و نتیجه رو از طریق همین ربات اعلام میکنیم.',
@@ -98,22 +99,26 @@ async def manage_request_to_join_by_admin(update, context):
 async def check_new_user_request_by_admin(update, context):
     query = update.callback_query
     chat_id = int(query.data.replace('user_join_request_accept__', '').replace('user_join_request_deny__', ''))
+
     with user_data_store.lock:
         user_detail = user_data_store.user_data[chat_id]['user_detail']
 
-    if 'accept' in query.data:
-        with user_data_store.lock:
+        if 'accept' in query.data:
             user_data_store.user_data[chat_id]['without_invite_link'] = True
-        text = ('<b>• زبان خود را انتخاب کنید:'
-                '\n• Please choose your language:</b>')
-        keyboard = [[InlineKeyboardButton('English 🇬🇧', callback_data='register_user_en'),
-                     InlineKeyboardButton('فارسی 🇮🇷', callback_data='register_user_fa')]]
-        await context.bot.send_message(chat_id=user_detail.id, text=text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
-    else:
-        await context.bot.send_message(chat_id=user_detail.id, text='your join request not accespted, but still you can return with invite link!\nدرخواست عضویت شما قبول نشد، اما همچنان میتواند با لینک دعوت برگردید!', parse_mode='html')
 
-    await query.answer('Done ✅')
-    await query.edit_message_reply_markup(InlineKeyboardMarkup([]))
+            text = ('<b>• زبان خود را انتخاب کنید:'
+                    '\n• Please choose your language:</b>')
+
+            keyboard = [[InlineKeyboardButton('English 🇬🇧', callback_data='register_user_en'),
+                         InlineKeyboardButton('فارسی 🇮🇷', callback_data='register_user_fa')]]
+
+            await context.bot.send_message(chat_id=user_detail.id, text=text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
+
+        else:
+            await context.bot.send_message(chat_id=user_detail.id, text='your join request not accespted, but still you can return with invite link!\nدرخواست عضویت شما قبول نشد، اما همچنان میتواند با لینک دعوت برگردید!', parse_mode='html')
+
+        await query.answer('Done ✅')
+        await query.edit_message_reply_markup(InlineKeyboardMarkup([]))
 
 
 async def register_user_in_webapp(user):
@@ -150,12 +155,17 @@ async def register_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
         with session.begin():
 
             with user_data_store.lock:
-                join_without_invite_link = user_data_store.user_data.get(user_detail.id, {}).get('without_invite_link')
+                join_without_invite_link = user_data_store.user_data.get(user_detail.id, {}).get('without_invite_link', False)
                 inviter_chat_id = None
 
                 if not join_without_invite_link:
-                    inviter_chat_id, inviter_user_id = context.user_data[f'inviter_{user_detail.id}']
+                    inviter_chat_id, inviter_user_id = context.user_data.get(f'inviter_{user_detail.id}', [])
+
+                    if not inviter_user_id or not inviter_user_id:
+                        return context.bot.send_message(chat_id=user_detail.id, text='Please re/start the BOT!')
+
                     inviter_user = crud.get_user_by_chat_id_and_user_id(session, inviter_chat_id, inviter_user_id)
+
                     if not inviter_user:
                         return context.bot.send_message(chat_id=user_detail.id, text='The inviting user does not exist in our database!\nکاربر دعوت کننده در دیتابیس ما وجود ندارد!')
 
@@ -175,6 +185,7 @@ async def register_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     await context.bot.send_photo(chat_id=setting.ADMIN_CHAT_IDs[0], photo=photo_file_id, caption=start_text_notif, parse_mode='HTML', message_thread_id=setting.new_user_thread_id)
                 else:
                     await context.bot.send_message(chat_id=setting.ADMIN_CHAT_IDs[0], text=start_text_notif + '\n\n• Without profile picture (or not public)', parse_mode='HTML', message_thread_id=setting.new_user_thread_id)
+
                 context.user_data.pop(f'inviter_{user_detail.id}', None)
                 user_data_store.user_data.pop(user_detail.id, None)
 

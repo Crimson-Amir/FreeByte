@@ -1,4 +1,6 @@
 import os, sys, requests
+import uuid
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from crud import vpn_crud
 from database_sqlalchemy import SessionLocal
@@ -141,6 +143,5 @@ class MarzbanAPI:
         endpoint = f"/api/user/{username}/reset"
         url, headers = self.initialize_request(main_server_ip, endpoint)
         return self.make_request('post', url, headers=headers)
-
 
 marzban_api = MarzbanAPI()
