@@ -285,10 +285,10 @@ text_transaction = {
     "vpn_service_termination_notification": {
         "en": "🟡 Your service named {0} has ended!"
               "\nIf you want to check or renew the service."
-              "\nIf not renewed within the next 5 days, the service will be removed.",
+              "\nIf not renewed within the next {1} days, the service will be removed.",
         "fa": "🟡 سرویس شما با نام {0} به پایان رسید!"
               "\nدر صورتی که تمایل دارید نسبت به بررسی و یا تمدید سرویس اقدام کنید."
-              "\nدر صورت عدم تمدید تا 5 روز آینده، سرویس حذف خواهد شد.",
+              "\nدر صورت عدم تمدید تا {1} روز آینده، سرویس حذف خواهد شد.",
     },
     "vpn_service_days_notification": {
         "en": "🔵 Service Expiration Date Notification"
