@@ -146,7 +146,9 @@ async def remove_inactive_purchase(context, session):
     inactive_purchases = vpn_crud.get_all_inactive_purchase(session)
     for purchase in inactive_purchases:
         try:
+
             days_past_after_expired = (datetime.now() - purchase.expired_at).days
+            logging.error(f'************ {purchase} | {days_past_after_expired}')
 
             if days_past_after_expired >= setting.delete_purchase_after_days:
                 remove_purchase = vpn_crud.remove_purchase(session, purchase.purchase_id, purchase.chat_id)
