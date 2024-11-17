@@ -46,7 +46,7 @@ async def start(update, context, in_new_message=False, raise_error=False):
             [InlineKeyboardButton(await ft_instance.find_keyboard('menu_services'), callback_data='menu_services')],
             [InlineKeyboardButton(await ft_instance.find_keyboard('wallet'), callback_data='wallet_page'),
              InlineKeyboardButton(await ft_instance.find_keyboard('my_services'), callback_data='my_services')],
-            [InlineKeyboardButton(await ft_instance.find_keyboard('web_application'), callback_data='web_application')],
+            # [InlineKeyboardButton(await ft_instance.find_keyboard('web_application'), callback_data='web_application')],
             [InlineKeyboardButton(await ft_instance.find_keyboard('setting'), callback_data='setting_menu'),
              InlineKeyboardButton(await ft_instance.find_keyboard('invite_firend'), callback_data='invite_firends')],
             [InlineKeyboardButton(await ft_instance.find_keyboard('help_button'), callback_data='guide_menu')],
