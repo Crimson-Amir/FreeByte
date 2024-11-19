@@ -342,8 +342,8 @@ keyboard_transaction = {
         "fa": "برو به وب اپلیکیشن",
     },
     "web_application": {
-        "en": "Web Application",
-        "fa": "وب اپلیکیشن",
+        "en": "🌐 Web Application",
+        "fa": "🌐 وب اپلیکیشن",
     },
     "virtual_number": {
         "en": "Virtual Number",

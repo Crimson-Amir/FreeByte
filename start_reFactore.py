@@ -122,7 +122,6 @@ async def check_new_user_request_by_admin(update, context):
 
 
 async def register_user_in_webapp(user):
-    return
     try:
         password = hashlib.sha256(f'{user.id}.{uuid.uuid4().hex}'.encode()).hexdigest()[:8]
         json_data = {
@@ -132,7 +131,7 @@ async def register_user_in_webapp(user):
             'active': True,
             'private_token': hashlib.sha256(setting.webapp_private_token.encode()).hexdigest(),
         }
-        requests.post(url=f"{setting.webapp_url}/sign-up/", json=json_data)
+        requests.post(url=f"{setting.webapp_url}/sign-up/", json=json_data, timeout=4)
         return password
 
     except Exception as e:
