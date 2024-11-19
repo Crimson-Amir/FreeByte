@@ -122,6 +122,7 @@ async def check_new_user_request_by_admin(update, context):
 
 
 async def register_user_in_webapp(user):
+    return
     try:
         password = hashlib.sha256(f'{user.id}.{uuid.uuid4().hex}'.encode()).hexdigest()[:8]
         json_data = {
