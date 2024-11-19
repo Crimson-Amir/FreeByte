@@ -43,6 +43,10 @@ text_transaction = {
         "en": "📊 Total Usage:",
         "fa": "📊 مصرف کل:",
     },
+    "vpn_traffic_use_statistics": {
+        "en": "Total Usage",
+        "fa": "مصرف کل",
+    },
     "vpn_subsrciption_address": {
         "en": "🌐 Subscription Address:",
         "fa": "🌐 آدرس سرویس:",
