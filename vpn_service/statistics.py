@@ -99,7 +99,6 @@ async def aggregate_daily_usage():
                 register_date=start_time
             )
             session.add(new_record)
-            session.commit()
 
     except Exception as e:
         tb = traceback.format_exc()

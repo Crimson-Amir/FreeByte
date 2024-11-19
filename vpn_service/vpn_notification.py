@@ -150,14 +150,18 @@ async def remove_inactive_purchase(context, session):
             days_past_after_expired = (datetime.now() - expired_at).days
 
             if days_past_after_expired >= setting.delete_purchase_after_days:
-                remove_purchase = vpn_crud.remove_purchase(session, purchase.purchase_id, purchase.chat_id)
-                session.commit()
-                main_server_ip = remove_purchase.product.main_server.server_ip
-                await panel_api.marzban_api.remove_user(main_server_ip, remove_purchase.username)
-                ft_instance = FindText(None, None)
-                text = await ft_instance.find_from_database(purchase.chat_id, 'vpn_expired_service_deleted')
-                text = text.format(purchase.purchase_id)
-                await context.bot.send_message(chat_id=purchase.chat_id, text=text)
+                main_server_ip = purchase.product.main_server.server_ip
+
+                user = await panel_api.marzban_api.get_user(main_server_ip, purchase.username)
+                if user['status'] in ['limited', 'expired']:
+                    await panel_api.marzban_api.remove_user(main_server_ip, purchase.username)
+                    vpn_crud.remove_purchase(session, purchase.purchase_id, purchase.chat_id)
+                    ft_instance = FindText(None, None)
+                    text = await ft_instance.find_from_database(purchase.chat_id, 'vpn_expired_service_deleted')
+                    text = text.format(purchase.purchase_id)
+                    await context.bot.send_message(chat_id=purchase.chat_id, text=text)
+                else:
+                    vpn_crud.update_purchase(session, purchase.purchase_id, status='active')
 
         except Exception as e:
             tb = traceback.format_exc()
@@ -171,6 +175,7 @@ async def remove_inactive_purchase(context, session):
 
 async def tasks_schedule(context):
     with SessionLocal() as session:
-        panel_api.marzban_api.refresh_connection()
-        await statistics.aggregate_daily_usage()
-        await remove_inactive_purchase(context, session)
+        with session.begin():
+            panel_api.marzban_api.refresh_connection()
+            await statistics.aggregate_daily_usage()
+            await remove_inactive_purchase(context, session)
