@@ -143,6 +143,7 @@ async def notification_timer(context):
 
 
 async def remove_inactive_purchase(context, session):
+    return
     inactive_purchases = vpn_crud.get_all_inactive_purchase(session)
     for purchase in inactive_purchases:
         try:
