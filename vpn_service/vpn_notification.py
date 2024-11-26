@@ -136,7 +136,7 @@ async def notification_timer(context):
 
     except Exception as e:
         tb = traceback.format_exc()
-        msg = ('error in statistics-timer!'
+        msg = ('error in notification_timer!'
                f'\n\nerror type: {type(e)}'
                f'\nTraceBack:\n{tb}')
         await report_to_admin('error', 'statistics_timer', msg)
