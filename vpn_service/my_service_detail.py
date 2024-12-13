@@ -2,11 +2,9 @@ from _datetime import datetime
 import sys, os, math, pytz
 import requests.exceptions
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
-
 import setting
-
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from utilities_reFactore import FindText, message_token, handle_error, human_readable, report_to_admin, cancel_user as cancel
+from utilities_reFactore import FindText, message_token, handle_error, human_readable, report_to_admin, cancel_user as cancel, UserNotFound
 from telegram.ext import ConversationHandler, filters, MessageHandler, CallbackQueryHandler, CommandHandler
 from crud import vpn_crud, crud
 from database_sqlalchemy import SessionLocal
@@ -386,14 +384,17 @@ async def find_my_service(update, context):
     if not service_id:
         return await context.bot.send_message(chat_id=user_detail.id, text=await ft_instance.find_text('please_set_id'))
 
-    with SessionLocal() as session:
-        with session.begin():
-            service = vpn_crud.get_purchase_with_chat_id(session, int(service_id[0]), user_detail.id)
+    try:
+        with SessionLocal() as session:
+            with session.begin():
+                service = vpn_crud.get_purchase_with_chat_id(session, int(service_id[0]), user_detail.id)
 
-            if not service:
-                return await context.bot.send_message(chat_id=user_detail.id, text=await ft_instance.find_text('no_service_available'))
+                if not service:
+                    return await context.bot.send_message(chat_id=user_detail.id, text=await ft_instance.find_text('no_service_available'))
 
-            keyboard = [[InlineKeyboardButton(f"{service.username} {vpn_utilities.service_status.get(service.status)}", callback_data=f'vpn_my_service_detail__{service.purchase_id}')],
-                        [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='start_in_new_message')]]
+                keyboard = [[InlineKeyboardButton(f"{service.username} {vpn_utilities.service_status.get(service.status)}", callback_data=f'vpn_my_service_detail__{service.purchase_id}')],
+                            [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='start_in_new_message')]]
 
-            return await context.bot.send_message(chat_id=user_detail.id, text=await ft_instance.find_text('vpn_select_service_for_info'), reply_markup=InlineKeyboardMarkup(keyboard))
+                return await context.bot.send_message(chat_id=user_detail.id, text=await ft_instance.find_text('vpn_select_service_for_info'), reply_markup=InlineKeyboardMarkup(keyboard))
+    except UserNotFound:
+        return await context.bot.send_message(chat_id=user_detail.id, text='You are not register in bot, register with re/start command')

@@ -35,23 +35,24 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE, in_new_messa
         await ustart(update, context, in_new_message, True)
     except UserNotFound:
 
-        if context.args:
+        # if context.args:
             text = ('<b>• زبان خود را انتخاب کنید:'
                     '\n• Please choose your language:</b>')
 
-            context.user_data[f'inviter_{user_detail.id}'] = context.args[0].replace('ref_', '').split('_')
+            if context.args:
+                context.user_data[f'inviter_{user_detail.id}'] = context.args[0].replace('ref_', '').split('_')
 
             keyboard = [[InlineKeyboardButton('English 🇬🇧', callback_data='register_user_en'),
                          InlineKeyboardButton('فارسی 🇮🇷', callback_data='register_user_fa')]]
             new_select = await context.bot.send_message(chat_id=user_detail.id, text=text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
-            message_token.set_message_time(new_select.message_id)
-        else:
-            if user_detail.id in user_data_store.user_data:
-                return await context.bot.send_message(chat_id=user_detail.id, text='You already send a join request!\nشما قبلا درخواست عضویت ارسال کردید!')
-            text = ('This bot is private, please return with the invite link. Or send a request to join'
-                    '\nاین ربات خصوصی است، لطفا با لینک دعوت برگردید یا درخواست عضویت ارسال کنید.')
-            keyboard = [[InlineKeyboardButton('درخواست عضویت | Reques to Join', callback_data=f'user_requested_to_join')]]
-            await context.bot.send_message(chat_id=user_detail.id, text=text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
+            # message_token.set_message_time(new_select.message_id)
+        # else:
+        #     if user_detail.id in user_data_store.user_data:
+        #         return await context.bot.send_message(chat_id=user_detail.id, text='You already send a join request!\nشما قبلا درخواست عضویت ارسال کردید!')
+        #     text = ('This bot is private, please return with the invite link. Or send a request to join'
+        #             '\nاین ربات خصوصی است، لطفا با لینک دعوت برگردید یا درخواست عضویت ارسال کنید.')
+        #     keyboard = [[InlineKeyboardButton('درخواست عضویت | Reques to Join', callback_data=f'user_requested_to_join')]]
+        #     await context.bot.send_message(chat_id=user_detail.id, text=text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
 
     except Exception as e:
         tb = traceback.format_exc()
@@ -59,66 +60,66 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE, in_new_messa
         await context.bot.send_message(chat_id=user_detail.id, text='<b>Sorry, somthing went wrong!\nبخشید مشکلی وجود داشت!</b>', parse_mode='html')
 
 
-@handle_error.handle_functions_error
-async def manage_request_to_join_by_admin(update, context):
-    query = update.callback_query
-    user_detail = update.effective_chat
+# @handle_error.handle_functions_error
+# async def manage_request_to_join_by_admin(update, context):
+#     query = update.callback_query
+#     user_detail = update.effective_chat
+#
+#     if user_data_store.get_user(user_detail.id):
+#         return await query.answer('you already send a request!')
+#
+#     user_data_store.add_user(user_detail.id, {'user_detail': user_detail})
+#
+#     photos = await context.bot.get_user_profile_photos(user_id=user_detail.id)
+#     text = (f'👤 User Request to join the BOT\n\n'
+#             f'User Name: {user_detail.first_name} {user_detail.last_name}\n'
+#             f'User ID: {user_detail.id}\n'
+#             f'UserName: @{user_detail.username}\n'
+#             )
+#     admin_keyboard = [
+#         [InlineKeyboardButton("Accept User✅", callback_data=f'user_join_request_accept__{user_detail.id}'),
+#          InlineKeyboardButton("Deny User❌", callback_data=f'user_join_request_deny__{user_detail.id}')],
+#     ]
+#
+#     if photos.total_count > 0:
+#         photo_file_id = photos.photos[0][-1].file_id
+#         await context.bot.send_photo(chat_id=setting.ADMIN_CHAT_IDs[0], photo=photo_file_id, caption=text,
+#                                      reply_markup=InlineKeyboardMarkup(admin_keyboard), message_thread_id=setting.new_user_thread_id)
+#     else:
+#         await context.bot.send_message(chat_id=setting.ADMIN_CHAT_IDs[0], text=text + '\n\n• No Profile Picture (or not public)',
+#                                        reply_markup=InlineKeyboardMarkup(admin_keyboard), message_thread_id=setting.new_user_thread_id)
+#
+#     await query.answer('Done ✅')
+#     await query.edit_message_text(
+#         text='• We will check your request and announce the result through this robot.'
+#              '\n• ما درخواست شمارو بررسی میکنیم و نتیجه رو از طریق همین ربات اعلام میکنیم.',
+#         reply_markup=InlineKeyboardMarkup([])
+#     )
 
-    if user_data_store.get_user(user_detail.id):
-        return await query.answer('you already send a request!')
 
-    user_data_store.add_user(user_detail.id, {'user_detail': user_detail})
-
-    photos = await context.bot.get_user_profile_photos(user_id=user_detail.id)
-    text = (f'👤 User Request to join the BOT\n\n'
-            f'User Name: {user_detail.first_name} {user_detail.last_name}\n'
-            f'User ID: {user_detail.id}\n'
-            f'UserName: @{user_detail.username}\n'
-            )
-    admin_keyboard = [
-        [InlineKeyboardButton("Accept User✅", callback_data=f'user_join_request_accept__{user_detail.id}'),
-         InlineKeyboardButton("Deny User❌", callback_data=f'user_join_request_deny__{user_detail.id}')],
-    ]
-
-    if photos.total_count > 0:
-        photo_file_id = photos.photos[0][-1].file_id
-        await context.bot.send_photo(chat_id=setting.ADMIN_CHAT_IDs[0], photo=photo_file_id, caption=text,
-                                     reply_markup=InlineKeyboardMarkup(admin_keyboard), message_thread_id=setting.new_user_thread_id)
-    else:
-        await context.bot.send_message(chat_id=setting.ADMIN_CHAT_IDs[0], text=text + '\n\n• No Profile Picture (or not public)',
-                                       reply_markup=InlineKeyboardMarkup(admin_keyboard), message_thread_id=setting.new_user_thread_id)
-
-    await query.answer('Done ✅')
-    await query.edit_message_text(
-        text='• We will check your request and announce the result through this robot.'
-             '\n• ما درخواست شمارو بررسی میکنیم و نتیجه رو از طریق همین ربات اعلام میکنیم.',
-        reply_markup=InlineKeyboardMarkup([])
-    )
-
-
-async def check_new_user_request_by_admin(update, context):
-    query = update.callback_query
-    chat_id = int(query.data.replace('user_join_request_accept__', '').replace('user_join_request_deny__', ''))
-
-    with user_data_store.lock:
-        user_detail = user_data_store.user_data[chat_id]['user_detail']
-
-        if 'accept' in query.data:
-            user_data_store.user_data[chat_id]['without_invite_link'] = True
-
-            text = ('<b>• زبان خود را انتخاب کنید:'
-                    '\n• Please choose your language:</b>')
-
-            keyboard = [[InlineKeyboardButton('English 🇬🇧', callback_data='register_user_en'),
-                         InlineKeyboardButton('فارسی 🇮🇷', callback_data='register_user_fa')]]
-
-            await context.bot.send_message(chat_id=user_detail.id, text=text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
-
-        else:
-            await context.bot.send_message(chat_id=user_detail.id, text='your join request not accespted, but still you can return with invite link!\nدرخواست عضویت شما قبول نشد، اما همچنان میتواند با لینک دعوت برگردید!', parse_mode='html')
-
-        await query.answer('Done ✅')
-        await query.edit_message_reply_markup(InlineKeyboardMarkup([]))
+# async def check_new_user_request_by_admin(update, context):
+#     query = update.callback_query
+#     chat_id = int(query.data.replace('user_join_request_accept__', '').replace('user_join_request_deny__', ''))
+#
+#     with user_data_store.lock:
+#         user_detail = user_data_store.user_data[chat_id]['user_detail']
+#
+#         if 'accept' in query.data:
+#             user_data_store.user_data[chat_id]['without_invite_link'] = True
+#
+#             text = ('<b>• زبان خود را انتخاب کنید:'
+#                     '\n• Please choose your language:</b>')
+#
+#             keyboard = [[InlineKeyboardButton('English 🇬🇧', callback_data='register_user_en'),
+#                          InlineKeyboardButton('فارسی 🇮🇷', callback_data='register_user_fa')]]
+#
+#             await context.bot.send_message(chat_id=user_detail.id, text=text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
+#
+#         else:
+#             await context.bot.send_message(chat_id=user_detail.id, text='your join request not accespted, but still you can return with invite link!\nدرخواست عضویت شما قبول نشد، اما همچنان میتواند با لینک دعوت برگردید!', parse_mode='html')
+#
+#         await query.answer('Done ✅')
+#         await query.edit_message_reply_markup(InlineKeyboardMarkup([]))
 
 
 async def register_user_in_webapp(user):
@@ -177,8 +178,10 @@ async def register_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                     f'User Name: {user_detail.first_name} {user_detail.last_name}\n'
                                     f'User ID: <a href=\"tg://user?id={user_detail.id}\">{user_detail.id}</a>\n'
                                     f'UserName: @{user_detail.username}\n'
-                                    f'Selected Language: {selected_language}\n'
-                                    f"\nInvited By: <a href=\"tg://user?id={inviter_chat_id}\">{inviter_chat_id}</a>")
+                                    f'Selected Language: {selected_language}\n')
+
+                if inviter_chat_id:
+                    start_text_notif += f"\nInvited By: <a href=\"tg://user?id={inviter_chat_id}\">{inviter_chat_id}</a>"
 
                 if photos.total_count > 0:
                     photo_file_id = photos.photos[0][-1].file_id
