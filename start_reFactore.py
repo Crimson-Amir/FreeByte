@@ -154,20 +154,20 @@ async def register_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
     with SessionLocal() as session:
         with session.begin():
 
-            with user_data_store.lock:
-                join_without_invite_link = user_data_store.user_data.get(user_detail.id, {}).get('without_invite_link', False)
-                inviter_chat_id = None
+            # with user_data_store.lock:
+                # join_without_invite_link = user_data_store.user_data.get(user_detail.id, {}).get('without_invite_link', False)
+                # inviter_chat_id = None
 
-                if not join_without_invite_link:
-                    inviter_chat_id, inviter_user_id = context.user_data.get(f'inviter_{user_detail.id}', [])
+                # if not join_without_invite_link:
+                inviter_chat_id, inviter_user_id = context.user_data.get(f'inviter_{user_detail.id}', [None, None])
 
-                    if not inviter_user_id or not inviter_user_id:
-                        return context.bot.send_message(chat_id=user_detail.id, text='Please re/start the BOT!')
+                # if not inviter_user_id or not inviter_user_id:
+                #     return context.bot.send_message(chat_id=user_detail.id, text='Please re/start the BOT!')
 
-                    inviter_user = crud.get_user_by_chat_id_and_user_id(session, inviter_chat_id, inviter_user_id)
+                # inviter_user = crud.get_user_by_chat_id_and_user_id(session, inviter_chat_id, inviter_user_id)
 
-                    if not inviter_user:
-                        return context.bot.send_message(chat_id=user_detail.id, text='The inviting user does not exist in our database!\nکاربر دعوت کننده در دیتابیس ما وجود ندارد!')
+                # if not inviter_user:
+                #     return context.bot.send_message(chat_id=user_detail.id, text='The inviting user does not exist in our database!\nکاربر دعوت کننده در دیتابیس ما وجود ندارد!')
 
                 password = await register_user_in_webapp(user_detail)
                 crud.create_user(session, user_detail, inviter_chat_id, selected_language, password)
