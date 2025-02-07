@@ -429,6 +429,10 @@ keyboard_transaction = {
         "en": "Iran Payment Gateway",
         "fa": "درگاه پرداخت بانکی",
     },
+    "this_service_is_not_available": {
+        "en": "This Service is Not Available Anymore!",
+        "fa": "این سرویس دیگر در دسترس نیست!",
+    },
     "cryptomus_payment_gateway": {
         "en": "Pay with Crypto",
         "fa": "پرداخت با کریپتو",
