@@ -384,9 +384,6 @@ async def find_my_service(update, context):
     if not service_id:
         return await context.bot.send_message(chat_id=user_detail.id, text=await ft_instance.find_text('please_set_id'))
 
-    elif isinstance(service_id, str):
-        return await context.bot.send_message(chat_id=user_detail.id, text=await ft_instance.find_text('please_send_only_id_number'))
-
     try:
         with SessionLocal() as session:
             with session.begin():
@@ -399,5 +396,8 @@ async def find_my_service(update, context):
                             [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='start_in_new_message')]]
 
                 return await context.bot.send_message(chat_id=user_detail.id, text=await ft_instance.find_text('vpn_select_service_for_info'), reply_markup=InlineKeyboardMarkup(keyboard))
+
+    except ValueError:
+        return await context.bot.send_message(chat_id=user_detail.id, text=await ft_instance.find_text('please_send_only_id_number'))
     except UserNotFound:
         return await context.bot.send_message(chat_id=user_detail.id, text='You are not register in bot, register with re/start command')
