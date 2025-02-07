@@ -87,4 +87,9 @@ def create_new_statistics(session, statistics_usage_traffic):
     session.add(statistics)
 
 def get_specific_time_statistics(session, date):
-    return session.query(model.Statistics).filter(model.Statistics.register_date > date).all()
+    return (
+        session.query(model.Statistics)
+        .filter(model.Statistics.register_date > date)
+        .order_by(model.Statistics.register_date.asc())
+        .all()
+    )

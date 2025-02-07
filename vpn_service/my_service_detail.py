@@ -151,7 +151,7 @@ async def ask_remove_service_for_user(update, context):
             purchase = vpn_crud.get_purchase_with_chat_id(session, purchase_id, user_detail.id)
 
             if not purchase:
-                return await query.answer(await ft_instance.find_text('no_service_available'), show_alert=True)
+                return await query.answer(await ft_instance.find_text('this_service_is_not_available'), show_alert=True)
 
             main_server_ip = purchase.product.main_server.server_ip
 
@@ -231,7 +231,7 @@ async def service_advanced_options(update, context):
             purchase = vpn_crud.get_purchase(session, purchase_id)
 
             if not purchase:
-                return await query.answer(await ft_instance.find_text('no_service_available'), show_alert=True)
+                return await query.answer(await ft_instance.find_text('this_service_is_not_available'), show_alert=True)
 
             main_server = purchase.product.main_server
             get_from_server = await panel_api.marzban_api.get_user(purchase.product.main_server.server_ip, purchase.username)
