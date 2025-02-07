@@ -36,8 +36,8 @@ async def services(update: Update, context: ContextTypes.DEFAULT_TYPE):
         config = crud.get_user_config(session, user.id)
 
         keyboard = [
-            [InlineKeyboardButton(await ft_instance.find_keyboard('virtual_number'), callback_data='recive_sms_select_country__1')],
-            [InlineKeyboardButton(await ft_instance.find_keyboard('get_vpn_test_label'), callback_data='vpn_recive_test_service') if not config.get_vpn_free_service else None,
+            [InlineKeyboardButton(await ft_instance.find_keyboard('get_vpn_test_label'), callback_data='vpn_recive_test_service') if not config.get_vpn_free_service else None],
+            [InlineKeyboardButton(await ft_instance.find_keyboard('virtual_number'), callback_data='recive_sms_select_country__1'),
              InlineKeyboardButton(await ft_instance.find_keyboard('buy_vpn_service_label'), callback_data='vpn_set_period_traffic__30_40_1')],
             [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='start')]
         ]

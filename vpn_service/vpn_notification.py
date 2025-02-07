@@ -103,7 +103,12 @@ async def notification_timer(context):
                             days_left = (expiry - now).days
 
                             if service_stauts in ['limited', 'expired'] and purchase.status == 'active':
-                                vpn_crud.update_purchase(session, purchase.purchase_id, status=service_stauts)
+                                vpn_crud.update_purchase(
+                                    session,
+                                    purchase.purchase_id,
+                                    expired_at=datetime.now(),
+                                    status=service_stauts
+                                )
                                 session.commit()
                                 await report_service_termination_to_user(context, purchase, ft_instanc)
                                 await report_service_termination_to_admin(purchase)
@@ -116,8 +121,7 @@ async def notification_timer(context):
                             elif traffic_percent >= purchase.owner.config.traffic_notification_percent and not purchase.traffic_notification_status:
                                 vpn_crud.update_purchase(
                                     session, purchase.purchase_id,
-                                    traffic_notification_status=True,
-                                    expired_at=datetime.now()
+                                    traffic_notification_status=True
                                 )
                                 await report_service_expired_in_gigabyte(
                                     context,
@@ -143,7 +147,6 @@ async def notification_timer(context):
 
 
 async def remove_inactive_purchase(context, session):
-    return
     inactive_purchases = vpn_crud.get_all_inactive_purchase(session)
     for purchase in inactive_purchases:
         try:
