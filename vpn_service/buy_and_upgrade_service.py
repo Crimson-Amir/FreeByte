@@ -56,6 +56,10 @@ async def upgrade_service(update, context):
     with SessionLocal() as session:
         with session.begin():
 
+            purchases = vpn_crud.get_purchase_by_chat_id(session, user_detail.id)
+            if not purchases:
+                return await query.answer(await ft_instance.find_text('no_service_available'), show_alert=True)
+
             traffic = max(min(int(traffic_callback), 150), 5) or 40
             period = max(min(int(period_callback), 60), 5) or 30
 

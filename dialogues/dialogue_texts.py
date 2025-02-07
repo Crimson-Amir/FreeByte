@@ -414,8 +414,8 @@ keyboard_transaction = {
         "fa": "⟳ تازه‌سازی",
     },
     "buy_vpn_service_label": {
-        "en": "Buy VPN Service",
-        "fa": "خرید سرویس VPN",
+        "en": "VPN Service",
+        "fa": "سرویس VPN",
     },
     "vpn_services_label": {
         "en": "VPN Services",
