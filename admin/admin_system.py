@@ -69,9 +69,9 @@ async def admin_view_online_users(update, context):
 
     nav_buttons = []
     if page > 1:
-        nav_buttons.append(InlineKeyboardButton('<- previous', callback_data=f'admin_system__{page - 1}'))
+        nav_buttons.append(InlineKeyboardButton('<- previous', callback_data=f'admin_view_online_users__{page - 1}__{product_page}'))
     if page < total_pages:
-        nav_buttons.append(InlineKeyboardButton('next ->', callback_data=f'admin_system__{page + 1}'))
+        nav_buttons.append(InlineKeyboardButton('next ->', callback_data=f'admin_view_online_users__{page + 1}__{product_page}'))
     if nav_buttons: keyboard.append(nav_buttons)
 
     text = f'Online Users: {len(online_users)}'
