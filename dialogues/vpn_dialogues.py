@@ -7,6 +7,10 @@ text_transaction = {
         "en": "Please Send Only Number Part.",
         "fa": "لطفا فقط قسمت عددی آیدی را وارد کنید.",
     },
+    "this_service_is_not_belong_to_you": {
+        "en": "This Service is not Belong To You.",
+        "fa": "این سرویس متعلق به شما نیست.",
+    },
     "select_your_server": {
         "en": "🔹 Select the server you want:",
         "fa": "🔹 سرور مورد نظر خودتون رو انتخاب کنید:",

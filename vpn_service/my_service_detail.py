@@ -390,7 +390,7 @@ async def find_my_service(update, context):
                 service = vpn_crud.get_purchase_with_chat_id(session, int(service_id[0]), user_detail.id)
 
                 if not service:
-                    return await context.bot.send_message(chat_id=user_detail.id, text=await ft_instance.find_text('this_service_is_not_available'))
+                    return await context.bot.send_message(chat_id=user_detail.id, text=await ft_instance.find_text('this_service_is_not_belong_to_you'))
 
                 keyboard = [[InlineKeyboardButton(f"{service.username} {vpn_utilities.service_status.get(service.status)}", callback_data=f'vpn_my_service_detail__{service.purchase_id}')],
                             [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='start_in_new_message')]]
