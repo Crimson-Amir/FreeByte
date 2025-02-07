@@ -3,6 +3,10 @@ text_transaction = {
         "en": "🌟 Welcome to the FreeByte VPN section!",
         "fa": "🌟 به بخش VPN فری‌بایت خوش آمدید!",
     },
+    "please_send_only_id_number": {
+        "en": "Please Send Only Number Part.",
+        "fa": "لطفا فقط قسمت عددی آیدی را وارد کنید.",
+    },
     "select_your_server": {
         "en": "🔹 Select the server you want:",
         "fa": "🔹 سرور مورد نظر خودتون رو انتخاب کنید:",

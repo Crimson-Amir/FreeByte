@@ -384,6 +384,9 @@ async def find_my_service(update, context):
     if not service_id:
         return await context.bot.send_message(chat_id=user_detail.id, text=await ft_instance.find_text('please_set_id'))
 
+    elif isinstance(service_id, str):
+        return await context.bot.send_message(chat_id=user_detail.id, text=await ft_instance.find_text('please_send_only_id_number'))
+
     try:
         with SessionLocal() as session:
             with session.begin():
