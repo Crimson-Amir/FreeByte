@@ -1,19 +1,19 @@
 text_transaction = {
-    "vpn_welcome": {
+"vpn_welcome": {
         "en": "🌟 Welcome to the FreeByte VPN section!",
         "fa": "🌟 به بخش VPN فری‌بایت خوش آمدید!",
     },
     "please_send_only_id_number": {
-        "en": "Please Send Only Number Part.",
+        "en": "Please send only the number part.",
         "fa": "لطفا فقط قسمت عددی آیدی را وارد کنید.",
     },
     "this_service_is_not_belong_to_you": {
-        "en": "This Service is not Belong To You.",
+        "en": "This service does not belong to you.",
         "fa": "این سرویس متعلق به شما نیست.",
     },
     "select_your_server": {
         "en": "🔹 Select the server you want:",
-        "fa": "🔹 سرور مورد نظر خودتون رو انتخاب کنید:",
+        "fa": "🔹 سرور مورد نظر خودتان رو انتخاب کنید:",
     },
     "no_empty_server": {
         "en": "⚠️ No servers with available capacity at the moment!",
@@ -28,12 +28,70 @@ text_transaction = {
         "fa": "🔄 درصورتی که سرویس شما به پایان رسیده است، مشخصات زیر جایگزین مشخصات قبلی می‌شوند.",
     },
     "vpn_service_activated": {
-        "en": "✅ Your VPN service naemd {0} has been successfully activated!"
-              "\n\n🔺 Please update your subscription from client app every day."
-              "\n\n🔷 Servers with [x0.1] written at the end of their name are provided with unlimited traffic (multiplier of one tenth).",
+        "en": "✅ Your VPN service named {0} has been successfully activated!"
+              "\n\n🔺 Please update your subscription from the client app every day."
+              "\n\n🔷 Servers with [x0.1] written at the end of their name provide unlimited traffic (multiplier of one-tenth).",
         "fa": "✅ سرویس VPN شما با نام {0} فعال شد!"
               "\n\n🔺 لطفاً هر روز اشتراک را از طریق برنامه‌ای که استفاده می‌کنید، آپدیت کنید. (اطلاعات بیشتر در راهنمای اتصال)"
-              "\n\n🔷 سرورهایی که در انتهای نام آن‌ها [x0.1] نوشته شده‌، با ترافیک نامحدود (ضریب یک‌دهم) ارائه می‌شوند.",
+              "\n\n🔷 سرورهایی که در انتهای نام آن‌ها [x0.1] نوشته شده‌اند، با ترافیک نامحدود (ضریب یک‌دهم) ارائه می‌شوند.",
+    },
+    "vpn_subsrciption_address": {
+        "en": "🌐 Subscription Address:",
+        "fa": "🌐 آدرس سرویس:",
+    },
+    "vpn_you_already_recive_this_service": {
+        "en": "You have already received this service!",
+        "fa": "شما قبلا این سرویس را دریافت کردید!",
+    },
+    "vpn_service_not_exit_in_db": {
+        "en": "❌ Service not found in the database!",
+        "fa": "❌ سرویس مورد نظر در دیتابیس وجود ندارد!",
+    },
+    "vpn_service_not_exit_in_server": {
+        "en": "❌ Service not found on the server!",
+        "fa": "❌ سرویس مورد نظر در سرور وجود ندارد!",
+    },
+    "vpn_test_service_test": {
+        "en": "🎁 Try our service for free and experience our quality!"
+              "\n\n🚀 Traffic: {0} GB"
+              "\n⏳ Duration: {1} days",
+        "fa": "🎁 سرویس ما را به‌صورت رایگان دریافت کنید و کیفیت را بررسی کنید."
+              "\n\n🚀 ترافیک: {0} گیگابایت"
+              "\n⏳ مدت زمان: {1} روز",
+    },
+    "vpn_no_usage_recored": {
+        "en": "No usage recorded.",
+        "fa": "مصرفی برای شما ثبت نشده است.",
+    },
+    "avreage_usage_in": {
+        "en": "Average Usage In",
+        "fa": "میانگین مصرف در",
+    },
+    "vpn_service_termination_notification": {
+        "en": "🟡 Your service named {0} has ended!"
+              "\nIf you want to check or renew the service."
+              "\nIf not renewed within the next {1} days, the service will be removed.",
+        "fa": "🟡 سرویس شما با نام {0} به پایان رسید!"
+              "\nدر صورتی که تمایل دارید نسبت به بررسی و یا تمدید سرویس اقدام کنید."
+              "\nدر صورت عدم تمدید تا {1} روز آینده، سرویس حذف خواهد شد.",
+    },
+    "vpn_service_days_notification": {
+        "en": "🔵 Service Expiration Date Notification"
+              "\nYour service named {0} has less than {1} days left."
+              "\nIf you want to check or renew the service.",
+        "fa": "🔵 اطلاع رسانی تاریخ انقضا سرویس"
+              "\nاز سرویس شما با نام {0} کمتر از {1} روز باقی مانده است."
+              "\nدر صورتی که تمایل دارید نسبت به بررسی و یا تمدید سرویس اقدام کنید.",
+    },
+    "upgrade_service_successfuly": {
+        "en": "Your service named {0} has been upgraded successfully."
+              "\nDetails added to the service:"
+              "\nTraffic: {1} GB"
+              "\nPeriod Time: {2} Days",
+        "fa": "🟢 سرویس شما با نام {0} با موفقیت ارتقاء یافت."
+              "\nمشخصات اضافه شده به سرویس:"
+              "\nترافیک: {1} گیگابایت"
+              "\nدوره زمانی: {2} روز",
     },
     "vpn_service_name": {
         "en": "🔷 Service Name:",
@@ -54,10 +112,6 @@ text_transaction = {
     "vpn_traffic_use_statistics": {
         "en": "Total Usage",
         "fa": "مصرف کل",
-    },
-    "vpn_subsrciption_address": {
-        "en": "🌐 Subscription Address:",
-        "fa": "🌐 آدرس سرویس:",
     },
     "vpn_selected_service_info": {
         "en": "ℹ️ Selected Service Info:",
@@ -83,17 +137,9 @@ text_transaction = {
         "en": "🔴 Service {0}, which had already expired, was removed!",
         "fa": "🔴 سرویس {0} که قبلا منقضی شده بود حذف شد!",
     },
-    "vpn_service_not_exit_in_db": {
-        "en": "❌ Service not found in the database!",
-        "fa": "❌ سرویس مورد نظر در دیتابیس وجود ندارد!",
-    },
     "vpn_select_service": {
         "en": "🛠 Select a service to view details:",
         "fa": "🛠 برای مشاهده جزئیات، سرویس مورد نظر را انتخاب کنید:",
-    },
-    "vpn_service_not_exit_in_server": {
-        "en": "❌ Service not found on the server!",
-        "fa": "❌ سرویس مورد نظر در سرور وجود ندارد!",
     },
     "vpn_ask_user_for_removing_service": {
         "en": "❓ Are you sure you want to remove this service?",
@@ -186,18 +232,6 @@ text_transaction = {
         "en": "Created At:",
         "fa": "ساخته شده در:",
     },
-    "vpn_test_sevice_test": {
-        "en": "🎁 You can get free service for test our quality."
-              "\n\nTraffic: {0} GB"
-              "\nPeriod Time: {1}Days",
-        "fa": "🎁 شما میتوانید برای بررسی کیفیت، یک بار سرویس تست تهیه کنید."
-              "\n\nترافیک: {0} گیگابایت"
-              "\nدوره زمانی: {1} روز",
-    },
-    "vpn_you_already_recive_this_service": {
-        "en": "You Already Recive This Service!",
-        "fa": "شما قبلا این سرویس رو دریافت کردید!",
-    },
     "vpn_select_service_for_info": {
         "en": "Select service for more info:",
         "fa": "سرویس مورد نظر رو برای جزئیات بیشتر انتخاب کنید:",
@@ -278,37 +312,13 @@ text_transaction = {
         "en": "In",
         "fa": "در",
     },
-    "vpn_no_usage_recored": {
-        "en": "No Usage Recorded",
-        "fa": "مصرفی برای شما ثبت نشده است.",
-    },
     "hour": {
         "en": "Hour",
         "fa": "ساعت",
     },
-    "avreage_usage_in": {
-        "en": "Avreage Usage In",
-        "fa": "میانگین مصرف در",
-    },
     "usage_report": {
         "en": "Usage Report",
         "fa": "گزارش مصرف",
-    },
-    "vpn_service_termination_notification": {
-        "en": "🟡 Your service named {0} has ended!"
-              "\nIf you want to check or renew the service."
-              "\nIf not renewed within the next {1} days, the service will be removed.",
-        "fa": "🟡 سرویس شما با نام {0} به پایان رسید!"
-              "\nدر صورتی که تمایل دارید نسبت به بررسی و یا تمدید سرویس اقدام کنید."
-              "\nدر صورت عدم تمدید تا {1} روز آینده، سرویس حذف خواهد شد.",
-    },
-    "vpn_service_days_notification": {
-        "en": "🔵 Service Expiration Date Notification"
-              "\nYour service named {0} has less than {1} days left."
-              "\nIf you want to check or renew the service.",
-        "fa": "🔵 اطلاع رسانی تاریخ انقضا سرویس"
-              "\nاز سرویس شما با نام {0} کمتر از {1} روز باقی مونده."
-              "\nدر صورتی که تمایل دارید نسبت به بررسی و یا تمدید سرویس اقدام کنید.",
     },
     "vpn_service_gigabyte_percent_notification": {
         "en": "🔵 Service Traffic Notification"
@@ -316,31 +326,25 @@ text_transaction = {
               "\nThe remaining volume of the service is {2}."
               "\nIf you want to check or renew the service.",
         "fa": "🔵 اطلاع رسانی حجم سرویس"
-              "\nشما {0} درصد حجم ترافیک سرویس {1} رو مصرف کردید."
-              "\nحجم باقی مونده از سرویس {2} است."
+              "\nشما {0} درصد حجم ترافیک سرویس {1} را مصرف کردید."
+              "\nحجم باقی مانده از سرویس {2} است."
               "\nدر صورتی که تمایل دارید نسبت به بررسی و یا تمدید سرویس اقدام کنید.",
     },
     "check_service_detail": {
         "en": "Check Service Detail",
         "fa": "مشاهده جزئیات سرویس",
     },
-    "upgrade_service_successfuly": {
-        "en": "Your service named {0} has been upgraded successfully."
-              "\nDetails added to the service:"
-              "\nTraffic: {1} GB"
-              "\nPeriod Time: {2} Day",
-        "fa": "🟢 سرویس شما با نام {0} با موفقیت ارتقاء یافت."
-              "\nمشخصات اضافه شده به سرویس:"
-              "\nترافیک: {1} گیگابایت"
-              "\nدوره زمانی: {2} روز",
-    },
     "please_set_id": {
         "en": "Please specify the service ID",
-        "fa": "لطفا آیدی سرویس مورد نظر رو بعد از دستور قرار بدید.",
+        "fa": "لطفا آیدی سرویس مورد نظر را بعد از دستور قرار بدید.",
     },
 }
 
 keyboard_transaction = {
+    'uptime_status': {
+        "en": "Status ↕",
+        "fa": "وضعیت ↕"
+    },
     "vpn_buy_vpn": {
         "en": "🛒 Buy Service",
         "fa": "🛒 خرید سرویس",
