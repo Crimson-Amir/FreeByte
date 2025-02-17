@@ -343,7 +343,7 @@ text_transaction = {
 keyboard_transaction = {
     'uptime_status': {
         "en": "Status ↕",
-        "fa": "وضعیت ↕"
+        "fa": "وضعیت ↥"
     },
     "vpn_buy_vpn": {
         "en": "🛒 Buy Service",
