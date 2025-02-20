@@ -327,15 +327,15 @@ text_transaction = {
     },
 
     "web_application_text": {
-        "en": "You can easily purchase a new service or renew your current one through the web application without needing a VPN." 
-              "\n\nYour login information is kept strictly confidential. Please refrain from sharing it with others." 
-              "\nSave this information so you can use it when needed." 
-              "\n\nUsername: {0}" 
+        "en": "Access the web app without a VPN to buy or renew your service easily."
+              "\n\nYour login details are private—don’t share them."
+              "\nSave them for future use."
+              "\n\nUsername: {0}"
               "\nPassword: {1}",
-        "fa": "• شما می‌توانید بدون نیاز به VPN از طریق وب‌اپلیکیشن به راحتی سرویس جدید خریداری کنید یا سرویس فعلی خود را تمدید نمایید." 
-              "\n\n🔺 اطلاعات ورود شما به‌صورت محرمانه نگهداری می‌شود. لطفاً از ‌اشتراک‌گذاری آن با دیگران خودداری کنید." 
-              "\n\nاین اطلاعات را ذخیره کرده تا در مواقع ضروری از آن استفاده کنید." 
-              "\n\nنام کاربری: {0}" 
+        "fa": "• بدون نیاز به VPN از طریق وب‌اپلیکیشن سرویس خود را خریداری یا تمدید کنید."
+              "\n\n🔺 اطلاعات ورود شما محرمانه است، آن را به اشتراک نگذارید."
+              "\n\nاین اطلاعات را ذخیره کنید."
+              "\n\nنام کاربری: {0}"
               "\nرمز عبور: {1}",
     },
 }
