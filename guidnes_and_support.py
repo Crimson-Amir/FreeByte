@@ -18,8 +18,8 @@ async def guide_menu(update, context):
     text = text.format(user_detail.id)
 
     keyboard = [
-        [InlineKeyboardButton(await ft_instance.find_keyboard('vpn_guide_label'), callback_data='vpn_guide_menu'),
-        InlineKeyboardButton(await ft_instance.find_keyboard('create_ticket_label'), callback_data='create_ticket')],
+        [InlineKeyboardButton(await ft_instance.find_keyboard('create_ticket_label'), callback_data='create_ticket'),
+         InlineKeyboardButton(await ft_instance.find_keyboard('vpn_guide_label'), callback_data='vpn_guide_menu')],
         [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='start')]
     ]
 
