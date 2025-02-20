@@ -490,8 +490,8 @@ keyboard_transaction = {
         "fa": "پیام جدید 🆕",
     },
     "create_ticket_label": {
-        "en": "📨 Message To Admins",
-        "fa": "📨 ارتباط با ادمین",
+        "en": "Message To Support",
+        "fa": "ارتباط با پشتیبانی",
     },
 }
 

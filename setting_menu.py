@@ -64,4 +64,4 @@ async def change_user_language(update, context):
 
 
             await query.answer(await ft_instance.find_text('config_applied_successfully'))
-            return await user_language_setting(update, context)
+            return await setting_menu(update, context)

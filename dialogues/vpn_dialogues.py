@@ -84,7 +84,7 @@ text_transaction = {
               "\nدر صورتی که تمایل دارید نسبت به بررسی و یا تمدید سرویس اقدام کنید.",
     },
     "upgrade_service_successfuly": {
-        "en": "Your service named {0} has been upgraded successfully."
+        "en": "🟢 Your service named {0} has been upgraded successfully."
               "\nDetails added to the service:"
               "\nTraffic: {1} GB"
               "\nPeriod Time: {2} Days",
@@ -414,7 +414,7 @@ keyboard_transaction = {
         "fa": "دریافت کانفیگ های سرویس ⥥",
     },
     "vpn_change_service_ownership": {
-        "en": "Change Service Ownership",
+        "en": "Change Owner",
         "fa": "تغییر مالکیت سرویس",
     },
     "vpn_view_service_detail": {
