@@ -386,7 +386,7 @@ async def manual_check_zarinpal(update, context):
         try:
             response_json = WebAppUtilities.verify_payment_zarinpal(financial.authority, financial.amount)
             payment_code = response_json.get('data', {}).get('code', 101)
-            await context.bot.send_message(chat_id=chat_id,text=f"{payment_code}")
+            await context.bot.send_message(chat_id=chat_id,text=f"{payment_code} {response_json}")
 
         except Exception as e:
             await WebAppUtilities.report_unhandled_error(e, 'Manual CHeck ZarinPal Payment', financial.authority, financial)
