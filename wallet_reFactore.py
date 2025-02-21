@@ -263,6 +263,7 @@ async def pay_by_zarinpal(update, context):
                 f"\n\n{await ft_instance.find_text('payment_gateway_label')} {await ft_instance.find_text('zarinpal_label')}"
                 f"\n{await ft_instance.find_text('price')} {get_financial.amount:,} {await ft_instance.find_text('irt')}"
                 f"\n\n<b>{await ft_instance.find_text('payment_gateway_tail')}</b>"
+                f"\n\n<b>{await ft_instance.find_text('manual_check_text')}</b>"
             )
 
             await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))

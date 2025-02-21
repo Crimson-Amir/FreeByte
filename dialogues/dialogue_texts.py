@@ -325,6 +325,10 @@ text_transaction = {
         "en": "Price With {0}% discount:",
         "fa": "مبلغ با {0}% تخفیف:",
     },
+    "manual_check_text": {
+        "en": "• Click on 'Manual Check' button if payment was successful, but you have got an error or you do not receive service",
+        "fa": '• اگر پرداخت با موفقیت انجام شد اما نتیجه را دریافت نکردید، از گزینه "بررسی دستی" استفاده کنید.',
+    },
 
     "web_application_text": {
         "en": "Access the web app without a VPN to buy or renew your service easily."
@@ -346,8 +350,8 @@ keyboard_transaction = {
         "fa": "برو به وب اپلیکیشن",
     },
     "manual_check_zarinpal_payment": {
-        "en": "Manual Check",
-        "fa": "بررسی دستی",
+        "en": "Manual Check ↓",
+        "fa": "بررسی دستی ↓",
     },
     "web_application": {
         "en": "🌐 Web Application",
