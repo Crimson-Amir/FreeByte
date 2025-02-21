@@ -253,8 +253,8 @@ async def pay_by_zarinpal(update, context):
 
             keyboard = [
                 [InlineKeyboardButton(await ft_instance.find_keyboard('login_to_payment_gateway'), url=f'https://payment.zarinpal.com/pg/StartPay/{create_zarinpal_invoice.authority}')],
-                [InlineKeyboardButton(await ft_instance.find_keyboard('manual_check_zarinpal_payment'), callback_data=f'manual_check_zarinpal_payment__{financial_id}')],
-                [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data="start_in_new_message")]
+                [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data="start_in_new_message"),
+                 InlineKeyboardButton(await ft_instance.find_keyboard('manual_check_zarinpal_payment'), callback_data=f'manual_check_zarinpal_payment__{financial_id}')]
             ]
 
             text = (
@@ -414,8 +414,23 @@ async def manual_check_zarinpal(update, context):
             message = f"{dialogues.get(error_code, 'no error!')}"
             if error_code == 101:
                 keyboard = [
-                    [InlineKeyboardButton(await ft_instance.find_keyboard('login_to_payment_gateway'), url=f'https://payment.zarinpal.com/pg/StartPay/{financial_id}')],
-                    [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data="start_in_new_message")]
+                    [
+                        InlineKeyboardButton(
+                            text=await ft_instance.find_keyboard('login_to_payment_gateway'),
+                            url=f'https://payment.zarinpal.com/pg/StartPay/{financial.authority}'
+                        )
+                    ],
+                    [
+                        InlineKeyboardButton(
+                            text=await ft_instance.find_keyboard('back_button'),
+                            callback_data="start_in_new_message"
+                        )
+                    ]
                 ]
-                await query.edit_message_reply_markup(reply_markup=InlineKeyboardMarkup(keyboard))
+
+                # Ensure it's correctly structured as InlineKeyboardMarkup
+                reply_markup = InlineKeyboardMarkup(keyboard)
+
+                # Edit only the keyboard buttons
+                await query.edit_message_reply_markup(reply_markup=reply_markup)
             return await query.answer(message, show_alert=True)
