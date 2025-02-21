@@ -375,7 +375,6 @@ async def manual_check_zarinpal(update, context):
     query = update.callback_query
     financial_id = query.data.replace('manual_check_zarinpal_payment__', '')
     ft_instance = FindText(update, context)
-    chat_id = update.effective_chat.id
 
     with SessionLocal() as session:
         session.begin()
@@ -415,7 +414,7 @@ async def manual_check_zarinpal(update, context):
             message = f"{dialogues.get(error_code, 'no error!')}"
             if error_code == 101:
                 keyboard = [
-                    [InlineKeyboardButton(await ft_instance.find_keyboard('login_to_payment_gateway'), url=f'https://payment.zarinpal.com/pg/StartPay/{financial.authority}')],
+                    [InlineKeyboardButton(await ft_instance.find_keyboard('login_to_payment_gateway'), url=f'https://payment.zarinpal.com/pg/StartPay/{financial_id}')],
                     [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data="start_in_new_message")]
                 ]
                 await query.edit_message_reply_markup(reply_markup=keyboard)
