@@ -409,5 +409,5 @@ async def manual_check_zarinpal(update, context):
         else:
             error_code = response_json.get('data', {}).get('code', 404)
             error_code = response_json.get('errors', {}).get('code', 404) if error_code == 404 else error_code
-            message = dialogues.get('payment_failed_body').format(error_code)
+            message = f"{dialogues.get('payment_failed_body')}:\n{dialogues.get(error_code)}"
             return await query.answer(message, show_alert=True)
