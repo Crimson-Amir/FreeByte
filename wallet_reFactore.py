@@ -380,13 +380,11 @@ async def manual_check_zarinpal(update, context):
     with SessionLocal() as session:
         session.begin()
         financial = crud.get_financial_report_by_id(session, financial_id)
-        await context.bot.send_message(chat_id=chat_id,text=f"{financial} {financial.authority} {financial.amount}")
         dialogues = transaction.get(financial.owner.language, transaction.get('fa'))
 
         try:
             response_json = WebAppUtilities.verify_payment_zarinpal(financial.authority, financial.amount)
             payment_code = response_json.get('data', {}).get('code', 101)
-            await context.bot.send_message(chat_id=chat_id,text=f"{payment_code} {response_json}")
 
         except Exception as e:
             await WebAppUtilities.report_unhandled_error(e, 'Manual CHeck ZarinPal Payment', financial.authority, financial)
@@ -415,4 +413,10 @@ async def manual_check_zarinpal(update, context):
             error_code = response_json.get('data', {}).get('code', 404)
             error_code = response_json.get('errors', {}).get('code', 404) if error_code == 404 else error_code
             message = f"{dialogues.get(error_code, 'no error!')}"
+            if error_code == 101:
+                keyboard = [
+                    [InlineKeyboardButton(await ft_instance.find_keyboard('login_to_payment_gateway'), url=f'https://payment.zarinpal.com/pg/StartPay/{financial.authority}')],
+                    [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data="start_in_new_message")]
+                ]
+                await query.edit_message_reply_markup(reply_markup=keyboard)
             return await query.answer(message, show_alert=True)
