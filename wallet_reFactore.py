@@ -8,6 +8,7 @@ from utilities_reFactore import FindText, message_token, handle_error, human_rea
 from vpn_service import vpn_utilities
 from API import zarinPalAPI, cryptomusAPI, convert_irt_to_usd
 from WebApp.WebAppDialogue import transaction
+import utilities_reFactore
 
 
 async def wallet_page(update, context):
@@ -409,5 +410,5 @@ async def manual_check_zarinpal(update, context):
         else:
             error_code = response_json.get('data', {}).get('code', 404)
             error_code = response_json.get('errors', {}).get('code', 404) if error_code == 404 else error_code
-            message = f"{dialogues.get('payment_failed_body')}:\n{dialogues.get(error_code)}"
+            message = f"{dialogues.get('payment_failed_body')}\n{dialogues.get(error_code)}"
             return await query.answer(message, show_alert=True)
