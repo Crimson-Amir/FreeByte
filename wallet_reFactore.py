@@ -375,15 +375,18 @@ async def manual_check_zarinpal(update, context):
     query = update.callback_query
     financial_id = query.data.replace('manual_check_zarinpal_payment__', '')
     ft_instance = FindText(update, context)
+    chat_id = update.effective_chat.id
 
     with SessionLocal() as session:
         session.begin()
         financial = crud.get_financial_report_by_id(session, financial_id)
+        await context.bot.send_message(chat_id=chat_id,text=f"{financial} {financial.authority} {financial.amount}")
         dialogues = transaction.get(financial.owner.language, transaction.get('fa'))
 
         try:
             response_json = WebAppUtilities.verify_payment_zarinpal(financial.authority, financial.amount)
             payment_code = response_json.get('data', {}).get('code', 101)
+            await context.bot.send_message(chat_id=chat_id,text=f"{payment_code}")
 
         except Exception as e:
             await WebAppUtilities.report_unhandled_error(e, 'Manual CHeck ZarinPal Payment', financial.authority, financial)
