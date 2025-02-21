@@ -417,5 +417,5 @@ async def manual_check_zarinpal(update, context):
                     [InlineKeyboardButton(await ft_instance.find_keyboard('login_to_payment_gateway'), url=f'https://payment.zarinpal.com/pg/StartPay/{financial_id}')],
                     [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data="start_in_new_message")]
                 ]
-                await query.edit_message_reply_markup(reply_markup=keyboard)
+                await query.edit_message_reply_markup(reply_markup=InlineKeyboardMarkup(keyboard))
             return await query.answer(message, show_alert=True)
