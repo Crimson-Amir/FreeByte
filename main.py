@@ -85,6 +85,8 @@ if __name__ == '__main__':
     application.add_handler(CallbackQueryHandler(wallet_reFactore.pay_by_zarinpal, pattern='pay_by_zarinpal__(.*)'))
     application.add_handler(CallbackQueryHandler(wallet_reFactore.pay_by_cryptomus, pattern='pay_by_cryptomus__(.*)'))
     application.add_handler(CallbackQueryHandler(wallet_reFactore.pay_by_wallet, pattern='pay_by_wallet__(.*)'))
+    application.add_handler(CallbackQueryHandler(wallet_reFactore.manual_check_zarinpal, pattern='manual_check_zarinpal_payment__(.*)'))
+
 
     # VPN Section
     application.add_handler(CallbackQueryHandler(buy_and_upgrade_service.buy_custom_service, pattern='vpn_set_period_traffic__(.*)'))

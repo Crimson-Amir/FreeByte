@@ -252,6 +252,7 @@ async def pay_by_zarinpal(update, context):
 
             keyboard = [
                 [InlineKeyboardButton(await ft_instance.find_keyboard('login_to_payment_gateway'), url=f'https://payment.zarinpal.com/pg/StartPay/{create_zarinpal_invoice.authority}')],
+                [InlineKeyboardButton(await ft_instance.find_keyboard('manual_check_zarinpal_payment'), calback_data=f'manual_check_zarinpal_payment__{financial_id}')],
                 [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data="start_in_new_message")]
             ]
 
@@ -365,3 +366,48 @@ async def pay_by_wallet(update, context):
         await ft_instance.find_text('invoice_paid_by_wallet_message'),
         reply_markup=InlineKeyboardMarkup(keyboard)
     )
+
+
+@handle_error.handle_functions_error
+async def manual_check_zarinpal(update, context):
+    query = update.callback_query
+    financial_id = query.data.replace('manual_check_zarinpal_payment__', '')
+    ft_instance = FindText(update, context)
+
+    with SessionLocal() as session:
+        session.begin()
+        financial = crud.get_financial_report_by_id(session, financial_id)
+        dialogues = transaction.get(financial.owner.language, transaction.get('fa'))
+
+        try:
+            response_json = WebAppUtilities.verify_payment_zarinpal(financial.authority, financial.amount)
+            payment_code = response_json.get('data', {}).get('code', 101)
+
+        except Exception as e:
+            await WebAppUtilities.report_unhandled_error(e, 'Manual CHeck ZarinPal Payment', financial.authority, financial)
+            return await query.answer(await ft_instance.find_text('error_in_zarinpal'), show_alert=True)
+
+        if payment_code == 100 and financial.payment_status not in ['paid', 'refund']:
+
+            ref_id = response_json.get('data').get('ref_id')
+            message = dialogues.get('successful_pay', '').format(ref_id)
+            await utilities_reFactore.report_to_user('success', financial.chat_id, message)
+
+            try:
+                await WebAppUtilities.handle_successful_payment(session, financial, financial.authority, 'ZarinPalWebApp')
+                session.commit()
+            except Exception as e:
+                session.rollback()
+                await WebAppUtilities.handle_failed_payment(session, financial, e, dialogues, financial.authority, 'ZarinPalWebApp')
+                message = dialogues.get('operation_failed_user').format(f"{financial.amount:,}")
+                return await query.answer(message, show_alert=True)
+
+            else:
+                message = dialogues.get('successful_pay').format(f"{ref_id}")
+                return await query.answer(message, show_alert=True)
+
+        else:
+            error_code = response_json.get('data', {}).get('code', 404)
+            error_code = response_json.get('errors', {}).get('code', 404) if error_code == 404 else error_code
+            message = dialogues.get('payment_failed_body').format(dialogues.get(error_code))
+            return await query.answer(message, show_alert=True)
