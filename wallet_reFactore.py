@@ -252,7 +252,7 @@ async def pay_by_zarinpal(update, context):
 
             keyboard = [
                 [InlineKeyboardButton(await ft_instance.find_keyboard('login_to_payment_gateway'), url=f'https://payment.zarinpal.com/pg/StartPay/{create_zarinpal_invoice.authority}')],
-                [InlineKeyboardButton(await ft_instance.find_keyboard('manual_check_zarinpal_payment'), calback_data=f'manual_check_zarinpal_payment__{financial_id}')],
+                [InlineKeyboardButton(await ft_instance.find_keyboard('manual_check_zarinpal_payment'), callback_data=f'manual_check_zarinpal_payment__{financial_id}')],
                 [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data="start_in_new_message")]
             ]
 
