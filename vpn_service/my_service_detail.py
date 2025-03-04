@@ -254,7 +254,7 @@ async def service_advanced_options(update, context):
 
             text = (
                 f"<b>{await ft_instance.find_text('vpn_selected_service_advanced_info')}</b>"
-                f"\n{await ft_instance.find_text('vpn_service_name')} {purchase.username}"
+                f"\n\n{await ft_instance.find_text('vpn_service_name')} {purchase.username}"
                 f"\n\n{await ft_instance.find_text('online_at')} {onlien_at}"
                 f"\n{await ft_instance.find_text('vpn_service_status')} {service_status.get(get_from_server.get('status'), get_from_server.get('status'))}"
                 f"\n{await ft_instance.find_text('vpn_used_traffic')} {used_traffic}GB"
