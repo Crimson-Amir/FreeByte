@@ -223,7 +223,7 @@ async def upgrade_service_for_user(context, session, purchase_id: int):
         await panel_api.marzban_api.modify_user(main_server_ip, purchase.username, json_config)
 
         success_text = await ft_instance.find_from_database(purchase.chat_id, 'upgrade_service_successfuly')
-        success_text = success_text.format(purchase.username, purchase.upgrade_traffic, purchase.upgrade_period)
+        success_text = success_text.format(purchase.purchase_id, purchase.upgrade_traffic, purchase.upgrade_period)
 
         vpn_crud.update_purchase(
             session,

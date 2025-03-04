@@ -68,34 +68,34 @@ text_transaction = {
         "fa": "میانگین مصرف در",
     },
     "vpn_service_termination_notification": {
-        "en": "🟡 Your service named {0} has ended!"
+        "en": "🟡 Your service with ID {0} has ended!"
               "\nIf you want to check or renew the service."
               "\nIf not renewed within the next {1} days, the service will be removed.",
-        "fa": "🟡 سرویس شما با نام {0} به پایان رسید!"
+        "fa": "🟡 سرویس شما با آیدی {0} به پایان رسید!"
               "\nدر صورتی که تمایل دارید نسبت به بررسی و یا تمدید سرویس اقدام کنید."
               "\nدر صورت عدم تمدید تا {1} روز آینده، سرویس حذف خواهد شد.",
     },
     "vpn_service_days_notification": {
         "en": "🔵 Service Expiration Date Notification"
-              "\nYour service named {0} has less than {1} days left."
+              "\nYour service with ID {0} has less than {1} days left."
               "\nIf you want to check or renew the service.",
         "fa": "🔵 اطلاع رسانی تاریخ انقضا سرویس"
-              "\nاز سرویس شما با نام {0} کمتر از {1} روز باقی مانده است."
+              "\nاز سرویس شما با آیدی {0} کمتر از {1} روز باقی مانده است."
               "\nدر صورتی که تمایل دارید نسبت به بررسی و یا تمدید سرویس اقدام کنید.",
     },
     "upgrade_service_successfuly": {
-        "en": "🟢 Your service named {0} has been upgraded successfully."
+        "en": "🟢 Your service with ID {0} has been upgraded successfully."
               "\nDetails added to the service:"
               "\nTraffic: {1} GB"
               "\nPeriod Time: {2} Days",
-        "fa": "🟢 سرویس شما با نام {0} با موفقیت ارتقاء یافت."
+        "fa": "🟢 سرویس شما با آیدی {0} با موفقیت ارتقاء یافت."
               "\nمشخصات اضافه شده به سرویس:"
               "\nترافیک: {1} گیگابایت"
               "\nدوره زمانی: {2} روز",
     },
     "vpn_service_name": {
         "en": "🔷 Service Name:",
-        "fa": "🔷 نام سرویس:",
+        "fa": "🔷 آیدی سرویس:",
     },
     "vpn_service_status": {
         "en": "💡 Status:",

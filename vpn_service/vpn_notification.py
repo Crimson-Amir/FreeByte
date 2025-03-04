@@ -40,7 +40,7 @@ async def send_message_to_user(context, purchase, text, keyboard):
 
 async def report_service_termination_to_user(context, purchase, ft_instance):
     text = await ft_instance.find_from_database(purchase.chat_id, 'vpn_service_termination_notification')
-    text = text.format(f"<code>{purchase.username}</code>", setting.delete_purchase_after_days)
+    text = text.format(f"<code>{purchase.purchase_id}</code>", setting.delete_purchase_after_days)
     keyboard = [
         [InlineKeyboardButton(await ft_instance.find_from_database(purchase.chat_id, 'vpn_upgrade_service', 'keyboard'), callback_data=f'vpn_upgrade_service__30__40__{purchase.purchase_id}'),
          InlineKeyboardButton(await ft_instance.find_from_database(purchase.chat_id, 'vpn_buy_vpn', 'keyboard'), callback_data=f'vpn_set_period_traffic__30_40_{purchase.product_id}')]
@@ -50,7 +50,7 @@ async def report_service_termination_to_user(context, purchase, ft_instance):
 
 async def report_service_expired_in_days(context, purchase, ft_instance, days_left):
     text = await ft_instance.find_from_database(purchase.chat_id, 'vpn_service_days_notification')
-    text = text.format(f"<code>{purchase.username}</code>", days_left)
+    text = text.format(f"<code>{purchase.purchase_id}</code>", days_left)
     keyboard = [
         [InlineKeyboardButton(await ft_instance.find_from_database(purchase.chat_id,'vpn_upgrade_service','keyboard'), callback_data=f'vpn_upgrade_service__30__40__{purchase.purchase_id}'),
          InlineKeyboardButton(await ft_instance.find_from_database(purchase.chat_id,'vpn_view_service_detail','keyboard'), callback_data=f'vpn_my_service_detail__{purchase.purchase_id}')]
@@ -61,7 +61,7 @@ async def report_service_expired_in_days(context, purchase, ft_instance, days_le
 async def report_service_expired_in_gigabyte(context, purchase, ft_instance, percentage_traffic_consumed:int, left_traffic_in_gigabyte):
     left_traffic = await format_traffic_from_megabyte(ft_instance, int(left_traffic_in_gigabyte * 1024), purchase.chat_id)
     text = await ft_instance.find_from_database(purchase.chat_id, 'vpn_service_gigabyte_percent_notification')
-    text = text.format(percentage_traffic_consumed, f"<code>{purchase.username}</code>", left_traffic)
+    text = text.format(percentage_traffic_consumed, f"<code>{purchase.purchase_id}</code>", left_traffic)
     keyboard = [
         [InlineKeyboardButton(await ft_instance.find_from_database(purchase.chat_id, 'vpn_upgrade_service', 'keyboard'), callback_data=f'vpn_upgrade_service__30__40__{purchase.purchase_id}'),
          InlineKeyboardButton(await ft_instance.find_from_database(purchase.chat_id, 'vpn_view_service_detail', 'keyboard'), callback_data=f'vpn_my_service_detail__{purchase.purchase_id}')]
