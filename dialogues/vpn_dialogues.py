@@ -95,6 +95,10 @@ text_transaction = {
     },
     "vpn_service_name": {
         "en": "🔷 Service Name:",
+        "fa": "🔷 نام سرویس:",
+    },
+    "vpn_service_id": {
+        "en": "🔷 Service Name:",
         "fa": "🔷 آیدی سرویس:",
     },
     "vpn_service_status": {

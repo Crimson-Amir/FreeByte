@@ -110,7 +110,7 @@ async def service_info(update, context):
 
                 text = (
                     f"<b>{await ft_instance.find_text('vpn_selected_service_info')}</b>"
-                    f"\n\n{await ft_instance.find_text('vpn_service_name')} <code>{purchase.purchase_id}</code>"
+                    f"\n\n{await ft_instance.find_text('vpn_service_id')} <code>{purchase.purchase_id}</code>"
                     f"\n\n{await ft_instance.find_text('online_at')} {online_at}"
                     f"\n{await ft_instance.find_text('vpn_service_status')} {service_status.get(service_stauts_server, service_stauts_server)}"
                     f"\n{await ft_instance.find_text('vpn_expire_date')} {expire_date}"
@@ -254,7 +254,8 @@ async def service_advanced_options(update, context):
 
             text = (
                 f"<b>{await ft_instance.find_text('vpn_selected_service_advanced_info')}</b>"
-                f"\n\n{await ft_instance.find_text('vpn_service_name')} {purchase.purchase_id} ({purchase.username})"
+                f"\n\n{await ft_instance.find_text('vpn_service_id')} {purchase.purchase_id}"
+                f"\n{await ft_instance.find_text('vpn_service_name')} {purchase.username}"
                 f"\n\n{await ft_instance.find_text('online_at')} {onlien_at}"
                 f"\n{await ft_instance.find_text('vpn_service_status')} {service_status.get(get_from_server.get('status'), get_from_server.get('status'))}"
                 f"\n{await ft_instance.find_text('vpn_used_traffic')} {used_traffic}GB"
