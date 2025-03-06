@@ -1,5 +1,5 @@
 text_transaction = {
-"vpn_welcome": {
+    "vpn_welcome": {
         "en": "🌟 Welcome to the FreeByte VPN section!",
         "fa": "🌟 به بخش VPN فری‌بایت خوش آمدید!",
     },
@@ -173,11 +173,20 @@ text_transaction = {
     },
     "vpn_android_guide": {
         "en": "💡 How to Connect on Android:"
-              '\n\nCopy the link provided by the bot, open v2rayNG, tap the + icon, and choose "Import config from clipboard".'
+              "\n\nfirst software:"
+              "\ndownload hiddify, enter subscription link via new profile and then add from clipboard tot the app, and then click connect button"
+              '\nlink:\nhttps://play.google.com/store/apps/details?id=app.hiddify.com'
+              '\n\nsecond software:'
+              '\nCopy the link provided by the bot, open v2rayNG, tap the + icon, and choose "Import config from clipboard".'
               '\n\n🔄 Use the "Update Subscription" option anytime to get the latest server list.'
               "\n\n📱 Download v2rayNG here:",
         "fa": "💡 راهنمای اتصال در اندروید:"
-              '\n\nلینک دریافت شده از ربات را کپی کنید، برنامه v2rayNG را باز کرده و روی علامت + کلیک کنید، سپس گزینه "وارد کردن کانفیگ از کلیپ‌بورد" را بزنید.'
+              '\n\nنرم افزا اول:'
+              '\nهیدیفای را دانلود کنید، لینک سابسکریپشن را از طریق گزینه new profile و بعد add from clipboard وارد کنید و گزینه connect را بزنید، نرم افزار بهترین لوکیشن را تشخیص میدهد و به طور اتوماتیک متصل میشوید.'
+              'لینک دانلود:'
+              '\nhttps://play.google.com/store/apps/details?id=app.hiddify.com'
+              '\n\nنرم افزار دوم:'
+              '\nلینک دریافت شده از ربات را کپی کنید، برنامه v2rayNG را باز کرده و روی علامت + کلیک کنید، سپس گزینه "وارد کردن کانفیگ از کلیپ‌بورد" را بزنید.'
               '\n\n🔄 با گزینه "Update Subscription" می‌توانید هر زمان لیست جدید سرورها را دریافت کنید.'
               "\n\n📱 لینک دانلود v2rayNG:",
     },
