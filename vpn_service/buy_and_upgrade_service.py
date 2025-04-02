@@ -114,7 +114,7 @@ async def create_json_config(username, expiration_in_day, traffic_in_byte, servi
                 "Trojan Websocket TLS",
             ],
             "shadowsocks": [
-                "Shadowsocks TCP 2" ,
+                "Shadowsocks TCP 2"
             ],
         },
         "expire": expiration_in_day,
@@ -128,6 +128,8 @@ async def create_json_config(username, expiration_in_day, traffic_in_byte, servi
 
     if traffic_in_byte > 30 * 1024 ** 3:
         config["inbounds"]["shadowsocks"].append("Shadowsocks TCP")
+
+    return config
 
 
 async def create_service_in_servers(session, purchase_id: int):
