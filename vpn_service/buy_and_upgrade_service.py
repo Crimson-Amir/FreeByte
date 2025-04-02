@@ -125,7 +125,7 @@ async def create_json_config(username, expiration_in_day, traffic_in_byte, servi
         "on_hold_timeout": "2023-11-03T20:30:00",
         "on_hold_expire_duration": 0
     }
-    if traffic_in_byte > 30 * 1024 ** 3:
+    if traffic_in_byte >= 30 * 1024 ** 3:
         config["inbounds"]["shadowsocks"].append("Shadowsocks TCP")
 
     return config
