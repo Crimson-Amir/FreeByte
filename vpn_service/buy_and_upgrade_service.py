@@ -83,7 +83,7 @@ async def upgrade_service(update, context):
 
             await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
-async def create_json_config(username, expiration_in_day, traffic_in_byte, service_uuid, status="active"):
+async def create_json_config(username, expiration_in_day, traffic_in_byte, service_uuid, org_traffic, status="active"):
     config = {
         "username": username,
         "proxies": {
@@ -125,7 +125,7 @@ async def create_json_config(username, expiration_in_day, traffic_in_byte, servi
         "on_hold_timeout": "2023-11-03T20:30:00",
         "on_hold_expire_duration": 0
     }
-    if traffic_in_byte >= 30 * 1024 ** 3:
+    if org_traffic >= 30 * 1024 ** 3:
         config["inbounds"]["shadowsocks"].append("Shadowsocks TCP")
 
     return config
@@ -146,7 +146,7 @@ async def create_service_in_servers(session, purchase_id: int):
     date_in_timestamp = (now + timedelta(days=get_purchase.period)).timestamp()
     service_uuid = uuid.uuid4().hex
 
-    json_config = await create_json_config(username, date_in_timestamp, traffic_to_byte, service_uuid=service_uuid)
+    json_config = await create_json_config(username, date_in_timestamp, traffic_to_byte, service_uuid=service_uuid, org_traffic=traffic_to_byte)
     create_user = await panel_api.marzban_api.add_user(get_purchase.product.main_server.server_ip, json_config)
 
     vpn_crud.update_purchase(
@@ -221,6 +221,7 @@ async def upgrade_service_for_user(context, session, purchase_id: int):
 
         json_config = await create_json_config(
             purchase.username, date_in_timestamp, traffic_to_byte,
+            org_traffic= int(purchase.upgrade_traffic * (1024 ** 3)),
             service_uuid=purchase.service_uuid if purchase.service_uuid else uuid.uuid4().hex
         )
         await panel_api.marzban_api.modify_user(main_server_ip, purchase.username, json_config)
@@ -258,7 +259,7 @@ async def handle_http_error(purchase, main_server_ip, purchase_id, original_erro
         traffic_to_byte = int(purchase.traffic * (1024 ** 3))
         expire_date = purchase.register_date
         date_in_timestamp = (expire_date + timedelta(days=purchase.period)).timestamp()
-        json_config = await create_json_config(purchase.username, date_in_timestamp, traffic_to_byte, service_uuid=purchase.service_uuid)
+        json_config = await create_json_config(purchase.username, date_in_timestamp, traffic_to_byte, org_traffic=traffic_to_byte, service_uuid=purchase.service_uuid)
         await panel_api.marzban_api.modify_user(main_server_ip, purchase.username, json_config)
     except requests.exceptions.HTTPError as e:
         logging.error(f'failed to rollback user service!\n{str(e)}\nid: {purchase_id}')

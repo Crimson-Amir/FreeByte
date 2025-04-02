@@ -553,7 +553,7 @@ async def admin_confirm_set_purchase_traffic_and_period(update, context):
 
             date_in_timestamp = (expire_date + timedelta(days=period)).timestamp()
 
-            json_config = await buy_and_upgrade_service.create_json_config(purchase.username, date_in_timestamp, traffic_to_byte, service_uuid=purchase.service_uuid)
+            json_config = await buy_and_upgrade_service.create_json_config(purchase.username, date_in_timestamp, traffic_to_byte, service_uuid=purchase.service_uuid, org_traffic=traffic_to_byte)
             await panel_api.marzban_api.modify_user(main_server_ip, purchase.username, json_config)
 
             msg = (
