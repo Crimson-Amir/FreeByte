@@ -39,7 +39,7 @@ text_transaction = {
     },
     "vpn_service_activated_unlimited_server": {
         "en":"\n\n🔷 Servers with [x0.1] written at the end of their name provide unlimited traffic (multiplier of one-tenth).",
-        "fa": "\n\n🔷 سرورهایی که در انتهای نام آن‌ها [x0.1] نوشته شده‌اند، با ترافیک نامحدود (ضریب یک‌دهم) ارائه می‌شوند.",
+        "fa": "\n\n🔷 سرورهایی که در انتهای نام آن‌ها [x0.1] نوشته شده‌، با ترافیک نامحدود (ضریب یک‌دهم) ارائه می‌شوند.",
     },
     "vpn_subsrciption_address": {
         "en": "🌐 Subscription Address:",
