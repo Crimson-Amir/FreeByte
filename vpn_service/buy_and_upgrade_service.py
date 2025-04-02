@@ -114,7 +114,7 @@ async def create_json_config(username, expiration_in_day, traffic_in_byte, servi
                 "Trojan Websocket TLS",
             ],
             "shadowsocks": [
-                "Shadowsocks TCP" if traffic_in_byte >= 32_212_254_720 else None,
+                "Shadowsocks TCP" if traffic_in_byte >= 32_212_254_720 else "",
             ],
         },
         "expire": expiration_in_day,
