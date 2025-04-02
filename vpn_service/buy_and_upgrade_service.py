@@ -84,7 +84,7 @@ async def upgrade_service(update, context):
             await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
 async def create_json_config(username, expiration_in_day, traffic_in_byte, service_uuid, status="active"):
-    return {
+    config = {
         "username": username,
         "proxies": {
             "vless": {
@@ -95,10 +95,7 @@ async def create_json_config(username, expiration_in_day, traffic_in_byte, servi
             },
             "trojan": {
                 "password": service_uuid
-            },
-            "shadowsocks": {
-                "password": service_uuid
-            },
+            }
         },
         "inbounds": {
             "vless": [
@@ -112,10 +109,7 @@ async def create_json_config(username, expiration_in_day, traffic_in_byte, servi
             ],
             "trojan": [
                 "Trojan Websocket TLS",
-            ],
-            "shadowsocks": [
-                "Shadowsocks TCP" ,
-            ],
+            ]
         },
         "expire": expiration_in_day,
         "data_limit": traffic_in_byte,
@@ -125,6 +119,15 @@ async def create_json_config(username, expiration_in_day, traffic_in_byte, servi
         "on_hold_timeout": "2023-11-03T20:30:00",
         "on_hold_expire_duration": 0
     }
+
+    if traffic_in_byte > 30 * 1024**3:  # 30 GB in bytes
+        config["proxies"]["shadowsocks"] = {
+            "password": service_uuid
+        }
+        config["inbounds"]["shadowsocks"] = ["Shadowsocks TCP"]
+
+    return config
+
 
 
 async def create_service_in_servers(session, purchase_id: int):
