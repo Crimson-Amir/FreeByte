@@ -27,9 +27,11 @@ async def buy_custom_service(update, context):
     period = max(min(int(period_callback), 60), 5) or 30
 
     with SessionLocal() as session:
+        tenth_servers = f"{await ft_instance.find_text('vpn_tenth_with_30gb')}" if traffic < 30 else ""
+
         price = await vpn_utilities.calculate_price(traffic, period, user_detail.id, session)
         text = (f"{await ft_instance.find_text('vpn_buy_service_title')}"
-                f"{await ft_instance.find_text('vpn_tenth_with_30gb')}" if traffic < 30 else ""
+                f"{tenth_servers}"
                 f"\n\n{await ft_instance.find_text('price')} {price:,} {await ft_instance.find_text('irt')}")
 
         keyboard = [
@@ -68,8 +70,9 @@ async def upgrade_service(update, context):
 
             price = await vpn_utilities.calculate_price(traffic, period, user_detail.id, session)
 
+            tenth_servers = f"{await ft_instance.find_text('vpn_tenth_with_30gb')}" if traffic < 30 else ""
             text = (f"{await ft_instance.find_text('vpn_upgrade_service_title')}"
-                    f"{await ft_instance.find_text('vpn_tenth_with_30gb')}" if traffic < 30 else ""
+                    f"{tenth_servers}"
                     f"\n\n{await ft_instance.find_text('price')} {price:,} {await ft_instance.find_text('irt')}")
 
             keyboard = [
