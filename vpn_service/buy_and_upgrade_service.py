@@ -95,10 +95,7 @@ async def create_json_config(username, expiration_in_day, traffic_in_byte, servi
             },
             "trojan": {
                 "password": service_uuid
-            },
-            "shadowsocks": {
-                "password": service_uuid
-            },
+            }
         },
         "inbounds": {
             "vless": [
@@ -112,10 +109,7 @@ async def create_json_config(username, expiration_in_day, traffic_in_byte, servi
             ],
             "trojan": [
                 "Trojan Websocket TLS",
-            ],
-            "shadowsocks": [
-                "Shadowsocks TCP 2"
-            ],
+            ]
         },
         "expire": expiration_in_day,
         "data_limit": traffic_in_byte,
@@ -126,8 +120,11 @@ async def create_json_config(username, expiration_in_day, traffic_in_byte, servi
         "on_hold_expire_duration": 0
     }
 
-    if traffic_in_byte > 30 * 1024 ** 3:
-        config["inbounds"]["shadowsocks"].append("Shadowsocks TCP")
+    if traffic_in_byte > 30 * 1024**3:  # 30 GB in bytes
+        config["proxies"]["shadowsocks"] = {
+            "password": service_uuid
+        }
+        config["inbounds"]["shadowsocks"] = ["Shadowsocks TCP"]
 
     return config
 
