@@ -6,6 +6,8 @@ from io import BytesIO
 import requests.exceptions
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 import utilities_reFactore
+from WebApp.WebAppDialogue import transaction
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from utilities_reFactore import FindText, message_token, handle_error, report_to_admin
 from crud import vpn_crud, crud
@@ -27,6 +29,7 @@ async def buy_custom_service(update, context):
     with SessionLocal() as session:
         price = await vpn_utilities.calculate_price(traffic, period, user_detail.id, session)
         text = (f"{await ft_instance.find_text('vpn_buy_service_title')}"
+                f"{await ft_instance.find_text('vpn_tenth_with_30gb')}" if traffic < 30 else ""
                 f"\n\n{await ft_instance.find_text('price')} {price:,} {await ft_instance.find_text('irt')}")
 
         keyboard = [
@@ -66,6 +69,7 @@ async def upgrade_service(update, context):
             price = await vpn_utilities.calculate_price(traffic, period, user_detail.id, session)
 
             text = (f"{await ft_instance.find_text('vpn_upgrade_service_title')}"
+                    f"{await ft_instance.find_text('vpn_tenth_with_30gb')}" if traffic < 30 else ""
                     f"\n\n{await ft_instance.find_text('price')} {price:,} {await ft_instance.find_text('irt')}")
 
             keyboard = [
