@@ -189,9 +189,11 @@ async def create_service_for_user(context, session, purchase_id: int):
                  InlineKeyboardButton(await ft_instance.find_from_database(get_purchase.chat_id, 'my_services', 'keyboard'), callback_data=f"vpn_my_services_new__1")],
                 [InlineKeyboardButton(await ft_instance.find_from_database(get_purchase.chat_id,'bot_main_menu', 'keyboard'), callback_data=f"start_in_new_message")]]
 
-    service_activated_text = (await ft_instance.find_from_database(get_purchase.chat_id, 'vpn_service_activated')).service_activated_text.format(get_purchase.username)
-    if get_purchase.traffic > tenth_servers_limit_gb:
+    service_activated_text = (await ft_instance.find_from_database(get_purchase.chat_id, 'vpn_service_activated')).format(get_purchase.username)
+
+    if get_purchase.traffic >= tenth_servers_limit_gb:
         service_activated_text += await ft_instance.find_from_database(get_purchase.chat_id, 'vpn_service_activated_unlimited_server')
+
     text = (f'{service_activated_text}'
             f'\n\n<code>{sub_link}</code>')
 
