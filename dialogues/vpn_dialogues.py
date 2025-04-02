@@ -5,7 +5,7 @@ text_transaction = {
     },
     "vpn_tenth_with_gb": {
         "en": "By purchasing at least {0} GB, you'll get access to unlimited servers (with a 1/10 multiplier)!",
-        "fa": "با خرید حداقل {1} گیگابایت، به سرور های نامحدود (ضریب یک دهم) دسترسی داشته باشید!",
+        "fa": "با خرید حداقل {0} گیگابایت، به سرور های نامحدود (ضریب یک دهم) دسترسی داشته باشید!",
     },
     "please_send_only_id_number": {
         "en": "Please send only the number part.",
