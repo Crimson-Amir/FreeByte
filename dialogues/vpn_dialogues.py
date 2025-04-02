@@ -33,11 +33,9 @@ text_transaction = {
     },
     "vpn_service_activated": {
         "en": "✅ Your VPN service named {0} has been successfully activated!"
-              "\n\n🔺 Please update your subscription from the client app every day."
-              "\n\n🔷 Servers with [x0.1] written at the end of their name provide unlimited traffic (multiplier of one-tenth).",
+              "\n\n🔺 Please update your subscription from the client app every day.",
         "fa": "✅ سرویس VPN شما با نام {0} فعال شد!"
               "\n\n🔺 لطفاً هر روز اشتراک را از طریق برنامه‌ای که استفاده می‌کنید، آپدیت کنید. (اطلاعات بیشتر در راهنمای اتصال)"
-              "\n\n🔷 سرورهایی که در انتهای نام آن‌ها [x0.1] نوشته شده‌اند، با ترافیک نامحدود (ضریب یک‌دهم) ارائه می‌شوند.",
     },
     "vpn_service_activated_unlimited_server": {
         "en":"\n\n🔷 Servers with [x0.1] written at the end of their name provide unlimited traffic (multiplier of one-tenth).",
