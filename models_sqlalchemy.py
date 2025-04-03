@@ -1,7 +1,7 @@
 from database_sqlalchemy import Base
 from sqlalchemy import Integer, String, Column, Boolean, ForeignKey, DateTime, BigInteger, ARRAY, Text, JSON
 from sqlalchemy.orm import relationship
-from datetime import datetime
+from datetime import datetime, UTC
 
 class UserDetail(Base):
     __tablename__ = 'user_detail'
@@ -17,7 +17,7 @@ class UserDetail(Base):
     language = Column(String, default='fa')
     wallet = Column(Integer, default=0)
     invited_by = Column(BigInteger, ForeignKey('user_detail.chat_id'))
-    register_date = Column(DateTime, default=datetime.utcnow)
+    register_date = Column(DateTime, default=lambda: datetime.now(UTC))
     financial_reports = relationship("FinancialReport", back_populates="owner", cascade="all, delete-orphan")
     services = relationship("Purchase", back_populates="owner", cascade="all, delete-orphan")
     virtual_numbers = relationship("VirtualNumber", back_populates="owner", cascade="all, delete-orphan")
@@ -64,7 +64,7 @@ class FinancialReport(Base):
     additional_data = Column(String)
     payment_status = Column(String)
 
-    register_date = Column(DateTime, default=datetime.utcnow)
+    register_date = Column(DateTime, default=lambda: datetime.now(UTC))
 
     chat_id = Column(BigInteger, ForeignKey('user_detail.chat_id'))
     owner = relationship("UserDetail", back_populates="financial_reports")
@@ -87,7 +87,7 @@ class Product(Base):
     product_id = Column(Integer, primary_key=True)
     active = Column(Boolean)
     product_name = Column(String)
-    register_date = Column(DateTime, default=datetime.utcnow)
+    register_date = Column(DateTime, default=lambda: datetime.now(UTC))
     purchase = relationship("Purchase", back_populates="product")
 
     main_server_id = Column(Integer, ForeignKey('main_server.server_id'))
@@ -116,7 +116,7 @@ class Purchase(Base):
     owner = relationship("UserDetail", back_populates="services")
 
     expired_at = Column(DateTime)
-    register_date = Column(DateTime, default=datetime.utcnow)
+    register_date = Column(DateTime, default=lambda: datetime.now(UTC))
 
 
 class VirtualNumber(Base):
@@ -132,7 +132,7 @@ class VirtualNumber(Base):
 
     chat_id = Column(BigInteger, ForeignKey('user_detail.chat_id'))
     owner = relationship("UserDetail", back_populates="virtual_numbers")
-    register_date = Column(DateTime, default=datetime.utcnow)
+    register_date = Column(DateTime, default=lambda: datetime.now(UTC))
 
 
 class Statistics(Base):
@@ -140,7 +140,7 @@ class Statistics(Base):
 
     statistics_id = Column(Integer, primary_key=True)
     traffic_usage = Column(String)
-    register_date = Column(DateTime, default=datetime.utcnow)
+    register_date = Column(DateTime, default=lambda: datetime.now(UTC))
 
 
 class LastUsage(Base):
@@ -148,4 +148,4 @@ class LastUsage(Base):
 
     last_usage_id = Column(Integer, primary_key=True)
     last_usage = Column(JSON)
-    register_date = Column(DateTime, default=datetime.utcnow)
+    register_date = Column(DateTime, default=lambda: datetime.now(UTC))
