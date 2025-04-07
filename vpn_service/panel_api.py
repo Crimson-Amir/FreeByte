@@ -11,9 +11,9 @@ class MarzbanAPI:
         self.session = requests.Session()
         self.refresh_connection()
 
-    def make_request(self, method, url, **kwargs):
+    def make_request(self, method, url, timeout=30, **kwargs):
         """Make an HTTP request and return JSON response."""
-        response = self.session.request(method, url, **kwargs)
+        response = self.session.request(method, url, timeout=timeout, **kwargs)
         response.raise_for_status()
         return response.json()
 
@@ -51,44 +51,44 @@ class MarzbanAPI:
         """Retrieve user subscription info."""
         endpoint = f"/s/{token}/info"
         url, headers = self.initialize_request(main_server_ip, endpoint)
-        return self.make_request('get', url, headers=headers)
+        return self.make_request('get', url, timeout=10, headers=headers)
 
     async def user_subscription_usage(self, main_server_ip, token):
         """Retrieve user subscription info."""
         endpoint = f"/s/{token}/usage"
         url, headers = self.initialize_request(main_server_ip, endpoint)
-        return self.make_request('get', url, headers=headers)
+        return self.make_request('get', url, timeout=10, headers=headers)
 
     async def get_system_stats(self, main_server_ip):
         """Retrieve system statistics."""
         endpoint = "/api/system"
         url, headers = self.initialize_request(main_server_ip, endpoint)
-        return self.make_request('get', url, headers=headers)
+        return self.make_request('get', url, timeout=5,headers=headers)
 
     async def get_inbounds(self, main_server_ip):
         """Retrieve inbound statistics."""
         endpoint = "/api/inbounds"
         url, headers = self.initialize_request(main_server_ip, endpoint)
-        return self.make_request('get', url, headers=headers)
+        return self.make_request('get', url, timeout=5, headers=headers)
 
     async def get_host(self, main_server_ip):
         """Retrieve host statistics."""
         endpoint = "/api/hosts"
         url, headers = self.initialize_request(main_server_ip, endpoint)
-        return self.make_request('get', url, headers=headers)
+        return self.make_request('get', url, timeout=5, headers=headers)
 
     async def get_core_stats(self, main_server_ip):
         """Retrieve core statistics."""
         endpoint = "/api/core"
         url, headers = self.initialize_request(main_server_ip, endpoint)
-        return self.make_request('get', url, headers=headers)
+        return self.make_request('get', url, timeout=5, headers=headers)
 
 
     async def restart_core(self, main_server_ip):
         """Restart core service."""
         endpoint = "/api/core/restart"
         url, headers = self.initialize_request(main_server_ip, endpoint)
-        return self.make_request('post', url, headers=headers)
+        return self.make_request('post', url, timeout=5, headers=headers)
 
     async def add_user(self, main_server_ip, user_data):
         """Add a new user."""
@@ -100,7 +100,7 @@ class MarzbanAPI:
         """Retrieve a user by username."""
         endpoint = f"/api/user/{username}"
         url, headers = self.initialize_request(main_server_ip, endpoint)
-        return self.make_request('get', url, headers=headers)
+        return self.make_request('get', url, timeout=10, headers=headers)
 
     async def modify_user(self, main_server_ip, username, user_data):
         """Modify user details."""
@@ -124,19 +124,19 @@ class MarzbanAPI:
         """Retrieve all users."""
         endpoint = "/api/users"
         url, headers = self.initialize_request(main_server_ip, endpoint)
-        return self.make_request('get', url, headers=headers)
+        return self.make_request('get', url, timeout=10, headers=headers)
 
     async def get_nodes(self, main_server_ip):
         """Retrieve node statistics."""
         endpoint = "/api/nodes"
         url, headers = self.initialize_request(main_server_ip, endpoint)
-        return self.make_request('get', url, headers=headers)
+        return self.make_request('get', url, timeout=5, headers=headers)
 
     async def get_nodes_usage(self, main_server_ip):
         """Retrieve node usage statistics."""
         endpoint = "/api/nodes/usage"
         url, headers = self.initialize_request(main_server_ip, endpoint)
-        return self.make_request('get', url, headers=headers)
+        return self.make_request('get', url, timeout=5, headers=headers)
 
     async def reset_user_data_usage(self, main_server_ip, username):
         """Retrieve node usage statistics."""

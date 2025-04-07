@@ -121,7 +121,7 @@ async def create_json_config(username, expiration_in_day, traffic_in_byte, servi
                 "Trojan Websocket TLS",
             ],
             "shadowsocks": [
-                "Shadowsocks TCP 2" ,
+                "Shadowsocks TCP 2"
             ],
         },
         "expire": expiration_in_day,
@@ -148,7 +148,7 @@ async def create_service_in_servers(session, purchase_id: int):
         f"{''.join(random.choices(string.ascii_lowercase, k=3))}"
     )
 
-    traffic_to_byte = int(get_purchase.traffic * (1024 ** 3))
+    traffic_to_byte = int(get_purchase.traffic * 1024 ** 3)
     now = datetime.now(pytz.timezone('Asia/Tehran'))
     date_in_timestamp = (now + timedelta(days=get_purchase.period)).timestamp()
     service_uuid = uuid.uuid4().hex
@@ -177,7 +177,7 @@ async def create_service_for_user(context, session, purchase_id: int):
     server_port = f":{main_server.server_port}" if main_server.server_port != 443 else ""
     sub_link = f"{main_server.server_protocol}{main_server.server_ip}{server_port}{get_purchase.subscription_url}"
 
-    qr_code = qrcode.QRCode(version=1,error_correction=qrcode.constants.ERROR_CORRECT_L,box_size=10,border=4)
+    qr_code = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
     qr_code.add_data(sub_link)
     qr_code.make(fit=True)
     qr_image = qr_code.make_image(fill='black', back_color='white')
@@ -231,7 +231,7 @@ async def upgrade_service_for_user(context, session, purchase_id: int):
 
         json_config = await create_json_config(
             purchase.username, date_in_timestamp, traffic_to_byte,
-            org_traffic= int(purchase.upgrade_traffic * (1024 ** 3)),
+            org_traffic= int(purchase.upgrade_traffic * 1024 ** 3),
             service_uuid=purchase.service_uuid if purchase.service_uuid else uuid.uuid4().hex
         )
         await panel_api.marzban_api.modify_user(main_server_ip, purchase.username, json_config)
