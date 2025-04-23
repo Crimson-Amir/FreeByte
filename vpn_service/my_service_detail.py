@@ -161,6 +161,7 @@ async def ask_remove_service_for_user(update, context):
             expiry = datetime.fromtimestamp(user['expire'])
             now = datetime.now(pytz.timezone('Asia/Tehran')).replace(tzinfo=None)
             days_left = (expiry - now).days
+            text = f"<b>{await ft_instance.find_text('vpn_ask_user_for_removing_service')}</b>"
 
             if user['status'] == 'active' and days_left >= setting.REMOVE_DAYS_REFUND:
                 usage_traffic_in_gigabyte = round(user['used_traffic'] / (1024 ** 3), 2)
@@ -168,13 +169,10 @@ async def ask_remove_service_for_user(update, context):
                 traffic_left_in_gigabyte = data_limit_in_gigabyte - usage_traffic_in_gigabyte
 
                 returnable_amount = await vpn_utilities.calculate_price(traffic_left_in_gigabyte, days_left, purchase.chat_id, session)
-                text_notify = f"\n\n<b>{await ft_instance.find_text('vpn_unable_to_refund_for_inactive_service')}</b>"
-
-            text = f"<b>{await ft_instance.find_text('vpn_ask_user_for_removing_service')}</b>"
-
-            if returnable_amount:
-                text_notify += f"<b>\n{await ft_instance.find_text('returnable_amount')}</b>"
+                text_notify = f"<b>\n{await ft_instance.find_text('returnable_amount')}</b>"
                 text_notify = text_notify.format(f"{returnable_amount:,}")
+            else:
+                text_notify = f"\n\n<b>{await ft_instance.find_text('vpn_unable_to_refund_for_inactive_service')}</b>"
 
             text += text_notify
 
