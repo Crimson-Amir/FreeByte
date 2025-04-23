@@ -71,7 +71,7 @@ async def upgrade_service(update, context):
             price = await vpn_utilities.calculate_price(traffic, period, user_detail.id, session)
 
             limits = [(30, 40), (60, 60), (90, 90)]
-            if any(org_traffic >= gb * 1024 ** 3 and expiration_in_day <= days for gb, days in limits):
+            if any(traffic >= gb * 1024 ** 3 and period <= days for gb, days in limits):
                 tenth_servers = f"\n\n{(await ft_instance.find_text('vpn_tenth_server_info'))}"
             else:
                 traffic_require = next(
