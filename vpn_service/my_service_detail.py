@@ -318,11 +318,11 @@ async def revoke_service_for_user(update, context):
             if not purchase:
                 return await query.answer(await ft_instance.find_text('this_service_is_not_available'), show_alert=True)
 
-            main_server_ip = purchase.product.main_server.server_ip
-            result = await panel_api.marzban_api.revoke_user(main_server_ip, purchase.username)
-
+            main_server = purchase.product.main_server
+            result = await panel_api.marzban_api.revoke_user(main_server.server_ip, purchase.username)
+            sub_link = f"{main_server.server_protocol}{main_server.server_ip}{server_port}{result.get('subscription_url', 'ERROR!')}"
             text = await ft_instance.find_text('vpn_service_revoked_successfully')
-            text += f"\n\n<code>{result.get('subscription_url', 'ERROR!')}</code>"
+            text += f"\n\n<code>{sub_link}</code>"
             keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=f'vpn_advanced_options__{purchase_id}')]]
 
             await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))

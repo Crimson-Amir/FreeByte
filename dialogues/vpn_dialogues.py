@@ -399,8 +399,8 @@ keyboard_transaction = {
         "fa": "🛒 خرید سرویس",
     },
     "revoke_button": {
-        "en": "Revoke",
-        "fa": "تغییر لینک",
+        "en": "Revoke ⇅",
+        "fa": "تغییر لینک ⇅",
     },
     "all_services_report": {
         "en": "General Report",
