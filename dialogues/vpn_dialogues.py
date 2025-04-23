@@ -280,6 +280,10 @@ text_transaction = {
         "en": "Tuesday",
         "fa": "سه‌شنبه",
     },
+    "revoke_button": {
+        "en": "Revoke",
+        "fa": "تغییر لینک",
+    },
     "wednesday": {
         "en": "Wednesday",
         "fa": "چهارشنبه",

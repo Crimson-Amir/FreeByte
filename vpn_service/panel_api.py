@@ -114,6 +114,12 @@ class MarzbanAPI:
         url, headers = self.initialize_request(main_server_ip, endpoint)
         return self.make_request('delete', url, headers=headers)
 
+    async def revoke_user(self, main_server_ip, username):
+        """Remove a user."""
+        endpoint = f"/api/user/{username}/revoke_sub"
+        url, headers = self.initialize_request(main_server_ip, endpoint)
+        return self.make_request('post', url, headers=headers)
+
     async def delete_expired_users(self, main_server_ip):
         """Delete expired users."""
         endpoint = "/api/users/expired"
