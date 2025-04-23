@@ -3,6 +3,14 @@ text_transaction = {
         "en": "🌟 Welcome to the FreeByte VPN section!",
         "fa": "🌟 به بخش VPN فری‌بایت خوش آمدید!",
     },
+    "vpn_ask_user_for_revoke_service": {
+        "en": "❓ Are you sure you want to revoke this link? think link will be disconnect.",
+        "fa": "❓آیا از باطل کردن لینک فعلی و ساخت لینک جدید اطمینان دارید؟ لینک فعلی غیرفعال خواهد شد.",
+    },
+    "vpn_service_revoked_successfully": {
+        "en": "✅ previous link revoked successfully. new link:",
+        "fa": "✅ لینک قبلی باطل شد، لینک جدید سرویس:",
+    },
     "vpn_tenth_server_info": {
         "en": "• x0.1 servers make your traffic multiply by 10",
         "fa": "• سرورهای x0.1 ترافیک سرویس شمارو 10 برابر میکنند.",
