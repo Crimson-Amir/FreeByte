@@ -69,10 +69,10 @@ async def report_service_expired_in_gigabyte(context, purchase, ft_instance, per
     await send_message_to_user(context, purchase, text, keyboard)
 
 
-async def report_service_expired_in_gigabyte_2(context, purchase, ft_instance, percentage_traffic_consumed:int, left_traffic_in_gigabyte):
+async def report_service_expired_in_gigabyte_2(context, purchase, ft_instance, left_traffic_in_gigabyte):
     left_traffic = await format_traffic_from_megabyte(ft_instance, int(left_traffic_in_gigabyte * 1024), purchase.chat_id)
     text = await ft_instance.find_from_database(purchase.chat_id, 'vpn_traffic_second_warning_traffic')
-    text = text.format(percentage_traffic_consumed, f"<code>{purchase.purchase_id}</code>", left_traffic)
+    text = text.format(f"<code>{purchase.purchase_id}</code>", left_traffic)
     keyboard = [
         [InlineKeyboardButton(await ft_instance.find_from_database(purchase.chat_id, 'vpn_upgrade_service', 'keyboard'), callback_data=f'vpn_upgrade_service__30__40__{purchase.purchase_id}'),
          InlineKeyboardButton(await ft_instance.find_from_database(purchase.chat_id, 'vpn_view_service_detail', 'keyboard'), callback_data=f'vpn_my_service_detail__{purchase.purchase_id}')],
@@ -120,7 +120,9 @@ async def notification_timer(context):
                                     session,
                                     purchase.purchase_id,
                                     expired_at=datetime.now(),
-                                    status=service_stauts
+                                    status=service_stauts,
+                                    traffic_notification_status=True,
+                                    traffic_notification_status_2=True
                                 )
                                 session.commit()
                                 await report_service_termination_to_user(context, purchase, ft_instanc)
@@ -153,7 +155,6 @@ async def notification_timer(context):
                                     context,
                                     purchase,
                                     ft_instanc,
-                                    traffic_percent,
                                     traffic_left_in_gigabyte
                                 )
 

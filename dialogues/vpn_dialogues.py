@@ -3,7 +3,11 @@ text_transaction = {
         "en": "🌟 Welcome to the FreeByte VPN section!",
         "fa": "🌟 به بخش VPN فری‌بایت خوش آمدید!",
     },
-    "vpn_tenth_with_gb": {
+    "vpn_tenth_server_info": {
+        "en": "🌟 Welcome to the FreeByte VPN section!",
+        "fa": "🌟 به بخش VPN فری‌بایت خوش آمدید!",
+    },
+    "vpn_tenth_require": {
         "en": "By purchasing at least {0} GB, you'll get access to unlimited servers (with a 1/10 multiplier)!",
         "fa": "با خرید حداقل {0} گیگابایت، به سرور های نامحدود (ضریب یک دهم) دسترسی داشته باشید!",
     },
