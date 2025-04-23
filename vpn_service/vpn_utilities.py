@@ -58,7 +58,11 @@ async def remove_service_in_server(session, purchase, context=None):
     user = await panel_api.marzban_api.get_user(main_server_ip, purchase.username)
     returnable_amount = 0
 
-    if user['status'] == 'active':
+    expiry = datetime.fromtimestamp(user['expire'])
+    now = datetime.now(pytz.timezone('Asia/Tehran')).replace(tzinfo=None)
+    days_left = (expiry - now).days
+
+    if user['status'] == 'active' and days_left >= setting.REMOVE_DAYS_REFUND:
 
         usage_traffic_in_gigabyte = round(user['used_traffic'] / (1024 ** 3), 2)
         data_limit_in_gigabyte = round(user['data_limit'] / (1024 ** 3), 2)
