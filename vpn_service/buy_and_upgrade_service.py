@@ -75,7 +75,7 @@ async def upgrade_service(update, context):
                 tenth_servers = f"\n\n{(await ft_instance.find_text('vpn_tenth_server_info'))}"
             else:
                 traffic_require = next(
-                    (gb for gb, days in limits if period < days), 30
+                    (gb for gb, days in limits if period <= days), 30
                 )
                 tenth_servers = f"\n\n{(await ft_instance.find_text('vpn_tenth_require')).format(traffic_require)}"
 
