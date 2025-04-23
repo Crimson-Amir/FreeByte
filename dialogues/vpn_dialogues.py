@@ -28,8 +28,8 @@ text_transaction = {
         "fa": "🎯 مشخصات سرویس خود را تنظیم کنید:",
     },
     "vpn_upgrade_service_title": {
-        "en": "🔄 If your service has ended, the following specifications will replace the current ones.",
-        "fa": "🔄 درصورتی که سرویس شما به پایان رسیده است، مشخصات زیر جایگزین مشخصات قبلی می‌شوند.",
+        "en": "⚠️ this service will replace with your current service!",
+        "fa": "⚠️ این مشخصات جایگزین سرویس فعلی شما میشوند!",
     },
     "vpn_service_activated": {
         "en": "✅ Your VPN service named {0} has been successfully activated!"
@@ -158,6 +158,10 @@ text_transaction = {
     "returnable_amount": {
         "en": "Refundable amount: {0}",
         "fa": "مبلغ قابل بازگشت: {0}",
+    },
+    "vpn_unable_to_refund_for_inactive_service": {
+        "en": "• you don't get refund for removing this service.",
+        "fa": "• با حذف این سرویس بازپرداخت انجام نخواهد شد.",
     },
     "vpn_service_deleted_successfully": {
         "en": "✅ Service successfully deleted!",
@@ -350,6 +354,14 @@ text_transaction = {
               "\nحجم باقی مانده از سرویس {2} است."
               "\nدر صورتی که تمایل دارید نسبت به بررسی و یا تمدید سرویس اقدام کنید.",
     },
+    "vpn_traffic_second_warning_traffic": {
+        "en": "🟠 Service Traffic Notification"
+              "\nOnly {1} remains from service number {0}"
+              "\nIf you want to check or renew the service.",
+        "fa": "🟠 اطلاع رسانی حجم سرویس"
+              "\nاز سرویس شماره {0} فقط {1} باقی مانده است."
+              "\nدر صورتی که تمایل دارید نسبت به بررسی و یا تمدید سرویس اقدام کنید.",
+    },
     "check_service_detail": {
         "en": "Check Service Detail",
         "fa": "مشاهده جزئیات سرویس",
@@ -364,6 +376,10 @@ keyboard_transaction = {
     'uptime_status': {
         "en": "Status ↕",
         "fa": "وضعیت ↥"
+    },
+    'webapp_key_notification': {
+        "en": "WebApp without Strict",
+        "fa": "وب‌اپلیکیشن بدون فیلتر"
     },
     "vpn_buy_vpn": {
         "en": "🛒 Buy Service",

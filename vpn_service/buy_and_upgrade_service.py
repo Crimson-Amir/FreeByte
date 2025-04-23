@@ -214,18 +214,11 @@ async def upgrade_service_for_user(context, session, purchase_id: int):
     ft_instance = FindText(None, None)
     main_server_ip = purchase.product.main_server.server_ip
     try:
-        user = await panel_api.marzban_api.get_user(main_server_ip, purchase.username)
 
-        if user['status'] == 'active':
-            traffic_to_byte = int((purchase.upgrade_traffic * (1024 ** 3)) + user['data_limit'])
-            expire_date = datetime.fromtimestamp(user['expire'])
-            new_traffic = purchase.traffic + purchase.upgrade_traffic
-            new_period = purchase.period + purchase.upgrade_period
-        else:
-            await panel_api.marzban_api.reset_user_data_usage(main_server_ip, purchase.username)
-            traffic_to_byte = int(purchase.upgrade_traffic * (1024 ** 3))
-            expire_date = datetime.now(pytz.timezone('Asia/Tehran'))
-            new_period, new_traffic = purchase.upgrade_period, purchase.upgrade_traffic
+        await panel_api.marzban_api.reset_user_data_usage(main_server_ip, purchase.username)
+        traffic_to_byte = int(purchase.upgrade_traffic * (1024 ** 3))
+        expire_date = datetime.now(pytz.timezone('Asia/Tehran'))
+        new_period, new_traffic = purchase.upgrade_period, purchase.upgrade_traffic
 
         date_in_timestamp = (expire_date + timedelta(days=purchase.upgrade_period)).timestamp()
 
@@ -250,7 +243,8 @@ async def upgrade_service_for_user(context, session, purchase_id: int):
             register_date=datetime.now(pytz.timezone('Asia/Tehran')),
             expired_at=None,
             day_notification_status=False,
-            traffic_notification_status=False
+            traffic_notification_status=False,
+            traffic_notification_status_2=False
         )
 
         session.refresh(purchase)

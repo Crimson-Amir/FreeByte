@@ -104,6 +104,7 @@ class Purchase(Base):
     period = Column(Integer)
     day_notification_status = Column(Boolean, default=False)
     traffic_notification_status = Column(Boolean, default=False)
+    traffic_notification_status_2 = Column(Boolean, default=False)
     service_uuid = Column(String)
     subscription_url = Column(String)
 

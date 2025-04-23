@@ -146,7 +146,7 @@ async def ask_remove_service_for_user(update, context):
     user_detail = update.effective_chat
     purchase_id = int(query.data.replace('vpn_remove_service_ask__', ''))
 
-    with SessionLocal() as session:
+    with (SessionLocal() as session):
         with session.begin():
             purchase = vpn_crud.get_purchase_with_chat_id(session, purchase_id, user_detail.id)
 
@@ -158,22 +158,25 @@ async def ask_remove_service_for_user(update, context):
             user = await panel_api.marzban_api.get_user(main_server_ip, purchase.username)
             returnable_amount = 0
 
-            if user['status'] == 'active':
+            expiry = datetime.fromtimestamp(user['expire'])
+            now = datetime.now(pytz.timezone('Asia/Tehran')).replace(tzinfo=None)
+            days_left = (expiry - now).days
+
+            if user['status'] == 'active' and days_left >= setting.REMOVE_DAYS_REFUND:
                 usage_traffic_in_gigabyte = round(user['used_traffic'] / (1024 ** 3), 2)
                 data_limit_in_gigabyte = round(user['data_limit'] / (1024 ** 3), 2)
                 traffic_left_in_gigabyte = data_limit_in_gigabyte - usage_traffic_in_gigabyte
 
-                expiry = datetime.fromtimestamp(user['expire'])
-                now = datetime.now(pytz.timezone('Asia/Tehran')).replace(tzinfo=None)
-                days_left = (expiry - now).days
-
                 returnable_amount = await vpn_utilities.calculate_price(traffic_left_in_gigabyte, days_left, purchase.chat_id, session)
 
             text = f"<b>{await ft_instance.find_text('vpn_ask_user_for_removing_service')}</b>"
+            text_notify = f"\n\n<b>{await ft_instance.find_text('vpn_unable_to_refund_for_inactive_service')}</b>"
 
             if returnable_amount:
-                text += f"<b>\n{await ft_instance.find_text('returnable_amount')}</b>"
-                text = text.format(f"{returnable_amount:,}")
+                text_notify += f"<b>\n{await ft_instance.find_text('returnable_amount')}</b>"
+                text_notify = text_notify.format(f"{returnable_amount:,}")
+
+            text += text_notify
 
             keyboard = [
                 [InlineKeyboardButton(await ft_instance.find_keyboard('yes_im_sure'), callback_data=f'vpn_remove_service__{purchase_id}')],
