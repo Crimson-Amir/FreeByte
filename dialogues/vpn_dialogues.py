@@ -28,8 +28,8 @@ text_transaction = {
         "fa": "🎯 مشخصات سرویس خود را تنظیم کنید:",
     },
     "vpn_upgrade_service_title": {
-        "en": "⚠️ this service will replace with your current service!",
-        "fa": "⚠️ این مشخصات جایگزین سرویس فعلی شما میشوند!",
+        "en": "🟡 this service will replace with your current service!",
+        "fa": "🟡 این مشخصات جایگزین سرویس فعلی شما میشوند!",
     },
     "vpn_service_activated": {
         "en": "✅ Your VPN service named {0} has been successfully activated!"

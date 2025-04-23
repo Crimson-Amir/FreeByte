@@ -144,7 +144,7 @@ async def notification_timer(context):
                                     traffic_left_in_gigabyte
                                 )
 
-                            elif not purchase.traffic_notification_status_2 and traffic_left_in_gigabyte >= setting.LEFT_TRAFFIC_SECOND_WARNING_GB:
+                            elif not purchase.traffic_notification_status_2 and traffic_left_in_gigabyte <= setting.LEFT_TRAFFIC_SECOND_WARNING_GB:
                                 vpn_crud.update_purchase(
                                     session, purchase.purchase_id,
                                     traffic_notification_status_2=True

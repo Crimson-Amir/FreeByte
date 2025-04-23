@@ -97,8 +97,6 @@ async def handle_successful_payment(session, financial, authority, payment_getwa
     if financial.action == 'upgrade_vpn_service':
         purchase, upgrade_traffic, upgrade_period = await buy_and_upgrade_service.upgrade_service_for_user(context, session, financial.id_holder)
         extra_data = (f"\n\nService Username: {purchase.username}"
-                      f"\nService Traffic Now: {purchase.traffic}GB"
-                      f"\nService Period Now: {purchase.period} Day"
                       f"\nUpgrade Traffic: {upgrade_traffic}GB"
                       f"\nUpgrade Period: {upgrade_period} Day")
 
