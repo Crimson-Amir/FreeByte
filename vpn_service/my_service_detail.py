@@ -320,6 +320,7 @@ async def revoke_service_for_user(update, context):
 
             main_server = purchase.product.main_server
             result = await panel_api.marzban_api.revoke_user(main_server.server_ip, purchase.username)
+            server_port = f":{main_server.server_port}" if main_server.server_port != 443 else ""
             sub_link = f"{main_server.server_protocol}{main_server.server_ip}{server_port}{result.get('subscription_url', 'ERROR!')}"
             text = await ft_instance.find_text('vpn_service_revoked_successfully')
             text += f"\n\n<code>{sub_link}</code>"
