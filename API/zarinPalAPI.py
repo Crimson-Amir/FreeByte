@@ -7,7 +7,7 @@ class ZarinPal:
 class MakeRequest:
     @staticmethod
     async def send_request(method, url, params=None, json=None, data=None, header=None, session_header=None):
-        timeout = aiohttp.ClientTimeout(total=10)  # Set a 10-second timeout
+        timeout = aiohttp.ClientTimeout(total=7)  # Set a 10-second timeout
         async with aiohttp.ClientSession(headers=session_header, timeout=timeout) as session:
             async with session.request(method, url, params=params, json=json, data=data, headers=header) as response:
                 response.raise_for_status()
