@@ -156,7 +156,6 @@ async def ask_remove_service_for_user(update, context):
             main_server_ip = purchase.product.main_server.server_ip
 
             user = await panel_api.marzban_api.get_user(main_server_ip, purchase.username)
-            returnable_amount = 0
 
             expiry = datetime.fromtimestamp(user['expire'])
             now = datetime.now(pytz.timezone('Asia/Tehran')).replace(tzinfo=None)
@@ -273,6 +272,7 @@ async def service_advanced_options(update, context):
                  InlineKeyboardButton(await ft_instance.find_keyboard('refresh'), callback_data=f'vpn_advanced_options__{purchase_id}')],
                 [InlineKeyboardButton(await ft_instance.find_keyboard('vpn_change_service_ownership'), callback_data=f'vpn_change_service_ownership__{purchase_id}'),
                  InlineKeyboardButton(await ft_instance.find_keyboard('uptime_status'), url=f'http://uptime.freebyteshop.click:3001/status/servers')],
+                [InlineKeyboardButton(await ft_instance.find_keyboard('revoke_button'), callback_data=f'vpn_my_serv_rev__{purchase.purchase_id}')],
                 [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=f'vpn_my_service_detail__{purchase.purchase_id}')]
             ]
 
@@ -287,6 +287,45 @@ async def service_advanced_options(update, context):
 
     except Exception as e:
         raise e
+
+
+@handle_error.handle_functions_error
+@message_token.check_token
+async def ask_revoke_service_for_user(update, context):
+    query = update.callback_query
+    ft_instance = FindText(update, context)
+    purchase_id = int(query.data.replace('vpn_my_serv_rev__', ''))
+    text = f"<b>{await ft_instance.find_text('vpn_ask_user_for_revoke_service')}</b>"
+
+    keyboard = [
+        [InlineKeyboardButton(await ft_instance.find_keyboard('yes_im_sure'), callback_data=f'vpn_revoke_service__{purchase_id}')],
+        [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=f'vpn_advanced_options__{purchase_id}')]
+    ]
+
+    await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+
+
+@handle_error.handle_functions_error
+@message_token.check_token
+async def revoke_service_for_user(update, context):
+    query = update.callback_query
+    ft_instance = FindText(update, context)
+    purchase_id = int(query.data.replace('vpn_revoke_service__', ''))
+
+    with SessionLocal() as session:
+        with session.begin():
+            purchase = vpn_crud.get_purchase(session, purchase_id)
+            if not purchase:
+                return await query.answer(await ft_instance.find_text('this_service_is_not_available'), show_alert=True)
+
+            main_server_ip = purchase.product.main_server.server_ip
+            result = await panel_api.marzban_api.revoke_user(main_server_ip, purchase.username)
+
+            text = await ft_instance.find_text('vpn_service_revoked_successfully')
+            text += f"\n\n<code>{result.get('subscription_url', 'ERROR!')}</code>"
+            keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=f'vpn_advanced_options__{purchase_id}')]]
+
+            await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
 
 @handle_error.handle_functions_error

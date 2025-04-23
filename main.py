@@ -95,6 +95,8 @@ if __name__ == '__main__':
     application.add_handler(CallbackQueryHandler(my_service_detail.my_services, pattern='vpn_my_services(.*)'))
     application.add_handler(CallbackQueryHandler(my_service_detail.ask_remove_service_for_user, pattern='vpn_remove_service_ask__(.*)'))
     application.add_handler(CallbackQueryHandler(my_service_detail.remove_service_for_user, pattern='vpn_remove_service__(.*)'))
+    application.add_handler(CallbackQueryHandler(my_service_detail.ask_revoke_service_for_user, pattern='vpn_my_serv_rev__(.*)'))
+    application.add_handler(CallbackQueryHandler(my_service_detail.revoke_service_for_user, pattern='vpn_revoke_service__(.*)'))
     application.add_handler(CallbackQueryHandler(my_service_detail.service_advanced_options, pattern='vpn_advanced_options__(.*)'))
     application.add_handler(CallbackQueryHandler(my_service_detail.get_configs_separately, pattern='vpn_get_configs_separately__(.*)'))
     application.add_handler(CallbackQueryHandler(buy_and_upgrade_service.recive_test_service_info, pattern='vpn_recive_test_service'))
