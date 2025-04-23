@@ -164,8 +164,8 @@ text_transaction = {
         "fa": "مبلغ قابل بازگشت: {0}",
     },
     "vpn_unable_to_refund_for_inactive_service": {
-        "en": "• you don't get refund for removing this service.",
-        "fa": "• با حذف این سرویس بازپرداخت انجام نخواهد شد.",
+        "en": "you wont get refund after removing this service.",
+        "fa": "با حذف این سرویس بازپرداخت انجام نخواهد شد.",
     },
     "vpn_service_deleted_successfully": {
         "en": "✅ Service successfully deleted!",
