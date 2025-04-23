@@ -288,10 +288,7 @@ text_transaction = {
         "en": "Tuesday",
         "fa": "سه‌شنبه",
     },
-    "revoke_button": {
-        "en": "Revoke",
-        "fa": "تغییر لینک",
-    },
+
     "wednesday": {
         "en": "Wednesday",
         "fa": "چهارشنبه",
@@ -400,6 +397,10 @@ keyboard_transaction = {
     "vpn_buy_vpn": {
         "en": "🛒 Buy Service",
         "fa": "🛒 خرید سرویس",
+    },
+    "revoke_button": {
+        "en": "Revoke",
+        "fa": "تغییر لینک",
     },
     "all_services_report": {
         "en": "General Report",
