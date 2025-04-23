@@ -168,9 +168,9 @@ async def ask_remove_service_for_user(update, context):
                 traffic_left_in_gigabyte = data_limit_in_gigabyte - usage_traffic_in_gigabyte
 
                 returnable_amount = await vpn_utilities.calculate_price(traffic_left_in_gigabyte, days_left, purchase.chat_id, session)
+                text_notify = f"\n\n<b>{await ft_instance.find_text('vpn_unable_to_refund_for_inactive_service')}</b>"
 
             text = f"<b>{await ft_instance.find_text('vpn_ask_user_for_removing_service')}</b>"
-            text_notify = f"\n\n<b>{await ft_instance.find_text('vpn_unable_to_refund_for_inactive_service')}</b>"
 
             if returnable_amount:
                 text_notify += f"<b>\n{await ft_instance.find_text('returnable_amount')}</b>"
