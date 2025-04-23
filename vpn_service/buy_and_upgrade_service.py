@@ -107,7 +107,9 @@ async def upgrade_service(update, context):
             await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
 async def create_json_config(username, expiration_in_day, traffic_in_byte, service_uuid, org_traffic, status="active"):
-    date_time_stamp = expiration_in_day.timestamp()
+    now = datetime.now(pytz.timezone('Asia/Tehran'))
+    date_time_stamp = (now + timedelta(days=expiration_in_day)).timestamp()
+
     config = {
         "username": username,
         "proxies": {
@@ -168,11 +170,9 @@ async def create_service_in_servers(session, purchase_id: int):
     )
 
     traffic_to_byte = int(get_purchase.traffic * 1024 ** 3)
-    now = datetime.now(pytz.timezone('Asia/Tehran'))
-    date = now + timedelta(days=get_purchase.period)
     service_uuid = uuid.uuid4().hex
 
-    json_config = await create_json_config(username, date, traffic_to_byte, service_uuid=service_uuid, org_traffic=traffic_to_byte)
+    json_config = await create_json_config(username, get_purchase.period, traffic_to_byte, service_uuid=service_uuid, org_traffic=traffic_to_byte)
     create_user = await panel_api.marzban_api.add_user(get_purchase.product.main_server.server_ip, json_config)
 
     vpn_crud.update_purchase(
@@ -236,13 +236,10 @@ async def upgrade_service_for_user(context, session, purchase_id: int):
 
         await panel_api.marzban_api.reset_user_data_usage(main_server_ip, purchase.username)
         traffic_to_byte = int(purchase.upgrade_traffic * (1024 ** 3))
-        expire_date = datetime.now(pytz.timezone('Asia/Tehran'))
         new_period, new_traffic = purchase.upgrade_period, purchase.upgrade_traffic
 
-        date = expire_date + timedelta(days=purchase.upgrade_period)
-
         json_config = await create_json_config(
-            purchase.username, date, traffic_to_byte,
+            purchase.username, purchase.upgrade_period, traffic_to_byte,
             org_traffic= int(purchase.upgrade_traffic * 1024 ** 3),
             service_uuid=purchase.service_uuid if purchase.service_uuid else uuid.uuid4().hex
         )
@@ -280,9 +277,10 @@ async def handle_http_error(purchase, main_server_ip, purchase_id, original_erro
     """
     try:
         traffic_to_byte = int(purchase.traffic * (1024 ** 3))
-        expire_date = purchase.register_date
-        date = expire_date + timedelta(days=purchase.period)
-        json_config = await create_json_config(purchase.username, date, traffic_to_byte, org_traffic=traffic_to_byte, service_uuid=purchase.service_uuid)
+        expire_date = purchase.register_date + timedelta(days=purchase.period)
+        now = datetime.now(pytz.timezone('Asia/Tehran'))
+        days_since_expiration = (now - expire_date).days
+        json_config = await create_json_config(purchase.username, days_since_expiration, traffic_to_byte, org_traffic=traffic_to_byte, service_uuid=purchase.service_uuid)
         await panel_api.marzban_api.modify_user(main_server_ip, purchase.username, json_config)
     except requests.exceptions.HTTPError as e:
         logging.error(f'failed to rollback user service!\n{str(e)}\nid: {purchase_id}')
