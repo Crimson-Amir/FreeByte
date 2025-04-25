@@ -434,9 +434,13 @@ keyboard_transaction = {
         "en": "🎛 My Services",
         "fa": "🎛 سرویس‌های من",
     },
-    "vpn_upgrade_service": {
+    "vpn_change_service": {
         "en": "↟ Change Service",
         "fa": "↟ تغییر سرویس",
+    },
+    "vpn_upgrade_service": {
+        "en": "↟ renew the Service",
+        "fa": "↟ تمدید سرویس",
     },
     "vpn_remove_service": {
         "en": "⇣ Remove Service",
