@@ -143,7 +143,7 @@ async def create_json_config(username, expiration_in_day, traffic_in_byte, servi
                 "Shadowsocks TCP 2"
             ],
         },
-        "expire": date_time_stamp,
+        "expire": int(date_time_stamp),
         "data_limit": traffic_in_byte,
         "data_limit_reset_strategy": "no_reset",
         "status": status,
@@ -153,7 +153,7 @@ async def create_json_config(username, expiration_in_day, traffic_in_byte, servi
     }
 
     limits = [(30, 40), (60, 60), (90, 90)]
-    if any(org_traffic >= gb * 1024 ** 3 and expiration_in_day <= days for gb, days in limits):
+    if any(org_traffic >= gb * 1024 ** 3 and expiration_in_day <= days for gb, days in limits) or org_traffic >= 90 * 1024 ** 3:
         config["inbounds"]["shadowsocks"].append("Shadowsocks TCP")
 
     return config
@@ -343,7 +343,7 @@ async def recive_test_service(update, context):
             await create_service_for_user(context, session, service_id)
             crud.update_user_config(session, user.id, get_vpn_free_service=True)
 
-            admin_msg = ('User Recived Test Service.'
+            admin_msg = ('User Received Test Service.'
                          f'\nService ID: {purchase.purchase_id}'
                          f'\nService Username: {purchase.username}')
 
