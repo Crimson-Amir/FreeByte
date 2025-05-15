@@ -311,7 +311,7 @@ async def recive_test_service_info(update, context):
                 text = f"{await ft_instance.find_text('vpn_you_already_recive_this_service')}"
                 return await query.answer(text=text)
 
-            text = f"{await ft_instance.find_text('vpn_test_sevice_test')}"
+            text = f"{await ft_instance.find_text('vpn_ask_user_for_revoke_service')}"
             # text = text.format(traffic, period)
 
             keyboard = [
