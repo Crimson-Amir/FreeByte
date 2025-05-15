@@ -3,6 +3,10 @@ text_transaction = {
         "en": "🌟 Welcome to the FreeByte VPN section!",
         "fa": "🌟 به بخش VPN فری‌بایت خوش آمدید!",
     },
+    "vpn_test_sevice_test": {
+        "en": "you can receve test service for check the quality!",
+        "fa": "شما میتوانید برای بررسی کیفیت، سرویس تست تهیه کنید."
+    },
     "vpn_ask_user_for_revoke_service": {
         "en": "❓ Are you sure you want to revoke this link? think link will be disconnect.",
         "fa": "❓آیا از باطل کردن لینک فعلی و ساخت لینک جدید اطمینان دارید؟ لینک فعلی غیرفعال خواهد شد.",
