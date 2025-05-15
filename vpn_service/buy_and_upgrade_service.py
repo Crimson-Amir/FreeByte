@@ -312,7 +312,7 @@ async def recive_test_service_info(update, context):
                 return await query.answer(text=text)
 
             text = f"{await ft_instance.find_text('vpn_test_sevice_test')}"
-            text = text.format(traffic, period)
+            # text = text.format(traffic, period)
 
             keyboard = [
                 [InlineKeyboardButton(await ft_instance.find_keyboard('recive_service'), callback_data=f'vpn_recive_test__{traffic}__{period}__{product_id}')],
