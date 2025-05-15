@@ -4,8 +4,12 @@ text_transaction = {
         "fa": "🌟 به بخش VPN فری‌بایت خوش آمدید!",
     },
     "vpn_test_sevice_test": {
-        "en": "you can receve test service for check the quality!",
+        "en": "you can receve test service for check the quality!"
+              "\n\n{0} GB"
+              "\n{1} Day",
         "fa": "شما میتوانید برای بررسی کیفیت، سرویس تست تهیه کنید."
+              "\n\n{0} GB"
+              "\n{1} Day"
     },
     "vpn_ask_user_for_revoke_service": {
         "en": "❓ Are you sure you want to revoke this link? think link will be disconnect.",
