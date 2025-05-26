@@ -186,7 +186,6 @@ async def create_service_in_servers(session, purchase_id: int):
     session.refresh(get_purchase)
     return get_purchase
 
-
 async def create_service_for_user(context, session, purchase_id: int):
     get_purchase = await create_service_in_servers(session, purchase_id)
 
@@ -221,6 +220,7 @@ async def create_service_for_user(context, session, purchase_id: int):
                                  chat_id=get_purchase.chat_id, reply_markup=InlineKeyboardMarkup(keyboard),
                                  parse_mode='html')
     return get_purchase
+
 
 async def upgrade_service_for_user(context, session, purchase_id: int):
     purchase = vpn_crud.get_purchase(session, purchase_id)
@@ -282,6 +282,14 @@ async def handle_http_error(purchase, main_server_ip, purchase_id, original_erro
         days_since_expiration = (now - expire_date).days
         json_config = await create_json_config(purchase.username, days_since_expiration, traffic_to_byte, org_traffic=traffic_to_byte, service_uuid=purchase.service_uuid)
         await panel_api.marzban_api.modify_user(main_server_ip, purchase.username, json_config)
+
+        logging.error(f'rollback user service!\n{str(e)}\nid: {purchase_id}')
+        error_message = (
+            f'rollback user service after HTTP error in upgrade!'
+            f'\nService username: {purchase.username}'
+            f'\nService ID: {purchase_id}'
+        )
+        await report_to_admin('error', 'handle_http_error', error_message, purchase.owner)
     except requests.exceptions.HTTPError as e:
         logging.error(f'failed to rollback user service!\n{str(e)}\nid: {purchase_id}')
         error_message = (

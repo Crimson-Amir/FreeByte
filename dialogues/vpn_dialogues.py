@@ -5,11 +5,13 @@ text_transaction = {
     },
     "vpn_test_sevice_test": {
         "en": "you can receve test service for check the quality!"
-              "\n\n{0} GB"
+              "\n\nService Config:"
+              "\n{0} GB"
               "\n{1} Day",
         "fa": "شما میتوانید برای بررسی کیفیت، سرویس تست تهیه کنید."
-              "\n\n{0} GB"
-              "\n{1} Day"
+              "\n\n:مشخصات سرویس"
+              "\n{0} گیگابایت"
+              "\n{1} روز"
     },
     "vpn_ask_user_for_revoke_service": {
         "en": "❓ Are you sure you want to revoke this link? think link will be disconnect.",
