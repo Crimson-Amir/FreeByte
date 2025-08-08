@@ -9,6 +9,7 @@ import utilities_reFactore
 from datetime import datetime
 from vpn_service import vpn_utilities, buy_and_upgrade_service, panel_api
 from datetime import timedelta
+import setting
 
 DEFAULT_PRODUCT_ID = 1
 ADD_CREDIT_BAlANCE = 0
@@ -278,13 +279,12 @@ async def admin_user_services(update, context):
 async def admin_buy_service_for_user(update, context):
     query = update.callback_query
     chat_id, page, user_info_page, period_callback, traffic_callback = query.data.replace('admin_bv_for_user__', '').split('__')
-    user_detail = update.effective_chat
 
     traffic = max(min(int(traffic_callback), 150), 1) or 40
     period = max(min(int(period_callback), 90), 1) or 30
 
     with SessionLocal() as session:
-        price = await vpn_utilities.calculate_price(traffic, period, user_detail.id, session)
+        price = (int(traffic) * setting.PRICE_PER_GB) + (int(period) * setting.PRICE_PER_DAY)
 
         text = (f"Customize service for user:"
                 f"\n\nPrice {price:,} IRT")
@@ -482,12 +482,11 @@ async def admin_user_node_usage(update, context):
 async def admin_set_purchase_period_and_traffic(update, context):
     query = update.callback_query
     purchase_id, page, user_info_page, period_callback, traffic_callback = query.data.replace('admin_set_time_and_traffic__', '').split('__')
-    user_detail = update.effective_chat
 
     traffic = max(min(int(traffic_callback), 150), 1) or 40
     period = max(min(int(period_callback), 90), 1) or 30
     with SessionLocal() as session:
-        price = await vpn_utilities.calculate_price(traffic, period, user_detail.id, session)
+        price = (int(traffic) * setting.PRICE_PER_GB) + (int(period) * setting.PRICE_PER_DAY)
 
         text = (f"set purchase traffic andperiod time:"
                 f"\n\nPrice {price:,} IRT")
@@ -582,13 +581,11 @@ async def admin_confirm_set_purchase_traffic_and_period(update, context):
 async def admin_upgrade_service_for_user(update, context):
     query = update.callback_query
     purchase_id, page, user_info_page, period_callback, traffic_callback = query.data.replace('admin_upgrade_user_vpn_service__', '').split('__')
-    user_detail = update.effective_chat
 
     traffic = max(min(int(traffic_callback), 150), 1) or 40
     period = max(min(int(period_callback), 90), 1) or 30
     with SessionLocal() as session:
-        price = await vpn_utilities.calculate_price(traffic, period, user_detail.id, session)
-
+        price = (int(traffic) * setting.PRICE_PER_GB) + (int(period) * setting.PRICE_PER_DAY)
         text = (f"Customize service for Upgrade:"
                 f"\n\nPrice {price:,} IRT")
 
@@ -746,7 +743,7 @@ async def admin_confirm_remove_vpn_service(update, context):
 
     with SessionLocal() as session:
         with session.begin():
-            purchase = vpn_crud.remove_purchase(session, purchase_id, user_detail.id)
+            purchase = vpn_crud.get_purchase(session, purchase_id)
             main_server_ip = purchase.product.main_server.server_ip
             returnable_amount = 0
             if payment_status == 'refund':

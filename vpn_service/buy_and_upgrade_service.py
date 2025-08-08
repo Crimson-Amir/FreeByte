@@ -129,7 +129,6 @@ async def create_json_config(username, expiration_in_day, traffic_in_byte, servi
         "inbounds": {
             "vless": [
                 "VLESS TCP",
-                "VLESS TCP REALITY",
                 "VLESS GRPC REALITY"
             ],
             "vmess": [
@@ -187,6 +186,7 @@ async def create_service_in_servers(session, purchase_id: int):
     return get_purchase
 
 async def create_service_for_user(context, session, purchase_id: int):
+    print(purchase_id)
     get_purchase = await create_service_in_servers(session, purchase_id)
 
     ft_instance = FindText(None, None)
@@ -219,6 +219,15 @@ async def create_service_for_user(context, session, purchase_id: int):
                                  caption= text,
                                  chat_id=get_purchase.chat_id, reply_markup=InlineKeyboardMarkup(keyboard),
                                  parse_mode='html')
+    #
+    # get_from_server = await panel_api.marzban_api.get_user(main_server.server_ip, get_purchase.username)
+    # get_configs = get_from_server.get('links')
+    # configs_text = f"{'\n'.join(get_configs)}"
+    #
+    # manual = ("کانفیگ های سرویس:"
+    #           f"\n\n<code>{configs_text}</code>")
+    #
+    # await context.bot.send_message(text=manual, chat_id=get_purchase.chat_id, parse_mode='html')
     return get_purchase
 
 
@@ -268,39 +277,15 @@ async def upgrade_service_for_user(context, session, purchase_id: int):
         return purchase, traffic_for_upgrade, period_for_upgrade
 
     except Exception as e:
-        await handle_http_error(purchase, main_server_ip, purchase_id, e)
-
-
-async def handle_http_error(purchase, main_server_ip, purchase_id, original_error):
-    """
-    Handles HTTP errors during the upgrade process and attempts to deactivate the user's service.
-    """
-    try:
-        traffic_to_byte = int(purchase.traffic * (1024 ** 3))
-        expire_date = purchase.register_date + timedelta(days=purchase.period)
-        now = datetime.now(pytz.timezone('Asia/Tehran'))
-        days_since_expiration = (now - expire_date).days
-        json_config = await create_json_config(purchase.username, days_since_expiration, traffic_to_byte, org_traffic=traffic_to_byte, service_uuid=purchase.service_uuid)
-        await panel_api.marzban_api.modify_user(main_server_ip, purchase.username, json_config)
-
-        logging.error(f'rollback user service!\n{str(e)}\nid: {purchase_id}')
+        logging.error(f'failed to upgrade user service!\n{str(e)}\nid: {purchase_id}')
         error_message = (
-            f'rollback user service after HTTP error in upgrade!'
-            f'\nService username: {purchase.username}'
+            f'Failed to upgrade user service!'
             f'\nService ID: {purchase_id}'
-        )
-        await report_to_admin('error', 'handle_http_error', error_message, purchase.owner)
-    except requests.exceptions.HTTPError as e:
-        logging.error(f'failed to rollback user service!\n{str(e)}\nid: {purchase_id}')
-        error_message = (
-            f'Failed to rollback user service after HTTP error in upgrade!'
-            f'\nService username: {purchase.username}'
-            f'\nService ID: {purchase_id}'
+            f'\n\nError reason: {type(e)}'
+            f'\nError:\n{str(e)}'
         )
         await report_to_admin('error', 'upgrade_service_for_user', error_message, purchase.owner)
-        raise e from original_error
-
-    raise original_error
+        raise e
 
 
 @handle_error.handle_functions_error
@@ -319,14 +304,13 @@ async def recive_test_service_info(update, context):
                 text = f"{await ft_instance.find_text('vpn_you_already_recive_this_service')}"
                 return await query.answer(text=text)
 
-            text = f"{await ft_instance.find_text('vpn_ask_user_for_revoke_service')}"
-            # text = text.format(traffic, period)
+            text = f"{await ft_instance.find_text('vpn_test_sevice_test')}"
+            text = text.format(traffic, period)
 
             keyboard = [
                 [InlineKeyboardButton(await ft_instance.find_keyboard('recive_service'), callback_data=f'vpn_recive_test__{traffic}__{period}__{product_id}')],
                 [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data='menu_services')]
             ]
-
             await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
 
 

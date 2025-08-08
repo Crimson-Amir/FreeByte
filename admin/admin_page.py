@@ -98,9 +98,14 @@ async def say_to_every_one(update, context):
     message = update.message.reply_to_message.text
 
     with SessionLocal() as session:
-        all_user = admin_crud.get_all_users(session)
+        all_user = admin_crud.get_all_purchase(session)
+        users = {}
         for user in all_user:
+            if user in users: continue
             try:
+                users.add(user.chat_id)
                 await context.bot.send_message(chat_id=user.chat_id, text=message, parse_mode='html')
+                time.delay(1)
             except Exception as e:
                 await context.bot.send_message(chat_id=user_detail.id, text=f'- failed to send message.\n{str(e)}')
+                time.delay(1)
