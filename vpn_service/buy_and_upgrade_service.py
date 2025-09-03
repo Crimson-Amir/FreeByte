@@ -213,7 +213,7 @@ async def create_service_for_user(context, session, purchase_id: int):
         service_activated_text += await ft_instance.find_from_database(get_purchase.chat_id, 'vpn_service_activated_unlimited_server')
 
     text = (f'{service_activated_text}'
-            f'\n\n<code>{sub_link}</code>')
+            f'\n\n<code>{sub_link}#{get_purchase.purchase_id}</code>')
 
     await context.bot.send_photo(photo=binary_data,
                                  caption= text,

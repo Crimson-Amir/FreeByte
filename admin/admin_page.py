@@ -93,7 +93,7 @@ async def add_partner(update, context):
 
 
 @admin_access
-async def say_to_every_one(update, context):
+async def say_to_users(update, context):
     user_detail = update.effective_chat
     message = update.message.reply_to_message.text
 
@@ -109,3 +109,22 @@ async def say_to_every_one(update, context):
             except Exception as e:
                 await context.bot.send_message(chat_id=user_detail.id, text=f'- failed to send message.\n{str(e)}')
                 time.delay(1)
+
+
+@admin_access
+async def say_to_everyone(update, context):
+    user_detail = update.effective_chat
+    message = update.message.reply_to_message.text
+
+    with SessionLocal() as session:
+        all_user = admin_crud.get_all_users(session)
+        users = {}
+        for user in all_user:
+            if user in users: continue
+            try:
+                users.add(user.chat_id)
+                await context.bot.send_message(chat_id=user.chat_id, text=message, parse_mode='html')
+                time.delay(3)
+            except Exception as e:
+                await context.bot.send_message(chat_id=user_detail.id, text=f'- failed to send message.\n{str(e)}')
+                time.delay(3)

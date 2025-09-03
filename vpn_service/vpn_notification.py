@@ -50,7 +50,7 @@ async def report_service_termination_to_user(context, purchase, ft_instance):
 
 async def report_service_expired_in_days(context, purchase, ft_instance, days_left):
     text = await ft_instance.find_from_database(purchase.chat_id, 'vpn_service_days_notification')
-    text = text.format(f"<code>{purchase.purchase_id}</code>", days_left)
+    text = text.format(f"<code>{purchase.purchase_id}</code>", days_left + 1)
     keyboard = [
         [InlineKeyboardButton(await ft_instance.find_from_database(purchase.chat_id,'vpn_upgrade_service','keyboard'), callback_data=f'vpn_upgrade_service__30__40__{purchase.purchase_id}'),
          InlineKeyboardButton(await ft_instance.find_from_database(purchase.chat_id,'vpn_view_service_detail','keyboard'), callback_data=f'vpn_my_service_detail__{purchase.purchase_id}')]

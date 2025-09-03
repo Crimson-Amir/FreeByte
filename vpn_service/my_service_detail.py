@@ -417,7 +417,7 @@ change_ownership_conversation = ConversationHandler(
 
 )
 
-@handle_error.handle_conversetion_error
+@handle_error.handle_functions_error
 async def find_my_service(update, context):
     service_id = context.args
     ft_instance = FindText(update, context)

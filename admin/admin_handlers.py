@@ -10,7 +10,8 @@ def admin_handler(application):
     application.add_handler(CommandHandler('add_partner', admin_page.add_partner))
     application.add_handler(CommandHandler('find_user', admin_users.find_user))
     application.add_handler(CommandHandler('find_service', admin_users.find_service))
-    application.add_handler(CommandHandler('send_to_everyone', admin_page.say_to_every_one))
+    application.add_handler(CommandHandler('send_to_users', admin_page.say_to_users))
+    application.add_handler(CommandHandler('send_to_everyone', admin_page.say_to_everyone))
 
     application.add_handler(CallbackQueryHandler(admin_page.admin_page, pattern='admin_page'))
     application.add_handler(CallbackQueryHandler(vpn_admin.admin_page, pattern='admin_vpn'))
