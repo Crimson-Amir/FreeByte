@@ -22,7 +22,7 @@ class ConnectToServer:
 connect_to_server_instance = ConnectToServer()
 
 async def handle_inviter_referral(session, financial):
-    if not financial.owner.config.first_purchase_refreal_for_inviter:
+    if financial.owner.invited_by and not financial.owner.config.first_purchase_refreal_for_inviter:
         try:
             with session.begin_nested():
                 ft_instance = utilities_reFactore.FindText(None, None)
@@ -51,6 +51,9 @@ async def handle_inviter_referral(session, financial):
 
                 await utilities_reFactore.report_to_admin('info', financial.owner.invited_by, admin_msg, financial.owner)
         except Exception as e:
+            msg = (f"Error Type: {type(e)}"
+                   f"\nError Str: {str(e)}")
+            await utilities_reFactore.report_to_admin('error', "handle_inviter_referral", msg)
             logging.error(f'error to add referral to inviter wallet:\n{e}')
 
 async def increase_wallet_balance(financial, context, session):
