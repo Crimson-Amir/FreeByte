@@ -1,5 +1,6 @@
 from _datetime import datetime
-import sys, os, math, pytz
+import sys, os, math, pytz, qrcode
+from io import BytesIO
 import requests.exceptions
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 import setting
@@ -415,7 +416,7 @@ change_ownership_conversation = ConversationHandler(
 async def get_service_qr_code(update, context):
     query = update.callback_query
     ft_instance = FindText(update, context)
-    purchase_id = query.data.replace('get_service_qr_code', '')
+    purchase_id = int(query.data.replace('vpn_my_serv_qrcode__', ''))
     user_detail = update.effective_chat
 
     with (SessionLocal() as session):
