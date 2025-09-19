@@ -440,7 +440,7 @@ async def get_service_qr_code(update, context):
             binary_data = buffer.getvalue()
 
     await query.delete_message()
-    keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=f'vpn_advanced_options__{purchase_id}')]]
+    keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=f'vpn_advanced_options__remove_this_message__{purchase_id}')]]
     await context.bot.send_photo(photo=binary_data,
                                  caption=f"<code>{subscribe_link}</code>",
                                  chat_id=user_detail.id, reply_markup=InlineKeyboardMarkup(keyboard),
