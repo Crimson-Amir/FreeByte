@@ -496,4 +496,8 @@ keyboard_transaction = {
         "en": "Report Detail",
         "fa": "جزئیات گزارش",
     },
+    "get_qr_code": {
+        "en": "Get QRCode",
+        "fa": "دریافت کیوآرکد",
+    },
 }

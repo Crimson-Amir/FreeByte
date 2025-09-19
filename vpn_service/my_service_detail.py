@@ -64,7 +64,6 @@ async def my_services(update, context):
 
 
 @handle_error.handle_functions_error
-@message_token.check_token
 async def service_info(update, context):
     query = update.callback_query
     ft_instance = FindText(update, context)
@@ -139,7 +138,6 @@ async def service_info(update, context):
 
 
 @handle_error.handle_functions_error
-@message_token.check_token
 async def ask_remove_service_for_user(update, context):
     query = update.callback_query
     ft_instance = FindText(update, context)
@@ -184,7 +182,6 @@ async def ask_remove_service_for_user(update, context):
 
 
 @handle_error.handle_functions_error
-@message_token.check_token
 async def remove_service_for_user(update, context):
     query = update.callback_query
     ft_instance = FindText(update, context)
@@ -214,7 +211,6 @@ async def remove_service_for_user(update, context):
 
 
 @handle_error.handle_functions_error
-@message_token.check_token
 async def service_advanced_options(update, context):
     query = update.callback_query
     ft_instance = FindText(update, context)
@@ -272,7 +268,8 @@ async def service_advanced_options(update, context):
                  InlineKeyboardButton(await ft_instance.find_keyboard('refresh'), callback_data=f'vpn_advanced_options__{purchase_id}')],
                 [InlineKeyboardButton(await ft_instance.find_keyboard('vpn_change_service_ownership'), callback_data=f'vpn_change_service_ownership__{purchase_id}'),
                  InlineKeyboardButton(await ft_instance.find_keyboard('uptime_status'), url=f'http://uptime.freebyteshop.click:3001/status/servers')],
-                [InlineKeyboardButton(await ft_instance.find_keyboard('revoke_button'), callback_data=f'vpn_my_serv_rev__{purchase.purchase_id}')],
+                [InlineKeyboardButton(await ft_instance.find_keyboard('revoke_button'), callback_data=f'vpn_my_serv_rev__{purchase.purchase_id}'),
+                 InlineKeyboardButton(await ft_instance.find_keyboard('get_qr_code'), callback_data=f'vpn_my_serv_qrcode__{purchase.purchase_id}')],
                 [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=f'vpn_my_service_detail__{purchase.purchase_id}')]
             ]
 
@@ -290,7 +287,6 @@ async def service_advanced_options(update, context):
 
 
 @handle_error.handle_functions_error
-@message_token.check_token
 async def ask_revoke_service_for_user(update, context):
     query = update.callback_query
     ft_instance = FindText(update, context)
@@ -306,7 +302,6 @@ async def ask_revoke_service_for_user(update, context):
 
 
 @handle_error.handle_functions_error
-@message_token.check_token
 async def revoke_service_for_user(update, context):
     query = update.callback_query
     ft_instance = FindText(update, context)
@@ -330,7 +325,6 @@ async def revoke_service_for_user(update, context):
 
 
 @handle_error.handle_functions_error
-@message_token.check_token
 async def get_configs_separately(update, context):
     query = update.callback_query
     ft_instance = FindText(update, context)
@@ -416,6 +410,41 @@ change_ownership_conversation = ConversationHandler(
     conversation_timeout=600
 
 )
+
+@handle_error.handle_functions_error
+async def get_service_qr_code(update, context):
+    query = update.callback_query
+    ft_instance = FindText(update, context)
+    purchase_id = query.data.replace('get_service_qr_code', '')
+    user_detail = update.effective_chat
+
+    with (SessionLocal() as session):
+        with session.begin():
+            purchase = vpn_crud.get_purchase(session, purchase_id)
+            if not purchase:
+                return await query.answer(await ft_instance.find_text('this_service_is_not_available'), show_alert=True)
+
+            main_server = purchase.product.main_server
+            get_from_server = await panel_api.marzban_api.get_user(purchase.product.main_server.server_ip, purchase.username)
+
+            server_port = f":{main_server.server_port}" if main_server.server_port != 443 else ""
+            subscribe_link = f"{main_server.server_protocol}{main_server.server_ip}{server_port}{get_from_server.get('subscription_url')}"
+
+            qr_code = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
+            qr_code.add_data(subscribe_link)
+            qr_code.make(fit=True)
+            qr_image = qr_code.make_image(fill='black', back_color='white')
+            buffer = BytesIO()
+            qr_image.save(buffer)
+            binary_data = buffer.getvalue()
+
+    await query.delete_message()
+    keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=f'vpn_advanced_options__{purchase_id}')]]
+    await context.bot.send_photo(photo=binary_data,
+                                 caption=f"<code>{subscribe_link}</code>",
+                                 chat_id=user_detail.id, reply_markup=InlineKeyboardMarkup(keyboard),
+                                 parse_mode='html')
+
 
 @handle_error.handle_functions_error
 async def find_my_service(update, context):
