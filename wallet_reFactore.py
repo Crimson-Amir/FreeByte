@@ -284,7 +284,9 @@ async def pay_by_zarinpal(update, context):
 @handle_error.handle_functions_error
 @message_token.check_token
 async def pay_by_cryptomus(update, context):
+
     query = update.callback_query
+    return await query.answer("درگاه کریپتو درحال حاضر فعال نمیباشد!", show_alert=True)
     ft_instance = FindText(update, context)
     action, financial_id = query.data.replace('pay_by_cryptomus__', '').split('__')
     order_id = uuid.uuid4().hex
