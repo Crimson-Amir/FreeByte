@@ -226,14 +226,14 @@ async def create_invoice(update, context):
 async def pay_by_zarinpal(update, context):
     query = update.callback_query
     user_detail = update.effective_chat
-    text = ("لطفا رسید واریز رو از قسمت 'راهنما و پشتیبانی' -> 'رتباط با پشتیبانی' بفرستید."
-            "\n\nتایید رسید ممکن است از چند دقیقه تا چند ساعت طول بکشد"
-            "\nمبلغ به کیف پول شما اضافه خواهد شد و شما میتوانید عملیات رو از طریق کیف پول انجام بدید"
-            "\n\n<code>6219861938619417</code>"
-            "\nامیرحسین نجفی")
-    await query.answer("به دلیل اختلالات اینترنتی درگاه پرداخت فعال نمیباشد"
-                       "\nلطفا پرئاخت رو با کارت به کارت و پیامی که براتون ارسال میشه انجام بدید", show_alert=True)
-    return await context.bot.send_message(text=text, chat_id=user_detail.id, parse_mode='html')
+    # text = ("لطفا رسید واریز رو از قسمت 'راهنما و پشتیبانی' -> 'رتباط با پشتیبانی' بفرستید."
+    #         "\n\nتایید رسید ممکن است از چند دقیقه تا چند ساعت طول بکشد"
+    #         "\nمبلغ به کیف پول شما اضافه خواهد شد و شما میتوانید عملیات رو از طریق کیف پول انجام بدید"
+    #         "\n\n<code>6219861938619417</code>"
+    #         "\nامیرحسین نجفی")
+    # await query.answer("به دلیل اختلالات اینترنتی درگاه پرداخت فعال نمیباشد"
+    #                    "\nلطفا پرئاخت رو با کارت به کارت و پیامی که براتون ارسال میشه انجام بدید", show_alert=True)
+    # return await context.bot.send_message(text=text, chat_id=user_detail.id, parse_mode='html')
     ft_instance = FindText(update, context)
     action, financial_id = query.data.replace('pay_by_zarinpal__', '').split('__')
 
