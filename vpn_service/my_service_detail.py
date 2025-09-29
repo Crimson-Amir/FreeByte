@@ -268,7 +268,7 @@ async def service_advanced_options(update, context):
                 [InlineKeyboardButton(await ft_instance.find_text('usage_report'), callback_data=f'statistics_week_{purchase_id}_hide'),
                  InlineKeyboardButton(await ft_instance.find_keyboard('refresh'), callback_data=f'vpn_advanced_options__{purchase_id}')],
                 [InlineKeyboardButton(await ft_instance.find_keyboard('vpn_change_service_ownership'), callback_data=f'vpn_change_service_ownership__{purchase_id}'),
-                 InlineKeyboardButton(await ft_instance.find_keyboard('uptime_status'), url=f'http://uptime.freebyteshop.click:3001/status/servers')],
+                 InlineKeyboardButton(await ft_instance.find_keyboard('uptime_status'), url=f'http://uptime.freebyte.shop:3001/status/servers')],
                 [InlineKeyboardButton(await ft_instance.find_keyboard('revoke_button'), callback_data=f'vpn_my_serv_rev__{purchase.purchase_id}'),
                  InlineKeyboardButton(await ft_instance.find_keyboard('get_qr_code'), callback_data=f'vpn_my_serv_qrcode__{purchase.purchase_id}')],
                 [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=f'vpn_my_service_detail__{purchase.purchase_id}')]
