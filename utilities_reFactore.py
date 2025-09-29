@@ -160,7 +160,7 @@ class HandleErrors:
                 return await func(update, context, **kwargs)
             except Exception as e:
                 if 'Message is not modified' in str(e): return await update.callback_query.answer()
-                if "Message can't be deleted for everyone" in str(e): return await update.callback_query.answer("لطفا در پیام جدید تلاش کنید!")
+                if "Message can't be deleted for everyone" in str(e): return await update.callback_query.answer("لطفا در یک پیام جدید تلاش کنید!")
                 logging.error(f'error in {func.__name__}: {str(e)}')
                 tb = traceback.format_exc()
                 err = (
