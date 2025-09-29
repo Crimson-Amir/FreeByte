@@ -8,6 +8,7 @@ from database_sqlalchemy import SessionLocal
 from vpn_service import vpn_utilities
 from admin import partner
 from virtual_number import onlinesim_api
+from time import time
 
 @admin_access
 async def admin_page(update, context):
@@ -101,6 +102,7 @@ async def say_to_users(update, context):
         all_user = admin_crud.get_all_purchase(session)
         users = set()
         for user in all_user:
+            if user not in [6450325872]: continue
             if user in users: continue
             try:
                 users.add(user.chat_id)
