@@ -99,7 +99,7 @@ async def say_to_users(update, context):
 
     with SessionLocal() as session:
         all_user = admin_crud.get_all_purchase(session)
-        users = {}
+        users = set()
         for user in all_user:
             if user in users: continue
             try:
