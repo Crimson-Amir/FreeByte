@@ -560,7 +560,7 @@ async def admin_confirm_set_purchase_traffic_and_period(update, context):
                 f'\nService ID: {purchase.purchase_id}'
                 f'\nService username: {purchase.username}'
                 f'\nService Traffic Now: {purchase.traffic} GB'
-                f'\nService Period Now: {purchase.period} GB'
+                f'\nService Period Now: {purchase.period} DAY'
                 f'\nProduct Name: {purchase.product.product_name}'
                 f'\nUser chat id: {purchase.chat_id}'
                 f'\nAdmin chat ID: {user_detail.id} ({user_detail.first_name})'
