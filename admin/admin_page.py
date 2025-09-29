@@ -102,7 +102,8 @@ async def say_to_users(update, context):
         all_user = admin_crud.get_all_purchase(session)
         users = set()
         for user in all_user:
-            if user not in [6450325872]: continue
+            print(user.chat_id)
+            if user.chat_id not in [6450325872]: continue
             if user in users: continue
             try:
                 users.add(user.chat_id)
