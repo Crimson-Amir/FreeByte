@@ -8,7 +8,7 @@ from database_sqlalchemy import SessionLocal
 from vpn_service import vpn_utilities
 from admin import partner
 from virtual_number import onlinesim_api
-from time import time
+import time
 
 @admin_access
 async def admin_page(update, context):
