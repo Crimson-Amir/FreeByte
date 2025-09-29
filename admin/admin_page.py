@@ -8,7 +8,7 @@ from database_sqlalchemy import SessionLocal
 from vpn_service import vpn_utilities
 from admin import partner
 from virtual_number import onlinesim_api
-import time
+import asyncio
 
 @admin_access
 async def admin_page(update, context):
@@ -103,15 +103,24 @@ async def say_to_users(update, context):
         users = set()
         for user in all_user:
             print(user.chat_id)
-            if user.chat_id not in [6450325872]: continue
-            if user in users: continue
+            if user.chat_id not in [6450325872]:
+                continue
+            if user.chat_id in users:
+                continue
             try:
                 users.add(user.chat_id)
-                await context.bot.send_message(chat_id=user.chat_id, text=message, parse_mode='html')
-                time.delay(1)
+                await context.bot.send_message(
+                    chat_id=user.chat_id,
+                    text=message,
+                    parse_mode='html'
+                )
+                await asyncio.sleep(1)
             except Exception as e:
-                await context.bot.send_message(chat_id=user_detail.id, text=f'- failed to send message.\n{str(e)}')
-                time.delay(1)
+                await context.bot.send_message(
+                    chat_id=user_detail.id,
+                    text=f'- failed to send message.\n{str(e)}'
+                )
+                await asyncio.sleep(1)
 
 
 @admin_access
@@ -127,7 +136,7 @@ async def say_to_everyone(update, context):
             try:
                 users.add(user.chat_id)
                 await context.bot.send_message(chat_id=user.chat_id, text=message, parse_mode='html')
-                time.delay(3)
+                await asyncio.sleep(3)
             except Exception as e:
                 await context.bot.send_message(chat_id=user_detail.id, text=f'- failed to send message.\n{str(e)}')
-                time.delay(3)
+                await asyncio.sleep(3)
