@@ -243,7 +243,7 @@ async def add_users_to_webapp():
                     'private_token': hashlib.sha256(setting.webapp_private_token.encode()).hexdigest(),
                 }
                 a = requests.post(
-                    url=f"{setting.webapp_url}/sign-up/",
+                    url=f"http://shop.freebyte.shop/sign-up/",
                     json=json_data,
                     timeout=4
                 )
