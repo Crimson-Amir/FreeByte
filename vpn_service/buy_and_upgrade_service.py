@@ -129,7 +129,8 @@ async def create_json_config(username, expiration_in_day, traffic_in_byte, servi
         "inbounds": {
             "vless": [
                 "VLESS TCP",
-                "VLESS GRPC REALITY"
+                "VLESS GRPC REALITY",
+                "VLESS WS NIM"
             ],
             "vmess": [
                 "VMess TCP",
