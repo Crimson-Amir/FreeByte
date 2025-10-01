@@ -224,6 +224,8 @@ async def do_it_2():
             print(f"**** Failed to send gift to chat_id {user.chat_id}: {str(e)}\n{traceback.format_exc()}")
 
 import hashlib
+import setting
+
 async def add_users_to_webapp():
     with SessionLocal() as session:
         users = session.query(model.UserDetail).all()
