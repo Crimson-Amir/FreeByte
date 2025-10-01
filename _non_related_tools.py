@@ -246,6 +246,7 @@ async def add_users_to_webapp():
                     timeout=4
                 )
                 print(a)
+                delay(1)
 
             except Exception as e:
                 print(f"**** Failed to send gift to chat_id {user.chat_id}: {str(e)}\n{traceback.format_exc()}")
