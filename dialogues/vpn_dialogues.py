@@ -59,7 +59,7 @@ text_transaction = {
               "\n\n🔺 Please update your subscription from the client app every day.",
         "fa": "✅ سرویس VPN شما با نام {0} فعال شد!"
               "\n\n🔺 لطفاً هر روز اشتراک را از طریق برنامه‌ای که استفاده می‌کنید، آپدیت کنید. (اطلاعات بیشتر در راهنمای اتصال)"
-              "\n\n▫️ سرور های نیم بها حجم اینترنت شمارو دو برابر مکینند"
+              "\n\n▫️ سرور های نیم بها حجم اینترنت شمارو دو برابر میکنند"
     },
     "vpn_service_activated_unlimited_server": {
         "en":"\n\n🔷 Servers with [x0.1] written at the end of their name provide unlimited traffic (multiplier of one-tenth).",
