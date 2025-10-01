@@ -224,26 +224,31 @@ async def do_it_2():
             print(f"**** Failed to send gift to chat_id {user.chat_id}: {str(e)}\n{traceback.format_exc()}")
 
 import hashlib
-
 async def add_users_to_webapp():
     with SessionLocal() as session:
         users = session.query(model.UserDetail).all()
 
-    for user in users:
-        try:
-            if not user.config.webapp_password: continue
-            json_data = {
-                'email': str(user.chat_id),
-                'name': user.first_name or 'unknown',
-                'password': user.config.webapp_password,
-                'active': True,
-                'private_token': hashlib.sha256(setting.webapp_private_token.encode()).hexdigest(),
-            }
-            a = requests.post(url=f"{setting.webapp_url}/sign-up/", json=json_data, timeout=4)
-            print(a)
+        for user in users:
+            try:
+                if not user.config or not user.config.webapp_password:
+                    continue
 
-        except Exception as e:
-            print(f"**** Failed to send gift to chat_id {user.chat_id}: {str(e)}\n{traceback.format_exc()}")
+                json_data = {
+                    'email': str(user.chat_id),
+                    'name': user.first_name or 'unknown',
+                    'password': user.config.webapp_password,
+                    'active': True,
+                    'private_token': hashlib.sha256(setting.webapp_private_token.encode()).hexdigest(),
+                }
+                a = requests.post(
+                    url=f"{setting.webapp_url}/sign-up/",
+                    json=json_data,
+                    timeout=4
+                )
+                print(a)
+
+            except Exception as e:
+                print(f"**** Failed to send gift to chat_id {user.chat_id}: {str(e)}\n{traceback.format_exc()}")
 
 
 
