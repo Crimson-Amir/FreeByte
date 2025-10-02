@@ -127,7 +127,7 @@ async def say_to_everyone(update, context):
 
     with SessionLocal() as session:
         all_user = admin_crud.get_all_users(session)
-        users = set()
+        users:set = {81532053}
         for user in all_user:
             if user.chat_id not in [6450325872]: continue
             if user in users: continue
