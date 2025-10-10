@@ -6,3 +6,4 @@ setting.py
 alembic/
 alembic.ini
 virtual_number/numbers_notification.json
+__pycache__/
