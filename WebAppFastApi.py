@@ -1,5 +1,4 @@
 import traceback
-
 import requests, json
 from fastapi import FastAPI, Request, Form
 from fastapi.templating import Jinja2Templates
@@ -9,6 +8,7 @@ from WebApp import WebAppUtilities
 from database_sqlalchemy import SessionLocal
 from WebApp.WebAppDialogue import transaction
 from virtual_number import vn_utilities, vn_notification
+import tasks
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
@@ -33,8 +33,8 @@ async def receive_payment_result(Authority: str, Status: str, request: Request):
                 context={'translation': dialogues, 'error_code': 400}
             )
 
+        dialogues = transaction.get(financial.owner.language, transaction.get('fa'))
         try:
-            dialogues = transaction.get(financial.owner.language, transaction.get('fa'))
             response_json = WebAppUtilities.verify_payment_zarinpal(Authority, financial.amount)
             payment_code = response_json.get('data', {}).get('code', 101)
 
@@ -46,29 +46,14 @@ async def receive_payment_result(Authority: str, Status: str, request: Request):
                 context={'translation': dialogues, 'error_code': 405}
             )
 
-        if payment_code == 100 and financial.payment_status not in ['paid', 'refund']:
-
+        if payment_code == 100:
             ref_id = response_json.get('data').get('ref_id')
-            message = dialogues.get('successful_pay', '').format(ref_id)
-            await utilities_reFactore.report_to_user('success', financial.chat_id, message)
-
-            try:
-                await WebAppUtilities.handle_successful_payment(session, financial, Authority, 'ZarinPalWebApp')
-                session.commit()
-            except Exception as e:
-                session.rollback()
-                await WebAppUtilities.handle_failed_payment(session, financial, e, dialogues, Authority, 'ZarinPalWebApp')
-                return templates.TemplateResponse(
-                    request=request,
-                    name='error_and_refund_credit_to_wallet.html',
-                    context={'translation': dialogues, 'amount': financial.amount}
-                )
-            else:
-                return templates.TemplateResponse(
-                    request=request,
-                    name='success_pay.html',
-                    context={'ref_id': ref_id}
-                )
+            tasks.handle_payment.delay(financial.financial_id, ref_id)
+            return templates.TemplateResponse(
+                request=request,
+                name='success_pay.html',
+                context={'ref_id': ref_id}
+            )
 
         else:
             error_code = response_json.get('data', {}).get('code', 404)
