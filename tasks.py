@@ -81,8 +81,8 @@ def handle_payment(self, financial_id, ref_id):
     with session_scope() as db:
         financial = crud.get_financial_report_by_id(db, financial_id)
         if financial.payment_status not in ['paid', 'refund']:
+            dialogues = transaction.get(financial.owner.language, transaction.get('fa'))
             if getattr(self.request, "retries", 0) == 0:
-                dialogues = transaction.get(financial.owner.language, transaction.get('fa'))
                 message = f"🟢 {dialogues.get('successful_pay', 'success {0}').format(ref_id)}"
                 report_to_user_api.delay(financial.chat_id, message)
             try:
