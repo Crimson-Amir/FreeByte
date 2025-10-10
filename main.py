@@ -47,7 +47,7 @@ async def services(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def unknown_message(update, context):
     user = update.effective_chat
-    if user.id in [6450325872, 6458732795]: return
+    if user.id in [6450325872, 6458732795, -1002115809340]: return
     try:
         ft_instance = FindText(update, context)
         text = await ft_instance.find_text('unknown_input')
