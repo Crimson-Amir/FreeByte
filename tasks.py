@@ -91,15 +91,13 @@ def handle_payment(self, financial_id, ref_id):
                 if retries >= max_retries:
                     asyncio.run(WebAppUtilities.handle_failed_payment(db, financial, e, dialogues, financial.authority, 'ZarinPalWebApp'))
 
-                tb = traceback.format_exc()
                 err_msg = (
                     f"[🔴 ERROR] Celery task: handle_payment"
-                    f"\nChatID: {financial.chat_id}"
+                    f"\n\nChatID: {financial.chat_id}"
                     f"\nAuthority: {financial.authority}"
                     f"\n\nType: {type(e)}"
                     f"\nReason: {str(e)}"
                     f"\nRetries: {retries}/{max_retries}"
-                    f"\n\nTraceBack:\n{tb}"
                 )
                 logging.error(err_msg)
                 report_to_admin_api.delay(err_msg)

@@ -89,7 +89,6 @@ def verify_payment_zarinpal(authority: str, amount: int):
 
 async def handle_successful_payment(session, financial, authority, payment_getway):
     """Processes the successful payment."""
-    b = 1 / 0
     context = utilities_reFactore.FakeContext()
 
     extra_data = ""
