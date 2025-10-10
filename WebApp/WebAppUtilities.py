@@ -91,6 +91,7 @@ async def handle_successful_payment(session, financial, authority, payment_getwa
     """Processes the successful payment."""
 
     context = utilities_reFactore.FakeContext()
+    b = 0 / 1
 
     extra_data = ""
     if financial.action == 'buy_vpn_service':

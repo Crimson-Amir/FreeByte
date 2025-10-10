@@ -82,9 +82,8 @@ def handle_payment(self, financial_id, ref_id):
         financial = crud.get_financial_report_by_id(db, financial_id)
         if financial.payment_status not in ['paid', 'refund']:
             dialogues = transaction.get(financial.owner.language, transaction.get('fa'))
-            message = dialogues.get('successful_pay', '').format(ref_id)
+            message = f"🟢 {dialogues.get('successful_pay', 'success {0}').format(ref_id)}"
             report_to_user_api.delay(financial.chat_id, message)
-
             try:
                 asyncio.run(WebAppUtilities.handle_successful_payment(db, financial, financial.authority, 'ZarinPalWebApp'))
             except Exception as e:
