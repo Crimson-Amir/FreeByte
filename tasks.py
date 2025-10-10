@@ -58,7 +58,6 @@ def handle_task_errors(func):
         except Exception as e:
             retries = getattr(self.request, "retries", None)
             max_retries = getattr(self, "max_retries", None)
-            error_id = uuid4().hex
             tb = traceback.format_exc()
 
             logging.error(f"Celery task {func.__name__} failed\nerror: {str(e)}, traceback: {tb}")
@@ -68,7 +67,6 @@ def handle_task_errors(func):
                 f"\n\nType: {type(e)}"
                 f"\nReason: {str(e)}"
                 f"\nRetries: {retries}/{max_retries}"
-                f"\nError ID: {error_id}"
             )
 
             report_to_admin_api.delay(err_msg)
