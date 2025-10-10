@@ -74,7 +74,6 @@ def handle_task_errors(func):
     return wrapper
 
 @celery_app.task(bind=True, autoretry_for=(Exception,), retry_kwargs={"max_retries": 3, "countdown": 5}, max_retries=3)
-@handle_task_errors
 def handle_payment(self, financial_id, ref_id):
     with session_scope() as db:
         financial = crud.get_financial_report_by_id(db, financial_id)
@@ -86,6 +85,22 @@ def handle_payment(self, financial_id, ref_id):
             try:
                 asyncio.run(WebAppUtilities.handle_successful_payment(db, financial, financial.authority, 'ZarinPalWebApp'))
             except Exception as e:
-                if getattr(self.request, "retries", 0) >= getattr(self, "max_retries", 0):
+                retries = getattr(self.request, "retries", 0)
+                max_retries = getattr(self, "max_retries", 0)
+
+                if retries >= max_retries:
                     asyncio.run(WebAppUtilities.handle_failed_payment(db, financial, e, dialogues, financial.authority, 'ZarinPalWebApp'))
+
+                tb = traceback.format_exc()
+                err_msg = (
+                    f"[🔴 ERROR] Celery task: handle_payment"
+                    f"\nChatID: {financial.chat_id}"
+                    f"\nAuthority: {financial.authority}"
+                    f"\n\nType: {type(e)}"
+                    f"\nReason: {str(e)}"
+                    f"\nRetries: {retries}/{max_retries}"
+                    f"\n\nTraceBack:\n{tb}"
+                )
+                logging.error(err_msg)
+                report_to_admin_api.delay(err_msg)
                 raise e

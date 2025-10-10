@@ -46,9 +46,10 @@ async def services(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return await update.callback_query.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='html')
 
 async def unknown_message(update, context):
+    user = update.effective_chat
+    if user.id in [6450325872, 6458732795]: return
     try:
         ft_instance = FindText(update, context)
-        user = update.effective_chat
         text = await ft_instance.find_text('unknown_input')
         await context.bot.send_message(chat_id=user.id, text=text, parse_mode='html')
     except Exception as e:
