@@ -80,6 +80,7 @@ def handle_payment(self, financial_id, ref_id):
         if financial.payment_status not in ['paid', 'refund']:
             dialogues = transaction.get(financial.owner.language, transaction.get('fa'))
             if getattr(self.request, "retries", 0) == 0:
+                WebAppUtilities.connect_to_server_instance.refresh_token()
                 message = f"🟢 {dialogues.get('successful_pay', 'success {0}').format(ref_id)}"
                 report_to_user_api.delay(financial.chat_id, message)
             try:
