@@ -14,10 +14,10 @@ class ConnectToServer:
         if self.last_update:
             if self.last_update < now:
                 panel_api.marzban_api.refresh_connection()
-                self.last_update = now + timedelta(hours=12)
+                self.last_update = now + timedelta(hours=6)
         else:
             panel_api.marzban_api.refresh_connection()
-            self.last_update = now + timedelta(hours=12)
+            self.last_update = now + timedelta(hours=6)
 
 connect_to_server_instance = ConnectToServer()
 
