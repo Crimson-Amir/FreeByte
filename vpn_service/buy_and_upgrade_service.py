@@ -130,7 +130,6 @@ async def create_json_config(username, expiration_in_day, traffic_in_byte, servi
             "vless": [
                 "VLESS TCP",
                 "VLESS GRPC REALITY",
-                "VLESS TCP REALITY",
                 "VLESS WS NIM"
             ],
             "vmess": [
@@ -156,6 +155,7 @@ async def create_json_config(username, expiration_in_day, traffic_in_byte, servi
     limits = [(30, 40), (60, 60), (90, 90)]
     if any(org_traffic >= gb * 1024 ** 3 and expiration_in_day <= days for gb, days in limits) or org_traffic >= 90 * 1024 ** 3:
         config["inbounds"]["shadowsocks"].append("Shadowsocks TCP")
+        config["inbounds"]["vless"].append("VLESS TCP REALITY")
 
     return config
 
