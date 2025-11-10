@@ -170,7 +170,8 @@ async def register_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 # if not inviter_user:
                 #     return context.bot.send_message(chat_id=user_detail.id, text='The inviting user does not exist in our database!\nکاربر دعوت کننده در دیتابیس ما وجود ندارد!')
 
-                password = await register_user_in_webapp(user_detail)
+                # password = await register_user_in_webapp(user_detail)
+                password = "Null"
                 crud.create_user(session, user_detail, inviter_chat_id, selected_language, password)
                 photos = await context.bot.get_user_profile_photos(user_id=user_detail.id)
 
@@ -230,8 +231,9 @@ async def invite_firends(update, context):
 
 @handle_error.handle_functions_error
 async def web_application(update, context):
+    query = update.callback_query
+    return await query.answer(text="در حال حاضر غیرفعال است")
     with SessionLocal() as session:
-        query = update.callback_query
         user_detail = update.effective_chat
         ft_instance = FindText(update, context)
         get_config = crud.get_user_config(session, user_detail.id)
