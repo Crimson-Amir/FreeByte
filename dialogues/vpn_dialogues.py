@@ -11,7 +11,7 @@ text_transaction = {
               "\n\nunlimited servers make your vpn service traffic 10 times more"
               "\nNimBaha servers make your internet traffic 2 times more",
         "fa": "شما میتوانید برای بررسی کیفیت، سرویس تست تهیه کنید."
-              "\n\n:مشخصات سرویس"
+              "\n\nمشخصات سرویس:"
               "\n{0} گیگابایت"
               "\n{1} روز"
               "\n\nسرور های نامحدود ترافیک شما را 10 برابر میکنند"
