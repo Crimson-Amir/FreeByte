@@ -197,8 +197,7 @@ async def create_invoice(update, context):
 
             keyboard = [
                 [InlineKeyboardButton(await ft_instance.find_keyboard('iran_payment_gateway'), callback_data=f"pay_by_zarinpal__{action}__{finacial_report.financial_id}")],
-                [InlineKeyboardButton(await ft_instance.find_keyboard('pay_with_wallet_balance'), callback_data=f"pay_by_wallet__{action}__{finacial_report.financial_id}")
-                 if pay_by_wallet_satatus and finacial_report.owner.wallet >= amount else [],
+                [InlineKeyboardButton(await ft_instance.find_keyboard('pay_with_wallet_balance'), callback_data=f"pay_by_wallet__{action}__{finacial_report.financial_id}"),
                  InlineKeyboardButton(await ft_instance.find_keyboard('cryptomus_payment_gateway'), callback_data=f"pay_by_cryptomus__{action}__{finacial_report.financial_id}")],
                 [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=back_button_callback)],
             ]
