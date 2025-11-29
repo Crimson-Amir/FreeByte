@@ -7,11 +7,15 @@ text_transaction = {
         "en": "you can receve test service for check the quality!"
               "\n\nService Config:"
               "\n{0} GB"
-              "\n{1} Day",
+              "\n{1} Day"
+              "\n\nunlimited servers make your vpn service traffic 10 times more"
+              "\nNimBaha servers make your internet traffic 2 times more",
         "fa": "شما میتوانید برای بررسی کیفیت، سرویس تست تهیه کنید."
               "\n\n:مشخصات سرویس"
               "\n{0} گیگابایت"
               "\n{1} روز"
+              "\n\nسرور های نامحدود ترافیک شما را 10 برابر میکنند"
+              "\nسرور های نیم بها 'حجم اینترنت' شما را دو برابر میکنند"
     },
     "vpn_ask_user_for_revoke_service": {
         "en": "❓ Are you sure you want to revoke this link? think link will be disconnect.",
