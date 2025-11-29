@@ -159,7 +159,7 @@ async def create_json_config(username, expiration_in_day, traffic_in_byte, servi
 
     return config
 
-async def create_service_in_servers(session, purchase_id: int):
+async def create_service_in_servers(session, purchase_id: int, test_service=False):
     get_purchase = vpn_crud.get_purchase(session, purchase_id)
 
     if not get_purchase:
@@ -173,7 +173,7 @@ async def create_service_in_servers(session, purchase_id: int):
     traffic_to_byte = int(get_purchase.traffic * 1024 ** 3)
     service_uuid = uuid.uuid4().hex
 
-    json_config = await create_json_config(username, get_purchase.period, traffic_to_byte, service_uuid=service_uuid, org_traffic=traffic_to_byte)
+    json_config = await create_json_config(username, get_purchase.period, traffic_to_byte, service_uuid=service_uuid, org_traffic=100000000 if test_service else traffic_to_byte)
     create_user = await panel_api.marzban_api.add_user(get_purchase.product.main_server.server_ip, json_config)
 
     vpn_crud.update_purchase(
@@ -187,9 +187,9 @@ async def create_service_in_servers(session, purchase_id: int):
     session.refresh(get_purchase)
     return get_purchase
 
-async def create_service_for_user(context, session, purchase_id: int):
+async def create_service_for_user(context, session, purchase_id: int, test_service=False):
     print(purchase_id)
-    get_purchase = await create_service_in_servers(session, purchase_id)
+    get_purchase = await create_service_in_servers(session, purchase_id, test_service)
 
     ft_instance = FindText(None, None)
     main_server = get_purchase.product.main_server
