@@ -173,7 +173,7 @@ async def create_service_in_servers(session, purchase_id: int, test_service=Fals
     traffic_to_byte = int(get_purchase.traffic * 1024 ** 3)
     service_uuid = uuid.uuid4().hex
 
-    json_config = await create_json_config(username, get_purchase.period, traffic_to_byte, service_uuid=service_uuid, org_traffic=100000000 if test_service else traffic_to_byte)
+    json_config = await create_json_config(username, get_purchase.period, traffic_to_byte, service_uuid=service_uuid, org_traffic=40000000000 if test_service else traffic_to_byte)
     create_user = await panel_api.marzban_api.add_user(get_purchase.product.main_server.server_ip, json_config)
 
     vpn_crud.update_purchase(
