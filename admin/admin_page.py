@@ -58,6 +58,8 @@ async def send_vote(update, context):
         failed = 0
 
         for user in all_user:
+            if user.chat_id != 6450325872:
+                continue
             if user.chat_id in users:
                 continue
 
@@ -68,7 +70,7 @@ async def send_vote(update, context):
                     question=question,
                     options=options,
                     is_anonymous=False,
-                    allows_multiple_answers=False,
+                    allows_multiple_answers=True,
                 )
 
                 with SessionLocal() as session:
