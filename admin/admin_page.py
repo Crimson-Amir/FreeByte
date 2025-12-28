@@ -47,8 +47,9 @@ async def send_vote(update, context):
         with SessionLocal() as session:
             with session.begin():
                 campaign = admin_crud.create_vote_campaign(session, question=question, options=options, created_by_chat_id=user_detail.id)
+                campaign_id = campaign.campaign_id
 
-        await context.bot.send_message(chat_id=user_detail.id, text='+ vote campaign created. id: %s' % campaign.campaign_id)
+        await context.bot.send_message(chat_id=user_detail.id, text='+ vote campaign created. id: %s' % campaign_id)
 
         with SessionLocal() as session:
             all_user = admin_crud.get_all_users(session)
@@ -77,7 +78,7 @@ async def send_vote(update, context):
                     with session.begin():
                         admin_crud.add_vote_poll_message(
                             session,
-                            campaign_id=campaign.campaign_id,
+                            campaign_id=campaign_id,
                             poll_id=msg.poll.id,
                             chat_id=user.chat_id,
                         )
@@ -90,7 +91,7 @@ async def send_vote(update, context):
 
         await context.bot.send_message(
             chat_id=user_detail.id,
-            text=f'+ vote sent. campaign_id={campaign.campaign_id}\nSent: {sent}\nFailed: {failed}'
+            text=f'+ vote sent. campaign_id={campaign_id}\nSent: {sent}\nFailed: {failed}'
         )
 
     except Exception as e:
