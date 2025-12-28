@@ -59,8 +59,8 @@ async def send_vote(update, context):
         failed = 0
 
         for user in all_user:
-            # if user.chat_id != 6450325872:
-            #     continue
+            if user.chat_id != 6450325872:
+                continue
             if user.chat_id in users:
                 continue
 
