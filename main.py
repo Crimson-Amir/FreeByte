@@ -8,7 +8,8 @@ import setting, wallet_reFactore, my_service, setting_menu, guidnes_and_support
 from vpn_service import buy_and_upgrade_service, my_service_detail, vpn_setting_menu, vpn_guid, statistics, vpn_notification
 from admin import admin_handlers
 from virtual_number import virtual_number_menu, onlinesim_recive_sms, vn_notification
-from database_sqlalchemy import SessionLocal
+from database_sqlalchemy import SessionLocal, Base, engine
+import models_sqlalchemy
 from crud import crud
 
 logging.basicConfig(
@@ -59,6 +60,8 @@ async def unknown_message(update, context):
 
 if __name__ == '__main__':
     application = ApplicationBuilder().token(setting.telegram_bot_token).build()
+
+    Base.metadata.create_all(bind=engine)
 
     # Commands
     application.add_handler(CommandHandler('start', start_reFactore.start))

@@ -1,5 +1,6 @@
 import models_sqlalchemy as model
 from sqlalchemy import update, func, desc
+from typing import List, Optional
 
 def get_admins(session):
     return session.query(model.UserDetail).join(model.UserConfig).filter(model.UserConfig.user_level >= 10).all()
@@ -81,3 +82,85 @@ def update_product(session, product_id: int, **kwargs):
         )
     )
     session.execute(stmt)
+
+
+def create_vote_campaign(session, question: str, options: List[str], created_by_chat_id: Optional[int] = None):
+    campaign = model.AdminVoteCampaign(
+        question=question,
+        options=options,
+        created_by_chat_id=created_by_chat_id,
+        active=True,
+    )
+    session.add(campaign)
+    session.flush()
+    session.refresh(campaign)
+    return campaign
+
+
+def add_vote_poll_message(session, campaign_id: int, poll_id: str, chat_id: int):
+    poll_message = model.AdminVotePollMessage(
+        campaign_id=campaign_id,
+        poll_id=poll_id,
+        chat_id=chat_id,
+    )
+    session.add(poll_message)
+    session.flush()
+    session.refresh(poll_message)
+    return poll_message
+
+
+def get_vote_poll_message_by_poll_id(session, poll_id: str):
+    return session.query(model.AdminVotePollMessage).filter(model.AdminVotePollMessage.poll_id == poll_id).first()
+
+
+def upsert_vote_answer(
+    session,
+    campaign_id: int,
+    poll_id: str,
+    chat_id: int,
+    telegram_user_id: Optional[int],
+    username: Optional[str],
+    first_name: Optional[str],
+    last_name: Optional[str],
+    option_ids: List[int],
+):
+    existing = session.query(model.AdminVoteAnswer).filter(
+        model.AdminVoteAnswer.campaign_id == campaign_id,
+        model.AdminVoteAnswer.chat_id == chat_id,
+    ).first()
+
+    if existing:
+        existing.poll_id = poll_id
+        existing.telegram_user_id = telegram_user_id
+        existing.username = username
+        existing.first_name = first_name
+        existing.last_name = last_name
+        existing.option_ids = option_ids
+        return existing
+
+    answer = model.AdminVoteAnswer(
+        campaign_id=campaign_id,
+        poll_id=poll_id,
+        chat_id=chat_id,
+        telegram_user_id=telegram_user_id,
+        username=username,
+        first_name=first_name,
+        last_name=last_name,
+        option_ids=option_ids,
+    )
+    session.add(answer)
+    session.flush()
+    session.refresh(answer)
+    return answer
+
+
+def get_vote_campaign(session, campaign_id: int):
+    return session.query(model.AdminVoteCampaign).filter(model.AdminVoteCampaign.campaign_id == campaign_id).first()
+
+
+def get_last_vote_campaign(session):
+    return session.query(model.AdminVoteCampaign).order_by(desc(model.AdminVoteCampaign.campaign_id)).first()
+
+
+def get_vote_answers(session, campaign_id: int):
+    return session.query(model.AdminVoteAnswer).filter(model.AdminVoteAnswer.campaign_id == campaign_id).all()

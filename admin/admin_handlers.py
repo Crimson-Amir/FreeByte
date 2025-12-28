@@ -1,4 +1,4 @@
-from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, CallbackQueryHandler, MessageHandler, filters
+from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, CallbackQueryHandler, MessageHandler, filters, PollAnswerHandler
 import sys, os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from admin import admin_page, admin_system, admin_users, admin_ticket, vpn_admin
@@ -12,6 +12,9 @@ def admin_handler(application):
     application.add_handler(CommandHandler('find_service', admin_users.find_service))
     application.add_handler(CommandHandler('send_to_users', admin_page.say_to_users))
     application.add_handler(CommandHandler('send_to_everyone', admin_page.say_to_everyone))
+    application.add_handler(CommandHandler('send_vote', admin_page.send_vote))
+    application.add_handler(CommandHandler('vote_results', admin_page.vote_results))
+    application.add_handler(PollAnswerHandler(admin_page.handle_vote_poll_answer))
 
     application.add_handler(CallbackQueryHandler(admin_page.admin_page, pattern='admin_page'))
     application.add_handler(CallbackQueryHandler(vpn_admin.admin_page, pattern='admin_vpn'))

@@ -1,5 +1,5 @@
 from database_sqlalchemy import Base
-from sqlalchemy import Integer, String, Column, Boolean, ForeignKey, DateTime, BigInteger, ARRAY, Text, JSON
+from sqlalchemy import Integer, String, Column, Boolean, ForeignKey, DateTime, BigInteger, ARRAY, Text, JSON, UniqueConstraint
 from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
 
@@ -150,3 +150,52 @@ class LastUsage(Base):
     last_usage_id = Column(Integer, primary_key=True)
     last_usage = Column(JSON)
     register_date = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+
+class AdminVoteCampaign(Base):
+    __tablename__ = 'admin_vote_campaign'
+
+    campaign_id = Column(Integer, primary_key=True)
+    question = Column(Text, nullable=False)
+    options = Column(JSON, nullable=False)
+    created_by_chat_id = Column(BigInteger)
+    active = Column(Boolean, default=True)
+    register_date = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+    poll_messages = relationship("AdminVotePollMessage", back_populates="campaign", cascade="all, delete-orphan")
+    answers = relationship("AdminVoteAnswer", back_populates="campaign", cascade="all, delete-orphan")
+
+
+class AdminVotePollMessage(Base):
+    __tablename__ = 'admin_vote_poll_message'
+
+    message_id = Column(Integer, primary_key=True)
+    campaign_id = Column(Integer, ForeignKey('admin_vote_campaign.campaign_id'), nullable=False)
+    poll_id = Column(String, unique=True, nullable=False)
+    chat_id = Column(BigInteger, nullable=False)
+    register_date = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+    campaign = relationship("AdminVoteCampaign", back_populates="poll_messages")
+
+
+class AdminVoteAnswer(Base):
+    __tablename__ = 'admin_vote_answer'
+
+    answer_id = Column(Integer, primary_key=True)
+    campaign_id = Column(Integer, ForeignKey('admin_vote_campaign.campaign_id'), nullable=False)
+    poll_id = Column(String, nullable=False)
+    chat_id = Column(BigInteger, nullable=False)
+
+    telegram_user_id = Column(BigInteger)
+    username = Column(String)
+    first_name = Column(String)
+    last_name = Column(String)
+
+    option_ids = Column(JSON, nullable=False)
+    register_date = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+    campaign = relationship("AdminVoteCampaign", back_populates="answers")
+
+    __table_args__ = (
+        UniqueConstraint('campaign_id', 'chat_id', name='uq_admin_vote_answer_campaign_chat_id'),
+    )
