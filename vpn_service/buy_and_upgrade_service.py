@@ -28,7 +28,7 @@ async def buy_custom_service(update, context):
 
     with SessionLocal() as session:
 
-        limits = [(30, 20), (60, 30), (90, 40)]
+        limits = [(20, 40), (40, 60), (70, 90)]
         if any(traffic >= gb and period <= days for gb, days in limits):
             tenth_servers = f"\n\n{(await ft_instance.find_text('vpn_tenth_server_info'))}"
         else:
@@ -78,7 +78,7 @@ async def upgrade_service(update, context):
 
             price = await vpn_utilities.calculate_price(traffic, period, user_detail.id, session)
 
-            limits = [(30, 20), (60, 30), (90, 40)]
+            limits = [(20, 40), (40, 60), (70, 90)]
             if any(traffic >= gb and period <= days for gb, days in limits):
                 tenth_servers = f"\n\n{(await ft_instance.find_text('vpn_tenth_server_info'))}"
             else:
@@ -152,7 +152,7 @@ async def create_json_config(username, expiration_in_day, traffic_in_byte, servi
         "on_hold_expire_duration": 0
     }
 
-    limits = [(30, 20), (60, 30), (90, 40)]
+    limits = [(20, 40), (40, 60), (70, 90)]
     if any(org_traffic >= gb * 1024 ** 3 and expiration_in_day <= days for gb, days in limits) or org_traffic >= 90 * 1024 ** 3:
         config["inbounds"]["shadowsocks"].append("Shadowsocks TCP")
         config["inbounds"]["vless"].append("VLESS TCP REALITY")
