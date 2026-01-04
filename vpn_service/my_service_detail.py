@@ -318,8 +318,10 @@ async def revoke_service_for_user(update, context):
             result = await panel_api.marzban_api.revoke_user(main_server.server_ip, purchase.username)
             server_port = f":{main_server.server_port}" if main_server.server_port != 443 else ""
             sub_link = f"{main_server.server_protocol}{main_server.server_ip}{server_port}{result.get('subscription_url', 'ERROR!')}"
+
             text = await ft_instance.find_text('vpn_service_revoked_successfully')
             text += f"\n\n<code>{sub_link}</code>"
+
             keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=f'vpn_advanced_options__{purchase_id}')]]
 
             await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
@@ -333,6 +335,7 @@ async def get_configs_separately(update, context):
     get_service = context.user_data.get(f'service_detail_{purchase_id}')
     user_detail = update.effective_chat
     configs_text = ''
+    max_message_length = 4096
 
     if get_service:
         get_configs = get_service.get('info_from_server', {}).get('links', ['no_links'])
@@ -345,13 +348,53 @@ async def get_configs_separately(update, context):
                 get_from_server = await panel_api.marzban_api.get_user(main_server_ip, purchase.username)
                 get_configs = get_from_server.get('links')
 
+    get_configs = get_configs or ['no_links']
+
+    chunks = []
+    current_chunk = ''
     for config in get_configs:
-        configs_text += f'\n\n<code>{config}</code>'
+        block = f'\n\n<code>{config}</code>'
+
+        if len(block) > max_message_length:
+            overhead = len('\n\n<code></code>')
+            max_payload_length = max(1, max_message_length - overhead)
+            parts = [config[i:i + max_payload_length] for i in range(0, len(config), max_payload_length)]
+            for part in parts:
+                part_block = f'\n\n<code>{part}</code>'
+                if current_chunk and len(current_chunk) + len(part_block) <= max_message_length:
+                    current_chunk += part_block
+                else:
+                    if current_chunk:
+                        chunks.append(current_chunk)
+                    current_chunk = part_block
+            continue
+
+        if not current_chunk:
+            current_chunk = block
+            continue
+
+        if len(current_chunk) + len(block) <= max_message_length:
+            current_chunk += block
+        else:
+            chunks.append(current_chunk)
+            current_chunk = block
+
+    if current_chunk:
+        chunks.append(current_chunk)
+
+    configs_text = chunks[0] if chunks else ''
 
     keyboard = [[InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=f'vpn_advanced_options__{purchase_id}')]]
     if in_new_message == 'yes':
-        return await context.bot.send_message(text=configs_text, chat_id=user_detail.id, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+        last_message = None
+        for i, chunk in enumerate(chunks or ['']):
+            reply_markup = InlineKeyboardMarkup(keyboard) if i == (len(chunks) - 1) else None
+            last_message = await context.bot.send_message(text=chunk, chat_id=user_detail.id, parse_mode='html', reply_markup=reply_markup)
+        return last_message
+
     await query.edit_message_text(text=configs_text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
+    for chunk in chunks[1:]:
+        await context.bot.send_message(text=chunk, chat_id=user_detail.id, parse_mode='html')
 
 
 @handle_error.handle_conversetion_error
