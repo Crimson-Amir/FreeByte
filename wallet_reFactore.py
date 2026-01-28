@@ -196,9 +196,9 @@ async def create_invoice(update, context):
             finacial_report = crud.create_financial_report(session, operation, chat_id, amount, action, service_id, 'not paid')
 
             keyboard = [
-                # [InlineKeyboardButton(await ft_instance.find_keyboard('iran_payment_gateway'), callback_data=f"pay_by_zarinpal__{action}__{finacial_report.financial_id}")],
-                [InlineKeyboardButton(await ft_instance.find_keyboard('pay_with_wallet_balance'), callback_data=f"pay_by_wallet__{action}__{finacial_report.financial_id}")],
-                #  InlineKeyboardButton(await ft_instance.find_keyboard('cryptomus_payment_gateway'), callback_data=f"pay_by_cryptomus__{action}__{finacial_report.financial_id}")],
+                [InlineKeyboardButton(await ft_instance.find_keyboard('iran_payment_gateway'), callback_data=f"pay_by_zarinpal__{action}__{finacial_report.financial_id}")],
+                [InlineKeyboardButton(await ft_instance.find_keyboard('pay_with_wallet_balance'), callback_data=f"pay_by_wallet__{action}__{finacial_report.financial_id}"),
+                InlineKeyboardButton(await ft_instance.find_keyboard('cryptomus_payment_gateway'), callback_data=f"pay_by_cryptomus__{action}__{finacial_report.financial_id}")],
                 [InlineKeyboardButton(await ft_instance.find_keyboard('back_button'), callback_data=back_button_callback)],
             ]
             keyboard = [list(filter(None, row)) for row in keyboard]
@@ -216,11 +216,6 @@ async def create_invoice(update, context):
             text += (f"\n\n{await ft_instance.find_text('invoice_extra_data')}\n{invoice_extra_data}"
                      f"\n\n<b>{price_text} {amount:,} {await ft_instance.find_text('irt')}</b>"
                      f"\n\n{await ft_instance.find_text('payment_option_title')}"
-                     f"\n\n"
-                     f"🔴درحال حاضر درگاه پرداخت ریالی به محدودیت برخورده است، لطفا مبلغ رو به شماره کارت زیر کارت به کارت کنید و اطلاعات پرداخت رو از طریق پشتیبانی، ارتباط با پشتیبانی ارسال کنید تا مبلغ به کیف پول شما اضافه بشه"
-                     f"\n\n"
-                
-                     f"6219861938619417"
                      )
 
             await query.edit_message_text(text=text, parse_mode='html', reply_markup=InlineKeyboardMarkup(keyboard))
