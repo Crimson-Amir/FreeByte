@@ -23,16 +23,9 @@ TEHRAN_TZ = pytz.timezone('Asia/Tehran')
 NOTIFICATION_MESSAGE = ("""
 📣 اطلاعیه
 
-با توجه به ناپایداری‌های اخیر که برخی از کاربران در اتصال به سرویس تجربه کردند، و در راستای حفظ کیفیت خدمات و رضایت شما، موارد زیر به تمامی اشتراک‌ها اضافه شده است:
+با توجه به قطعی گسترده اینترنت در ماه گذشته، ۳۰ روز به مدت اشتراک تمامی کاربران اضافه شد.
 
-🎁 ۵ گیگابایت ترافیک هدیه
-⏳️ ۱۵ روز زمان 
-
-در حال حاضر، کلیه سرویس‌ها و سرور ها به‌طور کامل فعال هستند و میتونید خریدتون رو مثل سابق انجام بدید.
-در صورت بروز مشکل در اتصال، لطفاً اشتراک خود را به‌روزرسانی کنید.
-
-💬 پشتیبانی آنلاین همواره آماده پاسخ‌گویی به سوالات شماست.
-از شکیبایی، همراهی و اعتماد شما سپاس‌گزاریم.
+در صورتی که سرویس شما در این بازه به اتمام رسیده و از سرور حذف شده است، لطفاً جهت فعال‌سازی مجدد با پشتیبانی در ارتباط باشید.
 """
                         )
 
@@ -77,10 +70,10 @@ async def do_it():
             joinedload(model.Purchase.product).joinedload(model.Product.main_server),
             joinedload(model.Purchase.owner)
         ).all()
-    target_chat_ids = [248, 1223, 22, 1555, 314]
+    target_chat_ids = []
     for purchase in purchases:
         try:
-            if not purchase.username or purchase.purchase_id not in target_chat_ids:
+            if not purchase.username or purchase.purchase_id in target_chat_ids:
                 continue
 
             main_server_ip = purchase.product.main_server.server_ip
@@ -88,8 +81,8 @@ async def do_it():
             user_info = await panel_api.marzban_api.get_user(main_server_ip, purchase.username)
             if not user_info: continue
 
-            ten_percent_traffic = 5
-            ten_percent_days = 15
+            ten_percent_traffic = 0
+            ten_percent_days = 30
 
             updated_traffic_bytes = (ten_percent_traffic * (1024 ** 3)) + user_info.get("data_limit", 0)
 
@@ -109,7 +102,6 @@ async def do_it():
             success_msg = (
                 f"🟢 سرویس شما با آیدی {purchase.purchase_id} با موفقیت ارتقاء یافت.\n"
                 f"مشخصات اضافه شده به سرویس:\n"
-                f"ترافیک: {ten_percent_traffic} گیگابایت\n"
                 f"دوره زمانی: {ten_percent_days} روز"
             )
 
@@ -255,4 +247,4 @@ async def add_users_to_webapp():
 
 
 if __name__ == "__main__":
-    asyncio.run(add_users_to_webapp())
+    asyncio.run(do_it())

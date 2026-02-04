@@ -131,11 +131,11 @@ async def create_json_config(username, expiration_in_day, traffic_in_byte, servi
                 "VLESS TCP",
                 "VLESS GRPC REALITY",
                 "VLESS WS NIM",
-                "VLESS WS TLS"
+                "VLESS WS TLS",
+                "VLESS TCP SHOW STATUS"
             ],
             "vmess": [
-                "VMess TCP",
-                "VMess Websocket",
+                "VMess TCP"
             ],
             "trojan": [
                 "Trojan Websocket TLS",
