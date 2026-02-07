@@ -28,7 +28,8 @@ text_transaction = {
     "vpn_tenth_server_info": {
         "en": "• unlimited servers make your traffic multiply by 10",
         "fa": "• سرورهای نامحدود ترافیک سرویس شمارو 10 برابر میکنند."
-              "\n• سرور های نیم بها حجم اینترنت شمارو دو برابر میکنند.",
+              "\n• سرور های نیم بها حجم اینترنت شمارو دو برابر میکنند."
+              "\n• سرویس ها بدون محدودیت کاربر هستند.",
     },
     "vpn_tenth_require": {
         "en": "• By purchasing at least {0} GB, you'll get access to unlimited servers",
