@@ -228,7 +228,7 @@ text_transaction = {
               '\nلینک دانلود:'
               '\n\nhttps://play.google.com/store/apps/details?id=app.hiddify.com'
               '\n\nنرم افزار دوم:'
-              '\nلینک دریافت شده از ربات را وارد کنید برنامه Happ را باز کرده'
+              '\nبرنامه Happ را باز کرده و لینک دریافت شده توسط ربات را وارد کنید'
               "\n\n📱 لینک دانلود Happ:",
     },
     "vpn_ios_guide": {
