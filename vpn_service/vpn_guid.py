@@ -33,8 +33,8 @@ async def vpn_guide(update, context):
 
     if platform == 'android':
         text = f"{await ft_instance.find_text('vpn_android_guide')}"
-        text += '\n\n<a href="https://play.google.com/store/apps/details?id=com.v2ray.ang&hl=en&pli=1">Google Play</a>'
-        text += '\n<a href="https://github.com/2dust/v2rayng/releases">GitHub</a>'
+        text += '\n\n<a href="https://play.google.com/store/apps/details?id=com.happproxy&hl=fa">Google Play</a>'
+        text += '\n<a href="https://github.com/Happ-proxy">GitHub</a>'
 
     elif platform == 'ios':
         text = f"{await ft_instance.find_text('vpn_ios_guide')}"

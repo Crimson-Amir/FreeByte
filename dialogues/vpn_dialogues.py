@@ -228,9 +228,8 @@ text_transaction = {
               '\nلینک دانلود:'
               '\n\nhttps://play.google.com/store/apps/details?id=app.hiddify.com'
               '\n\nنرم افزار دوم:'
-              '\nلینک دریافت شده از ربات را کپی کنید، برنامه v2rayNG را باز کرده و روی علامت + کلیک کنید، سپس گزینه "وارد کردن کانفیگ از کلیپ‌بورد" را بزنید.'
-              '\n\n🔄 با گزینه "Update Subscription" می‌توانید هر زمان لیست جدید سرورها را دریافت کنید.'
-              "\n\n📱 لینک دانلود v2rayNG:",
+              '\nلینک دریافت شده از ربات را وارد کنید برنامه Happ را باز کرده'
+              "\n\n📱 لینک دانلود Happ:",
     },
     "vpn_ios_guide": {
         "en": "💡 How to Connect on iOS:"
