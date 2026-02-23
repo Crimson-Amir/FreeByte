@@ -135,7 +135,8 @@ async def create_json_config(username, expiration_in_day, traffic_in_byte, servi
                 "VLESS WS TLS",
                 "VLESS TCP SHOW STATUS",
                 "VLESS TCP REALITY UNLIMITED 2",
-                "VLESS TCP REALITY UNLIMITED"
+                "VLESS TCP REALITY UNLIMITED",
+                "VLESS XHTTP"
             ],
             "vmess": [
                 "VMess TCP"
